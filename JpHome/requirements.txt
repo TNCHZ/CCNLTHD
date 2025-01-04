@@ -1,2 +1,4 @@
+npm==0.1.1
 npx==0.1.6
 numpy==2.2.1
+optional-django==0.1.0
