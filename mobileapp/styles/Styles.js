@@ -6,9 +6,9 @@ export default StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         padding: 16,
-        justifyContent: 'space-between', // Đẩy footer xuống cuối màn hình
+        //justifyContent: 'space-between', // Đẩy footer xuống cuối màn hình
     },
-    subject: {
+    text: {
         fontSize: 20,
         fontweight: "boid",
         color: "blue",
@@ -21,7 +21,17 @@ export default StyleSheet.create({
         marginVertical: 10,
     },
     header: {
-
+        width: '100%',
+        height: 50,
+        top: 0,
+        backgroundColor: '#0288D1',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    headerStyle: {
+        fontSize: 25,
+        textAlign: 'center',
+        color: '#fff',
     },
     content: {
         
@@ -34,5 +44,11 @@ export default StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute', // Footer cố định ở cuối màn hình
         bottom: 0,
+
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 8,
+        padding: 10,
+        marginVertical: 10,
       },
 });

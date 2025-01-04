@@ -1,20 +1,37 @@
-import { View, Text, TextInput, Button} from "react-native";
-import Styles from "../../styles/Styles";
+import { View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
+import Styles from "../../components/Home/HomeStyle";
 import React from "react";
 
 const Home = () =>{
     return (
         <View style={Styles.container}>
-            <View >
-            {/* Content */}
-                <Text>Đây là content</Text>
-                <TextInput placeholder="Nhập vô đây" style={Styles.input} />
-                <Button title="123" onPress={() => console.log("Button pressed")} />
+            {/* Header */}
+            <View style={Styles.header}>
+            <Image
+                source={require('../../assets/JpHome.png')} // Thay bằng ảnh phù hợp
+                style={Styles.image}
+            />
+            <Text style={Styles.title}>Chào mừng bạn đến với Chung cư tiện ích JpHome!</Text>
             </View>
-            
-            {/* Footer */}
+    
+            {/* Content */}
+            <ScrollView style={Styles.content}>
+                <Text style={Styles.description}>
+                    Chung cư JpHome là biểu tượng của phong cách sống hiện đại, 
+                    tiện nghi và đẳng cấp, tọa lạc tại vị trí đắc địa giữa trung tâm thành phố. 
+                    Được thiết kế với cảm hứng từ kiến trúc Nhật Bản, JpHome mang đến không gian sống hài hòa giữa thiên nhiên và con người, 
+                    với các tiện ích vượt trội đáp ứng đầy đủ nhu cầu của cư dân.
+                </Text>
+                <Text style={Styles.description}>
+                    Hãy cùng chúng tôi xây dựng một thói quen mới và nâng cao chất lượng cuộc sống.
+                </Text>
+            </ScrollView>
+    
+            {/* Footer Login */}
             <View style={Styles.footer}>
-                <Text>Đây là footer</Text>
+            <TouchableOpacity style={Styles.button} onPress={() => console.log("Đăng nhập")}>
+                <Text style={Styles.buttonText}>Đăng nhập</Text>
+            </TouchableOpacity>
             </View>
         </View>
     );
