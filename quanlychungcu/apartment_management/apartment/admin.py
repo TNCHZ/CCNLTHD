@@ -3,19 +3,19 @@ from django.contrib import admin
 from . import models
 
 
-class ManagingFeeAdmin(admin.ModelAdmin):
+class ManagingFeesAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
     search_fields = ['name']
     list_filter = ['id', 'name']
 
 
-class ParkingFeeAdmin(admin.ModelAdmin):
+class ParkingFeesAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
     search_fields = ['name']
     list_filter = ['id', 'name']
 
 
-class ServiceFeeAdmin(admin.ModelAdmin):
+class ServiceFeesAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
     search_fields = ['name']
     list_filter = ['id', 'name']
@@ -23,6 +23,6 @@ class ServiceFeeAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(models.Resident)
-admin.site.register(models.ManagingFees, ManagingFeeAdmin)
-admin.site.register(models.ParkingFees, ParkingFeeAdmin)
-admin.site.register(models.ServiceFees, ServiceFeeAdmin)
+admin.site.register(models.ManagingFees, ManagingFeesAdmin)
+admin.site.register(models.ParkingFees, ParkingFeesAdmin)
+admin.site.register(models.ServiceFees, ServiceFeesAdmin)
