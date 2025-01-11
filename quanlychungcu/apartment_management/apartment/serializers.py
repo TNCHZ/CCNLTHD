@@ -18,3 +18,5 @@ class ServiceFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceFee
         fields = '__all__'
+
+

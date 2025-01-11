@@ -105,16 +105,7 @@ class Feedback(Interaction):
 
 class Survey(Interaction):
     name = models.TextField()
+    content = models.TextField(blank=True, null=True)
 
-
-class SurveyResident(models.Model):
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
-    title_content = models.TextField(blank=True, null=True)
-    response_content = models.TextField(blank=True, null=True)
-
-
-    class Meta:
-        unique_together = ('survey', 'resident')
 
 
