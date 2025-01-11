@@ -1,9 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ParkingFeeViewSet
+import views
 
 router = DefaultRouter()
-router.register(r'parking-fees', ParkingFeeViewSet, basename='parkingfee')
+router.register(r'parking-fees', views.ParkingFeeViewSet, basename='parkingfee')
 
 
 

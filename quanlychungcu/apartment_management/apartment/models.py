@@ -4,7 +4,6 @@ from ckeditor.fields import RichTextField
 from cloudinary.models import CloudinaryField
 
 
-
 class User(AbstractUser):
     avatar = CloudinaryField('avatar', null=True)
 
@@ -74,7 +73,7 @@ class ParkingFee(Fee):
         return self.name
 
 
-class OrderServiceFee(Fee):
+class ServiceFee(Fee):
     name = models.TextField(null = False)
 
 
