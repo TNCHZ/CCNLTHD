@@ -1,1 +1,1 @@
-from models import *
+from apartment_management.apartment.models import *
