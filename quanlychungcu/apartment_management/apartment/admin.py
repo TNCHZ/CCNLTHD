@@ -23,6 +23,6 @@ class ServiceFeeAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(models.Resident)
-admin.site.register(models.ManagingFee, ManagingFeeAdmin)
-admin.site.register(models.ParkingFee, ParkingFeeAdmin)
-admin.site.register(models.ServiceFee, ServiceFeeAdmin)
+admin.site.register(models.ManagingFees, ManagingFeeAdmin)
+admin.site.register(models.ParkingFees, ParkingFeeAdmin)
+admin.site.register(models.ServiceFees, ServiceFeeAdmin)
