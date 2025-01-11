@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import ParkingFee, ManagingFee, ServiceFee
 
 
-
 class ManagingFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ManagingFee

@@ -26,7 +26,11 @@ class Admin(User):
 
 
 class Resident(User):
-    gender = models.BooleanField(default=True)
+    GENDER_CHOICES = [
+        (True, 'Male'),
+        (False, 'Female'),
+    ]
+    gender = models.BooleanField(choices=GENDER_CHOICES, default=True)
     day_of_birth = models.DateField(null=False)
     address = models.TextField(null=False)
     phone = models.IntegerField(null=False, unique=True)

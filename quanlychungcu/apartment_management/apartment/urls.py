@@ -1,10 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-import views
+from . import views
+
 
 router = DefaultRouter()
-router.register(r'parking-fees', views.ParkingFeeViewSet, basename='parkingfee')
-
+router.register('parking-fees', views.ParkingFeeViewSet, basename='parkingfee')
+router.register('managing-fee', views.ManagingFeeViewSet, basename='managingfee')
 
 
 urlpatterns = [
