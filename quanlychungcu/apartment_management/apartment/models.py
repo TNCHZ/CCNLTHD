@@ -68,16 +68,16 @@ class Fee(BaseModel):
         abstract = True
 
 
-class ManagingFee(Fee):
+class ManagingFees(Fee):
     pass
 
 
-class ParkingFee(Fee):
+class ParkingFees(Fee):
     def __str__(self):
         return self.name
 
 
-class ServiceFee(Fee):
+class ServiceFees(Fee):
     name = models.TextField(null = False)
 
 

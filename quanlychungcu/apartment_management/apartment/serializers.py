@@ -1,22 +1,20 @@
 from rest_framework import serializers
-from .models import ParkingFee, ManagingFee, ServiceFee
+from .models import ParkingFees, ManagingFees, ServiceFees
 
 
 class ManagingFeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ManagingFee
+        model = ManagingFees
         fields = '__all__'
 
 
 class ParkingFeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ParkingFee
+        model = ParkingFees
         fields = '__all__'
 
 
 class ServiceFeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ServiceFee
+        model = ServiceFees
         fields = '__all__'
-
-

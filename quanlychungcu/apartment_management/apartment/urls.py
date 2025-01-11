@@ -4,9 +4,9 @@ from . import views
 
 
 router = DefaultRouter()
-router.register('parking-fees', views.ParkingFeeViewSet, basename='parkingfee')
-router.register('managing-fee', views.ManagingFeeViewSet, basename='managingfee')
-router.register('service-fee', views.ServiceFeeViewSet, basename='servicefee')
+router.register('parking-fees', views.ParkingFeesViewSet, basename='parkingfees')
+router.register('managing-fees', views.ManagingFeesViewSet, basename='managingfees')
+router.register('service-fees', views.ServiceFeesViewSet, basename='servicefees')
 
 
 urlpatterns = [
