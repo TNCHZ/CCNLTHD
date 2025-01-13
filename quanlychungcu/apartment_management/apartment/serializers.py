@@ -6,12 +6,12 @@ from .models import ParkingFees, ManagingFees, ServiceFees, Resident
 class ResidentSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField(source='avatar')
 
-    def get_image(self, managing_fee):
-        if managing_fee.avatar:
+    def get_image(self, resident):
+        if resident.avatar:
             request = self.context.get('request')
             if request:
-                return request.build_absolute_uri('/static/%s' % managing_fee.avatar.name)
-            return '/static/%s' % managing_fee.avatar.name
+                return request.build_absolute_uri('/static/%s' % resident.avatar.name)
+            return '/static/%s' % resident.avatar.name
 
     class Meta:
         model = Resident

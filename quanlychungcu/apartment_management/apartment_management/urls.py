@@ -26,8 +26,8 @@ schema_view = get_schema_view(
         title="APARTMENT APIs",
         default_version='v1',
         description='APIs for ApartmentApp',
-        contact=openapi.Contact(email="luhieutrung2602@gmail.com"),
-        license=openapi.License(name="LuHieuTrung@2602"),
+        contact=openapi.Contact(email="2251012145trung@ou.edu.vn, 2251012023chuong@ou.edu.vn"),
+        license=openapi.License(name="JpHome"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,)
