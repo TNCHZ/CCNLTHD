@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ParkingFees, ManagingFees, ServiceFees, Resident
+from .models import *
 
 
 #============================================|| Resident ||============================================#
@@ -46,4 +46,18 @@ class ParkingFeeSerializer(serializers.ModelSerializer):
 class ServiceFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceFees
+        fields = '__all__'
+
+
+#============================================|| Locker ||============================================#
+class LockerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Locker
+        fields = '__all__'
+
+
+#============================================|| ItemsInLocker ||============================================#
+class ItemsInLockerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemsInLocker
         fields = '__all__'

@@ -81,13 +81,13 @@ class ServiceFees(Fee):
     name = models.TextField(null = False)
 
 
+class Locker(BaseModel):
+    resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
+
+
 class ItemsInLocker(BaseModel):
     name = models.TextField(null = False)
-
-
-class Locker(BaseModel):
-    items = models.ForeignKey(ItemsInLocker, on_delete=models.CASCADE)
-    resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
+    locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
 
 
 class Interaction(BaseModel):
