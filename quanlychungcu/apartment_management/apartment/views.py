@@ -14,7 +14,6 @@ class ResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
         queries = self.queryset
 
         q = self.request.query_params.get("q")
-
         if q:
             queries = queries.filter(username__icontains = q)
 
@@ -23,21 +22,21 @@ class ResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
 # lấy các managing_fee theo resident_id
     @action(methods=['get'], detail=True)
     def managing_fees(self, request, pk):
-        managing_fees = self.get_object().managing_fees_set.filtr(ative=True).all()
+        managing_fees = self.get_object().managing_fees_set.filter(active=True).all()
 
         return Response(serializers.ManagingFeeSerializer(managing_fees, many=True))
 
 # lấy các parking_fee theo resident_id
     @action(methods=['get'], detail=True)
     def parking_fees(self, request, pk):
-        parking_fees = self.get_object().parking_fees_set.filtr(ative=True).all()
+        parking_fees = self.get_object().parking_fees_set.all()
 
         return Response(serializers.ParkingFeeSerializer(parking_fees, many=True))
 
 # lấy các service_fee theo resident_id
     @action(methods=['get'], detail=True)
     def service_fees(self, request, pk):
-        service_fees = self.get_object().service_fees_set.filtr(ative=True).all()
+        service_fees = self.get_object().service_fees_set.all()
 
         return Response(serializers.ServiceFeeSerializer(service_fees, many=True))
 
@@ -88,5 +87,3 @@ class ServiceFeesViewSet(viewsets.ViewSet, generics.ListAPIView):
             queries = queries.filter(name_icontains = q)
 
         return queries
-
-
