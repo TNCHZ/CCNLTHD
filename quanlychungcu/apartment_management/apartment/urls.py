@@ -4,8 +4,8 @@ from . import views
 
 
 router = DefaultRouter()
-router.register('parking-fees', views.ParkingFeesViewSet, basename='parkingfees')
 router.register('managing-fees', views.ManagingFeesViewSet, basename='managingfees')
+router.register('parking-fees', views.ParkingFeesViewSet, basename='parkingfees')
 router.register('service-fees', views.ServiceFeesViewSet, basename='servicefees')
 
 
