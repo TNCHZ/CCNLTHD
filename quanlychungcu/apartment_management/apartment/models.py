@@ -57,12 +57,16 @@ class BaseModel(models.Model):
         ordering = ["id"]
 
 
+class FeeValue(BaseModel):
+    name = models.TextField(null = False)
+    value = models.FloatField(null=False)
+
 
 class Fee(BaseModel):
     name = models.TextField(null = False)
-    value = models.FloatField(null=False)
     image = CloudinaryField('fee', null=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
+    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -79,8 +83,14 @@ class ParkingFees(Fee):
     pass
 
 
+class ParkingForRelatives(BaseModel):
+    name_relative = models.TextField(null=False)
+    phone_relative = models.IntegerField(null=False, unique=True)
+    resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
+
+
 class ServiceFees(Fee):
-    name = models.TextField(null = False)
+    pass
 
 
 class Locker(BaseModel):

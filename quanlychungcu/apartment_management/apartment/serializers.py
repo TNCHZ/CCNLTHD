@@ -63,6 +63,17 @@ class ItemsInLockerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class FeeValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeeValue
+        fields = '__all__'
+
+class ParkingForRelativeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParkingForRelatives
+        fields = '__all__'
+
+
 
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
