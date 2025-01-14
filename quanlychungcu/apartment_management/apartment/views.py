@@ -123,3 +123,29 @@ class LockerViewSet(viewsets.ViewSet,generics.ListAPIView):
         items_in_locker = self.get_object().items_in_locker_set.all()
 
         return Response(serializers.ItemsInLockerSerializer(items_in_locker, many=True))
+
+
+
+
+class ItemsInLockerViewSet(viewsets.ModelViewSet):
+    queryset = ItemsInLocker.objects.all()
+    serializer_class = serializers.ItemsInLockerSerializer
+
+
+class FeedbackViewSet(viewsets.ModelViewSet):
+    queryset = Feedback.objects.all()
+    serializer_class = serializers.FeedbackSerializer
+
+class SurveyViewSet(viewsets.ModelViewSet):
+    queryset = Survey.objects.all()
+    serializer_class = serializers.SurveySerializer
+
+
+class SurveyResidentViewSet(viewsets.ModelViewSet):
+    queryset = SurveyResident.objects.all()
+    serializer_class = serializers.SurveyResidentSerializer
+
+
+class AdminViewSet(viewsets.ModelViewSet):
+    queryset = Admin.objects.all()
+    serializer_class = serializers.AdminSerializer

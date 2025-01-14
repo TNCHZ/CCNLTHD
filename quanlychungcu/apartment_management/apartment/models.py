@@ -67,14 +67,16 @@ class Fee(BaseModel):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.name
+
 
 class ManagingFees(Fee):
     pass
 
 
 class ParkingFees(Fee):
-    def __str__(self):
-        return self.name
+    pass
 
 
 class ServiceFees(Fee):
@@ -90,22 +92,25 @@ class ItemsInLocker(BaseModel):
     locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
 
 
-class Interaction(BaseModel):
-    resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
-
-    class Meta:
-        abstract = True
-
-
-class Feedback(Interaction):
+class Feedback(BaseModel):
     title = models.TextField()
-    content = models.TextField()
+    content = RichTextField(null=False, blank=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
 
-class Survey(Interaction):
+class Survey(BaseModel):
     name = models.TextField()
-    content = models.TextField(blank=True, null=True)
+    content = RichTextField(null=False, blank=True)
+    residents = models.ManyToManyField(
+        'Resident',
+        through='SurveyResident',
+        related_name='surveys',
+        blank=True
+    )
 
+class SurveyResident(models.Model):
+    survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
+    resident = models.ForeignKey('Resident', on_delete=models.CASCADE)
+    response_content = RichTextField(null=False, blank=True)
 
 

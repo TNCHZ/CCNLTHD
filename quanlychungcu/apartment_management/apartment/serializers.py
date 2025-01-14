@@ -61,3 +61,28 @@ class ItemsInLockerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemsInLocker
         fields = '__all__'
+
+
+
+class AdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = '__all__'
+
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = '__all__'
+
+
+class SurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Survey
+        fields = '__all__'
+
+
+class SurveyResidentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyResident
+        fields = '__all__'
