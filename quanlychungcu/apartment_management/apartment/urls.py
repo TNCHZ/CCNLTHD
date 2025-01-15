@@ -13,7 +13,7 @@ router.register(r'items-in-locker', views.ItemsInLockerViewSet, basename='items-
 router.register(r'feedback', views.FeedbackViewSet, basename='feedback')
 router.register(r'survey', views.SurveyViewSet, basename='survey')
 router.register(r'survey-resident', views.SurveyResidentViewSet, basename='survey-resident')
-router.register(r'admin', views.AdminViewSet, basename='admin')
+router.register(r'administrator', views.AdminViewSet, basename='administrator')
 
 
 urlpatterns = [

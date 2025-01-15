@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, re_path, include
-from apartment.admin import admin_site
+from apartment.admin import admin
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -35,7 +35,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('', include('apartment.urls')),
-    path('admin/', admin_site.urls),
+    path('admin/', admin.site.urls),
 
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0),

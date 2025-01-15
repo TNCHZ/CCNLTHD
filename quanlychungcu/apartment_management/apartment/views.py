@@ -24,21 +24,21 @@ class ResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
     def managing_fees(self, request, pk):
         managing_fees = self.get_object().managing_fees_set.filter(active=True).all()
 
-        return Response(serializers.ManagingFeeSerializer(managing_fees, many=True))
+        return Response(serializers.ManagingFeeSerializer(managing_fees, many=True, context = {'request': request}).data)
 
 # lấy các parking_fee theo resident_id
     @action(methods=['get'], detail=True)
     def parking_fees(self, request, pk):
         parking_fees = self.get_object().parking_fees_set.all()
 
-        return Response(serializers.ParkingFeeSerializer(parking_fees, many=True))
+        return Response(serializers.ParkingFeeSerializer(parking_fees, many=True, context = {'request': request}).data)
 
 # lấy các service_fee theo resident_id
     @action(methods=['get'], detail=True)
     def service_fees(self, request, pk):
         service_fees = self.get_object().service_fees_set.all()
 
-        return Response(serializers.ServiceFeeSerializer(service_fees, many=True))
+        return Response(serializers.ServiceFeeSerializer(service_fees, many=True, context = {'request': request}).data)
 
 # lấy tủ của resident
     @action(methods=['get'],detail=True)
@@ -58,7 +58,7 @@ class ResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
             # Lấy các Items trong Locker
             items = ItemsInLocker.objects.filter(locker=locker)
             # Serialize và trả về danh sách Items
-            return Response(serializers.ItemsInLockerSerializer(items, many=True))
+            return Response(serializers.ItemsInLockerSerializer(items, many=True, context = {'request': request}).data)
 
         except Locker.DoesNotExist:
             return Response({"error": "Locker not found."}, status=404)

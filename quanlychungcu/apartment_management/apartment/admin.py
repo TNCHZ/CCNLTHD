@@ -2,13 +2,6 @@ from django.contrib import admin
 
 from . import models
 
-class ApartmentAdminSite(admin.AdminSite):
-    site_header = 'iSuccess'
-
-
-admin_site = ApartmentAdminSite(name='myApp')
-
-
 class ManagingFeesAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name']
     search_fields = ['name']
@@ -28,7 +21,16 @@ class ServiceFeesAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin_site.register(models.Resident)
-admin_site.register(models.ManagingFees, ManagingFeesAdmin)
-admin_site.register(models.ParkingFees, ParkingFeesAdmin)
-admin_site.register(models.ServiceFees, ServiceFeesAdmin)
+admin.site.register(models.Resident)
+admin.site.register(models.ManagingFees, ManagingFeesAdmin)
+admin.site.register(models.ParkingFees, ParkingFeesAdmin)
+admin.site.register(models.ServiceFees, ServiceFeesAdmin)
+admin.site.register(models.Admin)
+admin.site.register(models.Survey)
+admin.site.register(models.SurveyResident)
+admin.site.register(models.Feedback)
+admin.site.register(models.FeeValue)
+admin.site.register(models.ParkingForRelatives)
+admin.site.register(models.ItemsInLocker)
+admin.site.register(models.Locker)
+
