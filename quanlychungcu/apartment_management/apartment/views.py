@@ -1,5 +1,5 @@
 from requests import Response
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action
 from .models import *
 from . import serializers, pagination
@@ -39,6 +39,32 @@ class ResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
         service_fees = self.get_object().service_fees_set.all()
 
         return Response(serializers.ServiceFeeSerializer(service_fees, many=True, context = {'request': request}).data)
+
+    @action(methods=['post'], detail=True, url_path='register-parking-relative')
+    def register_parking_relative(self, request, pk=None):
+        """
+        Đăng ký giữ xe cho người thân
+        """
+        resident = self.get_object()
+
+        # Lấy dữ liệu từ request
+        data = request.data.copy()
+        data['resident'] = resident.id
+
+        serializer = serializers.ParkingForRelativeSerializer(data=data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Đăng ký giữ xe cho người thân thành công!',
+                'data': serializer.data
+            }, status=status.HTTP_201_CREATED)
+
+        return Response({
+            'message': 'Dữ liệu không hợp lệ!',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
 
 # lấy tủ của resident
     @action(methods=['get'],detail=True)

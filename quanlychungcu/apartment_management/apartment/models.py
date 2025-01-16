@@ -58,15 +58,14 @@ class BaseModel(models.Model):
 
 
 class FeeValue(BaseModel):
-    name = models.TextField(null = False)
+    name = models.TextField(null=False)
     value = models.FloatField(null=False)
 
 
 class Fee(BaseModel):
-    name = models.TextField(null = False)
+    name = models.TextField(null=False)
     image = CloudinaryField('fee', null=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
-    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -76,11 +75,11 @@ class Fee(BaseModel):
 
 
 class ManagingFees(Fee):
-    pass
+    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
 
 
 class ParkingFees(Fee):
-    pass
+    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
 
 
 class ParkingForRelatives(BaseModel):
@@ -90,7 +89,7 @@ class ParkingForRelatives(BaseModel):
 
 
 class ServiceFees(Fee):
-    pass
+    fee_value = models.FloatField(null=False, blank=True)
 
 
 class Locker(BaseModel):
@@ -98,7 +97,7 @@ class Locker(BaseModel):
 
 
 class ItemsInLocker(BaseModel):
-    name = models.TextField(null = False)
+    name = models.TextField(null=False)
     locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
 
 
@@ -118,9 +117,8 @@ class Survey(BaseModel):
         blank=True
     )
 
+
 class SurveyResident(models.Model):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
     resident = models.ForeignKey('Resident', on_delete=models.CASCADE)
     response_content = RichTextField(null=False, blank=True)
-
-
