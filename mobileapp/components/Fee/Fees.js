@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
 
 
-const Fee = () => {
+const Fee = ({navigation}) => {
     const [managingFees, setManagingFees] = useState([]);
     const [parkingFees, setParkingFees] = useState([]);
     const [serviceFees, setServiceFees] = useState([]);
@@ -103,16 +103,16 @@ const Fee = () => {
             <Text style={Styles.title}>Số Phòng: ___ </Text>
             <Text style={Styles.title}>DANH SÁCH CHI PHÍ</Text>
             <View style={Styles.row}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("managingFees")}>
                     <Chip icon="clipboard-text">Phí Quản Lí</Chip>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("parkingFees")}>
                     <Chip icon="clipboard-text">Phí Đỗ Xe</Chip> 
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("serviceFees")}>
                     <Chip icon="clipboard-text">Phí Dịch Vụ</Chip> 
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("fee")}>
                     <Chip icon="label-outline">Tất cả</Chip> 
                 </TouchableOpacity>
             </View>

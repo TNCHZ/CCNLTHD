@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { MyDispatchContext } from "../../configs/MyContext"
 import APIs, { endpoints } from "../../configs/APIs"
-import Style from "./LoginStyle"
-import MyStyle from"../../styles/Styles"
+import Styles from"../../styles/Styles"
 import { TextInput, TouchableOpacity, View, Text } from "react-native";
 
-const Login = () => {
+const Login = ({navigation}) => {
     const [account, setAccount] = useState({
         "username": "",
         "password": ""
@@ -24,7 +23,9 @@ const Login = () => {
             "icon": "eye"
         }
     }
-    const dispatch = useState(MyDispatchContext);
+
+    const dispatch = useContext(MyDispatchContext);
+
     const updateAccount = (value, field) => {
         setAccount({...account, [field]:value});
     }
@@ -48,12 +49,16 @@ const Login = () => {
             //         "payload": account.data
             //     });
             // }, 500);
-            dispatch({"type": "login", 
-                "payload": {
-                    "username": "admin"
-                }
-            });
-            navigation.navigate("UserInterface");
+            if (account.username=="admin" && account.password=="123"){
+                dispatch({"type": "login", 
+                    "payload": {
+                        "username": account.username,
+                        "password": account.password
+                    }
+                });
+                
+            } console.log('Đăng nhập thành công');
+            navigation.navigate("userInterface");
         } catch(ex){
             console.error(ex); // login thất bại
         } finally{
@@ -62,12 +67,12 @@ const Login = () => {
     }
 
     return (
-        <View style={MyStyle.container}>
-            <Text style={MyStyle.text}>Đăng nhập</Text>
-            <TextInput value={account.username} onChangeText={t => setAccount(t)} placeholder="Tên đăng nhập" style={Style.input} />
-            <TextInput value={account.password} secureTextEntry={true} placeholder="Nhập mật khẩu" style={Style.input} />
-            <TouchableOpacity onPress={login}>
-                <Text style={Style.button}>Login</Text>
+        <View style={Styles.container}>
+            <Text style={Styles.title}>Đăng nhập</Text>
+            <TextInput style={Styles.input} value={account.username} onChangeText={t => setAccount(t)} placeholder="Tên đăng nhập"/>
+            <TextInput style={Styles.input} value={account.password} secureTextEntry={true} placeholder="Nhập mật khẩu"/>
+            <TouchableOpacity onPress={login} style={Styles.button}>
+                <Text style={Styles.buttonText}>Đăng Nhập</Text>
             </TouchableOpacity>
         </View>
     )

@@ -1,7 +1,6 @@
 import { useContext } from "react"
-import { MyAccountContext } from "../../configs/AccountContexts"
+import { MyAccountContext } from "../../configs/MyContext"
 import { Button } from "react-native";
-import Login from "./Login";
 
 const Logout = ({navigation}) => {
     const [user, dispatch] = useContext(MyAccountContext);
@@ -10,10 +9,11 @@ const Logout = ({navigation}) => {
         dispatch({
             "type":"logout"
         })
+        console.info("Đăng xuất");
     }
 
     if (user===null) {
-        return <Button title="Đăng nhập" onPress={() => { navigation.navigate("Login") }}/>
+        return <Button title="Đăng nhập" onPress={() => { navigation.navigate("login") }}/>
     }
     return( <Button title="Đăng xuất" onPress={logout}/> )
 }

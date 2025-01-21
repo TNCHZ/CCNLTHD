@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
 import Styles from "../../components/Home/HomeStyle";
 import React from "react";
 
-const Home = () =>{
+const Home = ({navigation}) =>{
     return (
         <View style={Styles.container}>
             {/* Header */}
@@ -29,7 +29,7 @@ const Home = () =>{
     
             {/* Footer Login */}
             <View style={Styles.footer}>
-            <TouchableOpacity style={Styles.button} onPress={() => console.log("Đăng nhập")}>
+            <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate("login")}>
                 <Text style={Styles.buttonText}>Đăng nhập</Text>
             </TouchableOpacity>
             </View>
