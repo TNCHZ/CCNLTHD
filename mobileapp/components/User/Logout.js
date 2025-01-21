@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { MyAccountContext } from "../../configs/MyContext"
-import { Button } from "react-native";
+import { Button, View, Text } from "react-native";
+import Styles from "../../styles/Styles";
 
 const Logout = ({navigation}) => {
     const [user, dispatch] = useContext(MyAccountContext);
@@ -11,11 +12,13 @@ const Logout = ({navigation}) => {
         })
         console.info("Đăng xuất");
     }
-
-    if (user===null) {
-        return <Button title="Đăng nhập" onPress={() => { navigation.navigate("login") }}/>
-    }
-    return( <Button title="Đăng xuất" onPress={logout}/> )
+    
+    return(
+        <View style={Styles.container}>
+            <Text style={Styles.title}> Bạn có chắc muốn ĐĂNG XUẤT ?</Text>
+            <Button title="Đăng xuất" onPress={logout}/> 
+        </View>
+    )
 }
 
 export default Logout;

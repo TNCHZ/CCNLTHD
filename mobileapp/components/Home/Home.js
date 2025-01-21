@@ -1,8 +1,11 @@
 import { View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
 import Styles from "../../components/Home/HomeStyle";
-import React from "react";
+import React, { useContext } from "react";
+import { MyAccountContext } from "../../configs/MyContext";
 
 const Home = ({navigation}) =>{
+    const [account] = useContext(MyAccountContext);
+
     return (
         <View style={Styles.container}>
             {/* Header */}
@@ -28,11 +31,13 @@ const Home = ({navigation}) =>{
             </ScrollView>
     
             {/* Footer Login */}
-            <View style={Styles.footer}>
-            <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate("login")}>
-                <Text style={Styles.buttonText}>Đăng nhập</Text>
-            </TouchableOpacity>
-            </View>
+            {account===null&&(
+                <View style={Styles.footer}>
+                <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate("login")}>
+                    <Text style={Styles.buttonText}>Đăng nhập</Text>
+                </TouchableOpacity>
+                </View>
+            )}
         </View>
     );
 }

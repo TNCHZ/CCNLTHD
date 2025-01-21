@@ -47,9 +47,11 @@ const App =() => {
           {/* Trang Login khi account = null */}
           {account === null ? (
             <Drawer.Screen name="login" component={Login} />
-          ) : null}
+          ) : (
+            <Drawer.Screen name='logout' component={Logout} options={{title: "Đăng Xuất"}}/>
+          )}
           
-          <Drawer.Screen name='logout' component={Logout} options={{title: "Đăng Xuất"}}/>
+          
 
           <Drawer.Screen name='userInterface' component={UserInterface} options={{title: 'Trang chủ', drawerItemStyle:{display: 'none'}}}/>
           <Drawer.Screen name='fee' component={Fee} options={{title: 'Chi Phí', drawerItemStyle:{display: 'none'}}}/>
