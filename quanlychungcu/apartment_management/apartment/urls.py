@@ -1,3 +1,5 @@
+from os.path import basename
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
@@ -14,6 +16,7 @@ router.register(r'feedback', views.FeedbackViewSet, basename='feedback')
 router.register(r'survey', views.SurveyViewSet, basename='survey')
 router.register(r'survey-resident', views.SurveyResidentViewSet, basename='survey-resident')
 router.register(r'administrator', views.AdminViewSet, basename='administrator')
+router.register(r'fee-value', views.FeeValueViewSet, basename='fee-value')
 
 
 urlpatterns = [

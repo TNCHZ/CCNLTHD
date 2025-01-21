@@ -34,7 +34,7 @@ class Resident(User):
     day_of_birth = models.DateField(null=False)
     address = models.TextField(null=False)
     phone = models.IntegerField(null=False, unique=True)
-    citizen_identification = models.IntegerField(null=False)
+    citizen_identification = models.CharField(max_length=12, null=False, blank=True)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='resident_set',
@@ -93,10 +93,11 @@ class ServiceFees(Fee):
 
 
 class Locker(BaseModel):
+    name = models.TextField(null = False)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
 
-class ItemsInLocker(BaseModel):
+class ItemsInLocker(models.Model):
     name = models.TextField(null=False)
     locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
 

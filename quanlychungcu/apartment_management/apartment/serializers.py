@@ -68,6 +68,7 @@ class FeeValueSerializer(serializers.ModelSerializer):
         model = FeeValue
         fields = '__all__'
 
+
 class ParkingForRelativeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingForRelatives

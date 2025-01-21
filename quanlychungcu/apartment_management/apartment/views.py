@@ -1,8 +1,10 @@
+from django.db.models.functions import Trunc
 from requests import Response
 from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action
 from .models import *
 from . import serializers, pagination
+
 
 
 #============================================|| Resident ||============================================#
@@ -40,14 +42,11 @@ class ResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return Response(serializers.ServiceFeeSerializer(service_fees, many=True, context = {'request': request}).data)
 
+
     @action(methods=['post'], detail=True, url_path='register-parking-relative')
     def register_parking_relative(self, request, pk=None):
-        """
-        Đăng ký giữ xe cho người thân
-        """
         resident = self.get_object()
 
-        # Lấy dữ liệu từ request
         data = request.data.copy()
         data['resident'] = resident.id
 
@@ -70,24 +69,7 @@ class ResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
     @action(methods=['get'],detail=True)
     def locker(self, request, pk):
         locker = self.get_object().locker_set.all()
-
         return Response(serializers.LockerSerializer(locker))
-
-# lấy danh sách các đồ trong tủ
-    @action(detail=True, methods=['get'], url_path='locker/(?P<locker_id>\d+)/items-in-locker')
-    def items_in_locker(self, request, pk, locker_id=None):
-        try:
-            # Lấy Resident từ pk
-            resident = self.get_object().filter(active=True)
-            # Lấy Locker theo locker_id và Resident
-            locker = Locker.objects.get(pk=locker_id, resident=resident)
-            # Lấy các Items trong Locker
-            items = ItemsInLocker.objects.filter(locker=locker)
-            # Serialize và trả về danh sách Items
-            return Response(serializers.ItemsInLockerSerializer(items, many=True, context = {'request': request}).data)
-
-        except Locker.DoesNotExist:
-            return Response({"error": "Locker not found."}, status=404)
 
 
 #============================================|| ManagingFees ||============================================#
@@ -152,26 +134,37 @@ class LockerViewSet(viewsets.ViewSet,generics.ListAPIView):
 
 
 
+class ParkingRelativeViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = ParkingForRelatives.objects.filter(active = True).all()
+    serializers_class = serializers.ParkingForRelativeSerializer
 
-class ItemsInLockerViewSet(viewsets.ModelViewSet):
+
+class ItemsInLockerViewSet(viewsets.ModelViewSet, generics.ListAPIView):
     queryset = ItemsInLocker.objects.all()
     serializer_class = serializers.ItemsInLockerSerializer
 
 
-class FeedbackViewSet(viewsets.ModelViewSet):
+class FeedbackViewSet(viewsets.ModelViewSet, generics.ListAPIView):
     queryset = Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
 
-class SurveyViewSet(viewsets.ModelViewSet):
+
+class SurveyViewSet(viewsets.ModelViewSet, generics.ListAPIView):
     queryset = Survey.objects.all()
     serializer_class = serializers.SurveySerializer
 
 
-class SurveyResidentViewSet(viewsets.ModelViewSet):
+class SurveyResidentViewSet(viewsets.ModelViewSet, generics.ListAPIView):
     queryset = SurveyResident.objects.all()
     serializer_class = serializers.SurveyResidentSerializer
 
 
-class AdminViewSet(viewsets.ModelViewSet):
+class AdminViewSet(viewsets.ModelViewSet, generics.ListAPIView):
     queryset = Admin.objects.all()
     serializer_class = serializers.AdminSerializer
+
+
+class FeeValueViewSet(viewsets.ModelViewSet, generics.ListAPIView):
+    queryset = FeeValue.objects.all()
+    serializer_class = serializers.FeeValueSerializer
+
