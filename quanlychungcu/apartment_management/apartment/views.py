@@ -168,3 +168,7 @@ class FeeValueViewSet(viewsets.ModelViewSet, generics.ListAPIView):
     queryset = FeeValue.objects.all()
     serializer_class = serializers.FeeValueSerializer
 
+
+class ParkingRelativesViewSet(viewsets.ModelViewSet, generics.ListAPIView):
+    queryset = ParkingForRelatives.objects.all()
+    serializer_class = serializers.ParkingForRelativeSerializer

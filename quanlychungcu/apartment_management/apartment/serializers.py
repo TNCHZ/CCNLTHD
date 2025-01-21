@@ -98,3 +98,4 @@ class SurveyResidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyResident
         fields = '__all__'
+

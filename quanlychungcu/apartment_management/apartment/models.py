@@ -61,10 +61,13 @@ class FeeValue(BaseModel):
     name = models.TextField(null=False)
     value = models.FloatField(null=False)
 
+    def __str__(self):
+        return self.name
+
 
 class Fee(BaseModel):
     name = models.TextField(null=False)
-    image = CloudinaryField('fee', null=True)
+    image = CloudinaryField('fee', null=True, blank = True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
     class Meta:
@@ -96,17 +99,23 @@ class Locker(BaseModel):
     name = models.TextField(null = False)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
 
 class ItemsInLocker(models.Model):
     name = models.TextField(null=False)
     locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
 
 class Feedback(BaseModel):
     title = models.TextField()
     content = RichTextField(null=False, blank=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
 
 class Survey(BaseModel):
     name = models.TextField()
@@ -117,9 +126,12 @@ class Survey(BaseModel):
         related_name='surveys',
         blank=True
     )
+    def __str__(self):
+        return self.name
 
 
 class SurveyResident(models.Model):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
     resident = models.ForeignKey('Resident', on_delete=models.CASCADE)
     response_content = RichTextField(null=False, blank=True)
+

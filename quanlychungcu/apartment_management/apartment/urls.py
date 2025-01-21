@@ -17,6 +17,8 @@ router.register(r'survey', views.SurveyViewSet, basename='survey')
 router.register(r'survey-resident', views.SurveyResidentViewSet, basename='survey-resident')
 router.register(r'administrator', views.AdminViewSet, basename='administrator')
 router.register(r'fee-value', views.FeeValueViewSet, basename='fee-value')
+router.register(r'parking-relative', views.ParkingRelativesViewSet, basename='parking-relative')
+
 
 
 urlpatterns = [
