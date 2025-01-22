@@ -34,7 +34,7 @@ class Resident(User):
     day_of_birth = models.DateField(null=False)
     address = models.TextField(null=False)
     phone = models.IntegerField(null=False, unique=True)
-    citizen_identification = models.IntegerField(null=False)
+    citizen_identification = models.CharField(max_length=12, null=False, blank=True)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='resident_set',
@@ -58,15 +58,17 @@ class BaseModel(models.Model):
 
 
 class FeeValue(BaseModel):
-    name = models.TextField(null = False)
+    name = models.TextField(null=False)
     value = models.FloatField(null=False)
+
+    def __str__(self):
+        return self.name
 
 
 class Fee(BaseModel):
-    name = models.TextField(null = False)
-    image = CloudinaryField('fee', null=True)
+    name = models.TextField(null=False)
+    image = CloudinaryField('fee', null=True, blank = True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
-    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -76,11 +78,11 @@ class Fee(BaseModel):
 
 
 class ManagingFees(Fee):
-    pass
+    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
 
 
 class ParkingFees(Fee):
-    pass
+    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
 
 
 class ParkingForRelatives(BaseModel):
@@ -90,23 +92,30 @@ class ParkingForRelatives(BaseModel):
 
 
 class ServiceFees(Fee):
-    pass
+    fee_value = models.FloatField(null=False, blank=True)
 
 
 class Locker(BaseModel):
+    name = models.TextField(null = False)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
 
-class ItemsInLocker(BaseModel):
-    name = models.TextField(null = False)
+class ItemsInLocker(models.Model):
+    name = models.TextField(null=False)
     locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
 
 class Feedback(BaseModel):
     title = models.TextField()
     content = RichTextField(null=False, blank=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
 
 class Survey(BaseModel):
     name = models.TextField()
@@ -117,10 +126,12 @@ class Survey(BaseModel):
         related_name='surveys',
         blank=True
     )
+    def __str__(self):
+        return self.name
+
 
 class SurveyResident(models.Model):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
     resident = models.ForeignKey('Resident', on_delete=models.CASCADE)
     response_content = RichTextField(null=False, blank=True)
-
 
