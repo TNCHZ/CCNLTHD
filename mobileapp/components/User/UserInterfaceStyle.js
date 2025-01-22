@@ -17,15 +17,15 @@ export default StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "#323232",
-        marginBottom: 15,
+        marginBottom: 10,
     },
     list: {
         marginTop: 10,
     },
     touchable: {
-        padding: 15, // Khoảng cách bên trong
+        padding: 10, // Khoảng cách bên trong
         backgroundColor: "#e0f7fa", // Màu nền nhấn mạnh
-        marginBottom: 10, // Khoảng cách giữa các mục
+        marginBottom: 8, // Khoảng cách giữa các mục
         borderRadius: 8, // Bo góc
     },
     text: {
@@ -33,5 +33,18 @@ export default StyleSheet.create({
         fontWeight: "500",
         color: "#00796b", // Màu chữ nổi bật
         textAlign: "center",
+    },
+    textView: {
+        width: 'auto',
+        height: 30,
+        borderColor: "#969696",
+        borderWidth: 2,
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        marginBottom: 15,
+        fontSize: 18,
+        textAlign:'center',
+        backgroundColor: "#c8c8c8",
+        elevation: 10,
     },
 });

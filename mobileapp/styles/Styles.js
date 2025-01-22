@@ -28,9 +28,10 @@ export default StyleSheet.create({
         marginBottom: 15,
         fontSize: 16,
         backgroundColor: "#fff",
+        elevation: 10,
     },
     button: {
-        width: '100%',
+        width: '80%',
         height: 50,
         backgroundColor: '#007bff',
         justifyContent: 'center',
@@ -56,5 +57,15 @@ export default StyleSheet.create({
         paddingHorizontal: 5, // Khoảng cách ngang trong chip
         paddingVertical: 2, // Khoảng cách dọc trong chip
         borderRadius: 20, // Bo góc
+    },
+    headerRight: {
+        backgroundColor: "#00bebe",
+        width: "auto",
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        marginRight: 10,
+        elevation: 10,
     },
 });
