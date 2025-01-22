@@ -6,20 +6,14 @@ from . import views
 
 
 router = DefaultRouter()
-router.register(r'resident', views.ResidentViewSet, basename='resident')
-router.register(r'managing-fees', views.ManagingFeesViewSet, basename='managing-fees')
-router.register(r'parking-fees', views.ParkingFeesViewSet, basename='parking-fees')
-router.register(r'service-fees', views.ServiceFeesViewSet, basename='service-fees')
-router.register(r'locker', views.LockerViewSet, basename='locker')
-router.register(r'items-in-locker', views.ItemsInLockerViewSet, basename='items-in-locker')
-router.register(r'feedback', views.FeedbackViewSet, basename='feedback')
-router.register(r'survey', views.SurveyViewSet, basename='survey')
-router.register(r'survey-resident', views.SurveyResidentViewSet, basename='survey-resident')
-router.register(r'administrator', views.AdminViewSet, basename='administrator')
-router.register(r'fee-value', views.FeeValueViewSet, basename='fee-value')
-router.register(r'parking-relative', views.ParkingRelativesViewSet, basename='parking-relative')
-
-
+router.register(r'resident-account', views.ResidentAccountViewSet, basename='resident-account')
+router.register(r'resident-information', views.ResidentInformationViewSet, basename='resident-information')
+router.register(r'resident-managing-fee', views.ResidentManagingFeeViewSet, basename='resident-managing-fee')
+router.register(r'resident-parking-fee', views.ResidentParkingFeeViewSet, basename='resident-parking-fee')
+router.register(r'resident-service-fee', views.ResidentServiceFeeViewSet, basename='resident-service-fee')
+router.register(r'resident-locker', views.ResidentLockerViewSet, basename='resident-locker')
+router.register(r'resident-survey', views.ResidentSurveyViewSet)
+router.register(r'resident-survey-response', views.ResidentSurveyResponseViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

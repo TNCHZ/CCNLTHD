@@ -1,101 +1,98 @@
 from rest_framework import serializers
 from .models import *
 
-
 #============================================|| Resident ||============================================#
-class ResidentSerializer(serializers.ModelSerializer):
-    avatar = serializers.SerializerMethodField(source='avatar')
+class ResidentAccountSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        data = validated_data.copy()
 
-    def get_image(self, resident):
-        if resident.avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % resident.avatar.name)
-            return '/static/%s' % resident.avatar.name
+        u = Resident(**data)
+        u.set_password(u.password)
+        u.save()
+
+        return u
 
     class Meta:
         model = Resident
-        fields = '__all__'
+        fields = ['id', 'username', 'avatar', 'password']
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            }
+        }
 
 
-#============================================|| ManagingFees ||============================================#
-class ManagingFeeSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField(source='image')
+class ResidentInformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resident
+        fields = ['id', 'first_name', 'last_name', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
 
-    def get_image(self, managing_fee):
-        if managing_fee.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri('/static/%s' % managing_fee.image.name)
-            return '/static/%s' % managing_fee.image.name
 
+
+class ResidentFeeValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeeValue
+        fields = ['id', 'name', 'value']
+
+
+class ResidentManagingFeeSerializer(serializers.ModelSerializer):
+    fee_value = ResidentFeeValueSerializer()
+    resident = ResidentInformationSerializer()
 
     class Meta:
         model = ManagingFees
-        fields = '__all__'
+        fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
 
+class ResidentParkingFeeSerializer(serializers.ModelSerializer):
+    fee_value = ResidentFeeValueSerializer()
+    resident = ResidentInformationSerializer()
 
-#============================================|| ParkingFees ||============================================#
-class ParkingFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingFees
-        fields = '__all__'
+        fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
 
 
-#============================================|| ServiceFees ||============================================#
-class ServiceFeeSerializer(serializers.ModelSerializer):
+class ResidentServiceFeeSerializer(serializers.ModelSerializer):
+    resident = ResidentInformationSerializer()
+
     class Meta:
-        model = ServiceFees
-        fields = '__all__'
+        model = ParkingFees
+        fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
 
 
-#============================================|| Locker ||============================================#
-class LockerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Locker
-        fields = '__all__'
-
-
-#============================================|| ItemsInLocker ||============================================#
-class ItemsInLockerSerializer(serializers.ModelSerializer):
+class ResidentItemsInLockerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemsInLocker
-        fields = '__all__'
+        fields = ['id', 'name', 'created_date']  # Bao gồm các trường bạn muốn hiển thị
 
 
-class FeeValueSerializer(serializers.ModelSerializer):
+class ResidentLockerSerializer(serializers.ModelSerializer):
+    items_in_locker = ResidentItemsInLockerSerializer(many=True, read_only=True, source='itemsinlocker_set')
+
     class Meta:
-        model = FeeValue
-        fields = '__all__'
+        model = Locker
+        fields = ['id', 'name', 'resident', 'items_in_locker']
 
 
-class ParkingForRelativeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ParkingForRelatives
-        fields = '__all__'
-
-
-
-class AdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Admin
-        fields = '__all__'
-
-
-class FeedbackSerializer(serializers.ModelSerializer):
+class ResidentFeedBackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = '__all__'
+        field = ['id', 'title', 'content', 'resident']
 
 
-class SurveySerializer(serializers.ModelSerializer):
+class ResidentSurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
-        fields = '__all__'
+        fields = ['id', 'name', 'content']
 
 
-class SurveyResidentSerializer(serializers.ModelSerializer):
+class ResidentSurveyResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyResident
-        fields = '__all__'
+        fields = ['id', 'survey', 'resident', 'response_content', 'created_date']
 
+    def create(self, validated_data):
+        survey_data = validated_data.pop('survey')
+        survey, _ = Survey.objects.get_or_create(**survey_data)
+        return SurveyResident.objects.create(survey=survey, **validated_data)
+#============================================|| Admin ||============================================#

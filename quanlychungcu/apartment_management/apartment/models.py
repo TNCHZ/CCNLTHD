@@ -68,8 +68,13 @@ class FeeValue(BaseModel):
 class Fee(BaseModel):
     name = models.TextField(null=False)
     image = CloudinaryField('fee', null=True, blank = True)
+    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
-
+    STATUS_CHOICES = [
+        (True, 'Đã thanh toán'),
+        (False, 'Chưa thanh toán'),
+    ]
+    status = models.BooleanField(choices=STATUS_CHOICES, default=False)
     class Meta:
         abstract = True
 
@@ -97,12 +102,18 @@ class ServiceFees(Fee):
 
 class Locker(BaseModel):
     name = models.TextField(null = False)
+    STATUS_CHOICES = [
+        (True, 'Không có đồ cần lấy'),
+        (False, 'Có đồ cần lấy'),
+    ]
+    status = models.BooleanField(choices=STATUS_CHOICES, default=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
-class ItemsInLocker(models.Model):
+
+class ItemsInLocker(BaseModel):
     name = models.TextField(null=False)
     locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
 
@@ -116,6 +127,7 @@ class Feedback(BaseModel):
 
     def __str__(self):
         return self.title
+
 
 class Survey(BaseModel):
     name = models.TextField()
@@ -134,4 +146,7 @@ class SurveyResident(models.Model):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
     resident = models.ForeignKey('Resident', on_delete=models.CASCADE)
     response_content = RichTextField(null=False, blank=True)
+
+    class Meta:
+        unique_together = ['survey', 'resident']
 
