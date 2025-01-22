@@ -100,24 +100,22 @@ const Fee = ({navigation}) => {
 
     return (
         <View style={FeeStyles.container}>
-            <Text style={Styles.title}>Số Phòng: ___ </Text>
-            <Text style={Styles.title}>DANH SÁCH CHI PHÍ</Text>
             <View style={Styles.row}>
-                <TouchableOpacity onPress={() => navigation.navigate("managingFees")}>
-                    <Chip icon="clipboard-text">Phí Quản Lí</Chip>
+                <TouchableOpacity style={Styles.touchable} onPress={() => navigation.navigate("managingFees")}>
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Quản Lí</Chip>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("parkingFees")}>
-                    <Chip icon="clipboard-text">Phí Đỗ Xe</Chip> 
+                <TouchableOpacity style={Styles.touchable} onPress={() => navigation.navigate("parkingFees")}>
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Đỗ Xe</Chip> 
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("serviceFees")}>
-                    <Chip icon="clipboard-text">Phí Dịch Vụ</Chip> 
+                <TouchableOpacity style={Styles.touchable} onPress={() => navigation.navigate("serviceFees")}>
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Dịch Vụ</Chip> 
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("fee")}>
-                    <Chip icon="label-outline">Tất cả</Chip> 
+                <TouchableOpacity style={Styles.touchable} onPress={() => navigation.navigate("fee")}>
+                    <Chip style={Styles.chip} icon="label-outline">Tất cả chi phí</Chip> 
                 </TouchableOpacity>
             </View>
             
-            <Searchbar style={{marginVertical: 10}} placeholder="Tìm kiếm ..." value={q} onChange={t => search(t, setQ)}/>
+            <Searchbar style={{marginVertical: 2}} placeholder="Tìm kiếm ..." value={q} onChange={t => search(t, setQ)}/>
             {loading && <ActivityIndicator />}
 
             <Text style={Styles.text}>Danh sách Phí Quản Lý</Text>

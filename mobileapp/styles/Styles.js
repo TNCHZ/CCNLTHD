@@ -10,8 +10,8 @@ export default StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
-        color: '#333',
+        marginBottom: 10,
+        color: '#000000',
     },
     text: {
         fontSize: 20,
@@ -19,17 +19,19 @@ export default StyleSheet.create({
         color: "blue",
     },
     input: {
-        width: '100%',
+        width: "100%",
         height: 50,
-        borderColor: '#ccc',
+        borderColor: "#ccc",
         borderWidth: 1,
-        borderRadius: 10,
-        paddingLeft: 15,
+        borderRadius: 8,
+        paddingHorizontal: 15,
         marginBottom: 15,
-        backgroundColor: '#fff',
+        fontSize: 16,
+        backgroundColor: "#fff",
+        elevation: 10,
     },
     button: {
-        width: '100%',
+        width: '80%',
         height: 50,
         backgroundColor: '#007bff',
         justifyContent: 'center',
@@ -40,5 +42,30 @@ export default StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-    }
+    },
+    row: {
+        flexDirection: "row",
+        flexWrap: "wrap", // Để các mục xuống dòng nếu không đủ chỗ
+        justifyContent: "space-between", // Khoảng cách đều giữa các mục
+        padding: 10, // Padding cho View chính
+    },
+    touchable: {
+        marginVertical: 5, // Khoảng cách dọc giữa các nút
+    },
+    chip: {
+        backgroundColor: "#64c8ff", // Màu nền của chip
+        paddingHorizontal: 5, // Khoảng cách ngang trong chip
+        paddingVertical: 2, // Khoảng cách dọc trong chip
+        borderRadius: 20, // Bo góc
+    },
+    headerRight: {
+        backgroundColor: "#00bebe",
+        width: "auto",
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        marginRight: 10,
+        elevation: 10,
+    },
 });
