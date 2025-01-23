@@ -61,7 +61,7 @@ const Login = ({navigation}) => {
                         "password": account.password
                     }
                 });
-                navigation.navigate("userInterface");
+                navigation.navigate("home");
             } else {
                 // Thông báo lỗi nếu tài khoản không hợp lệ
                 Alert.alert("Đăng nhập thất bại", "Tên đăng nhập hoặc mật khẩu không đúng.");

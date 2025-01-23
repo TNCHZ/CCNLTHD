@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
 
 
-const Fee = ({navigation, route}) => {
+const Fee = ({navigation}) => {
     const [managingFees, setManagingFees] = useState([]);
     const [parkingFees, setParkingFees] = useState([]);
     const [serviceFees, setServiceFees] = useState([]);
