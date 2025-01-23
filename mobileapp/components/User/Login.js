@@ -33,8 +33,8 @@ const Login = ({navigation}) => {
 // const res = await APIs.post(endpoints['login'], {
 //     'username': username,
 //     'password': password,
-//     'client_id': "",
-//     'client_secret': "",
+//     'client_id': "7mxk1Nj7dhNt7a4ylmiHFRWnwIYlyh5jahcqbEjKn",
+//     'client_secret': "pbkdf2_sha256$870000$Nmvk3Nrf121JViCHczos1d$hNaMJlJNlcEvRMfZXK3TAAYwXAEM6utGo49NsO6r34A=",
 //     "grant_type": "password"
 // });
 

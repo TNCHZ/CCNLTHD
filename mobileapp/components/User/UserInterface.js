@@ -10,15 +10,6 @@ const UserInterface = ({navigation}) => {
             <Text style={UserInterfaceStyle.title}>Số Căn Hộ: A-{roomNumber} </Text>
             <Text style={UserInterfaceStyle.subtitle}>DANH SÁCH CHI PHÍ</Text>
             <View style={UserInterfaceStyle.list}>
-                <TouchableOpacity style={UserInterfaceStyle.touchable} onPress={() => navigation.navigate("managingFees")}>
-                    <Text style={UserInterfaceStyle.text}>Phí Quản Lí</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={UserInterfaceStyle.touchable} onPress={() => navigation.navigate("parkingFees")}>
-                    <Text style={UserInterfaceStyle.text}>Phí Đỗ Xe</Text> 
-                </TouchableOpacity>
-                <TouchableOpacity style={UserInterfaceStyle.touchable} onPress={() => navigation.navigate("serviceFees")}>
-                    <Text style={UserInterfaceStyle.text}>Phí Dịch Vụ</Text> 
-                </TouchableOpacity>
                 <TouchableOpacity style={UserInterfaceStyle.touchable} onPress={() => navigation.navigate("fee")}>
                     <Text style={UserInterfaceStyle.text}>Tất Cả Chi Phí</Text> 
                 </TouchableOpacity>

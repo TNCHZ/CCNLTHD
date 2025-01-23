@@ -9,10 +9,10 @@ import MyAccountReducer from './configs/MyAccountReducer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Login from './components/User/Login';
-import ManagingFees from './components/Fee/ManagingFees';
+import ManagingFee_Detail from './components/Fee/ManagingFee_Detail';
 import Fee from './components/Fee/Fees';
-import ParkingFees from './components/Fee/ParkingFees';
-import ServiceFees from './components/Fee/ServiceFees';
+import ParkingFee_Detail from './components/Fee/ParkingFee_Detail';
+import ServiceFee_Detail from './components/Fee/ServiceFee_Detail';
 import Logout from './components/User/Logout';
 import { MyAccountContext } from './configs/MyContext';
 import { TouchableOpacity , Text, Alert, View } from 'react-native';
@@ -56,9 +56,9 @@ const App =() => {
             <Drawer.Screen name="login" component={Login} options={{title:"Đăng Nhập"}}/>
           </> : <>
             <Drawer.Screen name='fee' component={Fee} options={{title: 'Chi Phí'}}/>
-            <Drawer.Screen name='managingFees' component={ManagingFees} options={{title: 'Phí Quản Lý', drawerItemStyle:{display: 'none'}}}/>
-            <Drawer.Screen name='parkingFees' component={ParkingFees} options={{title: 'Phí Đỗ Xe', drawerItemStyle:{display: 'none'}}}/>
-            <Drawer.Screen name='serviceFees' component={ServiceFees} options={{title: 'Phí Dịch Vụ', drawerItemStyle:{display: 'none'}}}/>
+            <Drawer.Screen name='managingFeeDetail' component={ManagingFee_Detail} options={{title: 'Phí Quản Lý', drawerItemStyle:{display: 'none'}}}/>
+            <Drawer.Screen name='parkingFeeDetail' component={ParkingFee_Detail} options={{title: 'Phí Đỗ Xe', drawerItemStyle:{display: 'none'}}}/>
+            <Drawer.Screen name='serviceFeeDetail' component={ServiceFee_Detail} options={{title: 'Phí Dịch Vụ', drawerItemStyle:{display: 'none'}}}/>
             <Drawer.Screen name='profile' component={Profile} options={{title:"Trang cá nhân"}} />
             <Drawer.Screen name='logout' component={Logout} options={{title: "Đăng Xuất"}}/>
           </>}
