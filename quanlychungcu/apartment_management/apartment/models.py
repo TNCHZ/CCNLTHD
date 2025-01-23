@@ -35,6 +35,7 @@ class Resident(User):
     address = models.TextField(null=False)
     phone = models.IntegerField(null=False, unique=True)
     citizen_identification = models.CharField(max_length=12, null=False, blank=True)
+    change_password_image = models.BooleanField(default=False)
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='resident_set',
@@ -142,7 +143,7 @@ class Survey(BaseModel):
         return self.name
 
 
-class SurveyResident(models.Model):
+class SurveyResident(BaseModel):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
     resident = models.ForeignKey('Resident', on_delete=models.CASCADE)
     response_content = RichTextField(null=False, blank=True)

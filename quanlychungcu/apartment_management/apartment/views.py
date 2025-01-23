@@ -1,10 +1,10 @@
 from django.contrib.admindocs.utils import get_view_name
 from django.db.models.functions import Trunc
 from requests import Response
-from rest_framework import viewsets, generics, status
-from rest_framework.decorators import action
+from rest_framework import viewsets, generics, status, permissions
+from rest_framework.decorators import action, permission_classes
 from .models import *
-from . import serializers, pagination
+from . import serializers
 
 
 
@@ -57,8 +57,9 @@ class ResidentManagingFeeViewSet(viewsets.ModelViewSet, generics.ListAPIView):
 
 
 class ResidentParkingFeeViewSet(viewsets.ModelViewSet, generics.ListAPIView):
-    queryset = ParkingFees.objects.all()
+    queryset = ParkingFees.objects.filter(active = True).order_by('id')
     serializer_class = serializers.ResidentParkingFeeSerializer
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         queries = self.queryset
