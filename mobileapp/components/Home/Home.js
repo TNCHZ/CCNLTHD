@@ -5,6 +5,8 @@ import { MyAccountContext } from "../../configs/MyContext";
 
 const Home = ({navigation}) =>{
     const [account] = useContext(MyAccountContext);
+    const roomNumber = "0000";
+    const locker = "Không có đồ";
 
     return (
         <View style={Styles.container}>
@@ -31,13 +33,17 @@ const Home = ({navigation}) =>{
             </ScrollView>
     
             {/* Footer Login */}
-            {account===null&&(
-                <View style={Styles.footer}>
-                <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate("login")}>
-                    <Text style={Styles.buttonText}>Đăng nhập</Text>
-                </TouchableOpacity>
-                </View>
-            )}
+            
+            <View style={Styles.footer}>
+                {account===null?<>
+                    <TouchableOpacity style={Styles.button} onPress={() => navigation.navigate("login")}>
+                        <Text style={Styles.buttonText}>Đăng nhập</Text>
+                    </TouchableOpacity>
+                </>:<>
+                    <Text style={Styles.title}>Số Căn Hộ: Apartment-{roomNumber}</Text>
+                </>}
+            </View>
+            
         </View>
     );
 }
