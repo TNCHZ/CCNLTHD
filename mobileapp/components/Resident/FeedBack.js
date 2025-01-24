@@ -7,14 +7,7 @@ const FeedBack = ({navigation}) => {
 
     const thanks = () => {
         try {
-            Alert.alert(
-                "FeedBack",
-                "Cảm ơn bạn đã đóng góp ý kiển để cải thiện chất lượng của JpHome !",
-                [
-                    { text: "Ở lại trang Góp Ý", style: "cancel" },
-                    { text: "Trở về trang chủ", onPress: () => navigation.navigate("home") }
-                ]
-            );
+            Alert.alert("FeedBack","Cảm ơn bạn đã đóng góp ý kiển để cải thiện chất lượng của JpHome !",);
             setFeedback("");
             console.info("Gửi FeedBack thành công");
         } catch (error) {

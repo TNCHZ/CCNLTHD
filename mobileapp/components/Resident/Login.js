@@ -30,44 +30,46 @@ const Login = ({navigation}) => {
         setAccount({...account, [field]:value});
     }
 
-// const res = await APIs.post(endpoints['login'], {
-//     'username': username,
-//     'password': password,
-//     'client_id': "7mxk1Nj7dhNt7a4ylmiHFRWnwIYlyh5jahcqbEjKn",
-//     'client_secret': "pbkdf2_sha256$870000$Nmvk3Nrf121JViCHczos1d$hNaMJlJNlcEvRMfZXK3TAAYwXAEM6utGo49NsO6r34A=",
-//     "grant_type": "password"
-// });
+    
 
-// console.info(res.data)
-// setTimeout(async () => {
-//     let account = await authApis(res.data.access_token).get(endpoints['current-user']); // trả ra cục dữ liệu của user
-//     console.info(account.data);
-//     dispatch({"type": "login", 
-//         "payload": account.data
-//     });
-// }, 500);
+
 
 
     const login = async () => {
         try {
             setLoading(true);
-            //note
-            console.log("Thông tin tài khoản:", account);
+            console.log("Endpoint login:", endpoints['login']);
+            const res = await APIs.post(endpoints['login'], {
+                'username': account.username,
+                'password': account.password,
+                'client_id': "7mxk1Nj7dhNt7a4ylmiHFRWnwIYlyh5jahcqbEjKn",
+                'client_secret': "pbkdf2_sha256$870000$Nmvk3Nrf121JViCHczos1d$hNaMJlJNlcEvRMfZXK3TAAYwXAEM6utGo49NsO6r34A=",
+                "grant_type": "password"
+            });
 
-            if (account.username==="admin" && account.password==="123"){
-                dispatch({"type": "login", 
-                    "payload": {
-                        "username": account.username,
-                        "password": account.password
-                    }
-                });
-                navigation.navigate("home");
-            } else {
-                // Thông báo lỗi nếu tài khoản không hợp lệ
-                Alert.alert("Đăng nhập thất bại", "Tên đăng nhập hoặc mật khẩu không đúng.");
-            }
+            console.info(res.data)
+            
+            console.log("Thông tin tài khoản:", account);
+                setTimeout(async () => {
+                    let account = await authApis(res.data.access_token).get(endpoints['current-user']); // trả ra cục dữ liệu của user
+                    console.info(account.data);
+                    dispatch({"type": "login", 
+                        "payload": {
+                            "username": account.username,
+                            "password": account.password
+                        }
+                    });
+                }, { timeout: 10000 });
+            navigation.navigate("home");
         } catch(ex){
             console.error("Lỗi đăng nhập:", ex);
+            if (ex.response) {
+                console.error("Response error:", ex.response.status, ex.response.data);
+            } else if (ex.request) {
+                console.error("No response received:", ex.request);
+            } else {
+                console.error("Error message:", ex.message);
+            }
             Alert.alert("Lỗi", "Đã xảy ra lỗi trong quá trình đăng nhập.");
         } finally{
             setLoading(false);
