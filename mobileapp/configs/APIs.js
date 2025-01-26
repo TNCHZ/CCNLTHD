@@ -18,7 +18,7 @@ export const authApis = (token) =>  {
             'Authorization': `Bearer ${token}`
         }
     })
-}
+};
 
 export default axios.create({
     baseURL: BASE_URL

@@ -13,6 +13,13 @@ export default StyleSheet.create({
         marginBottom: 10,
         color: '#000000',
     },
+    subtitle: {
+        fontSize: 22,
+        fontWeight: "500",
+        color: "#555",
+        textAlign: "center",
+        marginBottom: 5,
+      },
     text: {
         fontSize: 20,
         fontweight: "boid",

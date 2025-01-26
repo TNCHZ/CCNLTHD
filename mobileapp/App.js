@@ -19,7 +19,11 @@ import ServiceFee_Detail from './components/Fee/ServiceFee_Detail';
 import Profile from './components/Resident/Profile';
 import FeedBack from './components/Resident/FeedBack';
 import Checkin from './components/Resident/Checkin';
-import Parking from './components/Resident/Parking';
+import Delete_Resident from './components/Admin/Delete_Resident';
+import Create_Fee from './components/Admin/Create_Fee';
+import Create_Resident from './components/Admin/Create_Resident';
+import Create_Survey from './components/Admin/Create_Survey';
+import RegisterParking from './components/Resident/RegisterParking';
 
 
 
@@ -63,13 +67,19 @@ const App =() => {
             <Drawer.Screen name='parkingFeeDetail' component={ParkingFee_Detail} options={{title: 'Phí Đỗ Xe', drawerItemStyle:{display: 'none'}}}/>
             <Drawer.Screen name='serviceFeeDetail' component={ServiceFee_Detail} options={{title: 'Phí Dịch Vụ', drawerItemStyle:{display: 'none'}}}/>
             
+            {/* Hiện tương tác của ADMIN */}
+            <Drawer.Screen name='createResident' component={Create_Resident} options={{title:'Cấp Tài Khoản'}}/>
+            <Drawer.Screen name='deleteResident' component={Delete_Resident} options={{title:'Xóa Tài Khoản'}}/>
+            <Drawer.Screen name='createFee' component={Create_Fee} options={{title: 'Quản Lý Chi Phí'}}/>
+            <Drawer.Screen name='createSurvey'component={Create_Survey} options={{title: 'Quản Lý Khảo Sát'}}/>
 
-            {/* Hiện để tương tác */}
+            {/* Hiện để tương tác của RESIDENT */}
             <Drawer.Screen name='fee' component={Fee} options={{title: 'Các Khoản Chi Phí'}}/>
             <Drawer.Screen name='locker' component={Locker} options={{title: 'Tủ Đồ Cá Nhân'}}/>
-            <Drawer.Screen name='parking' component={Parking} options={{title: 'Đăng Ký Đậu Xe'}}/>
+            <Drawer.Screen name='registerParking' component={RegisterParking} options={{title: 'Đăng Ký Đậu Xe'}}/>
             <Drawer.Screen name='checkin' component={Checkin} options={{title: 'Đăng Ký Ra/Vào Chung Cư'}}/>
             <Drawer.Screen name='feedBack' component={FeedBack} options={{title: 'Góp ý'}}/>
+            
             <Drawer.Screen name='logout' component={Logout} options={{title: "Đăng Xuất"}}/>
           </>}
           
