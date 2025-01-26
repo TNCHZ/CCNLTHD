@@ -84,6 +84,7 @@ const Create_Fee = () => {
                 <TextInput style={[Styles.input, {width: "60%"}]} placeholder="Nhập Số Căn Hộ (0000)"/>
             </View>
             <Button title="Lưu"/>
+            
         </View>
     );
 }
