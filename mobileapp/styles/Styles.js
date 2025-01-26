@@ -21,7 +21,7 @@ export default StyleSheet.create({
         marginBottom: 5,
       },
     text: {
-        fontSize: 20,
+        fontSize: 18,
         fontweight: "boid",
         color: "blue",
     },
