@@ -90,13 +90,68 @@ class ResidentParkingFeeSerializer(serializers.ModelSerializer):
         model = ParkingFees
         fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
 
+    def create(self, validated_data):
+        resident = validated_data.pop('resident')  # Đây sẽ là ID của resident
+        fee_value = validated_data.pop('fee_value')  # Đây sẽ là ID của fee_value
+
+        managing_fee = ManagingFees.objects.create(
+            resident=resident,
+            fee_value=fee_value,
+            **validated_data
+        )
+
+        return managing_fee
+
+    def update(self, instance, validated_data):
+        resident = validated_data.pop('resident', None)
+        fee_value = validated_data.pop('fee_value', None)
+
+        if resident:
+            instance.resident = resident
+        if fee_value:
+            instance.fee_value = fee_value
+
+        instance.status = validated_data.get('status', instance.status)
+        instance.image = validated_data.get('image', instance.image)
+
+        instance.save()
+        return instance
+
 
 class ResidentServiceFeeSerializer(serializers.ModelSerializer):
+    fee_value = ResidentFeeValueSerializer()
     resident = ResidentInformationSerializer()
 
     class Meta:
         model = ParkingFees
         fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
+
+    def create(self, validated_data):
+        resident = validated_data.pop('resident')  # Đây sẽ là ID của resident
+        fee_value = validated_data.pop('fee_value')  # Đây sẽ là ID của fee_value
+
+        managing_fee = ManagingFees.objects.create(
+            resident=resident,
+            fee_value=fee_value,
+            **validated_data
+        )
+
+        return managing_fee
+
+    def update(self, instance, validated_data):
+        resident = validated_data.pop('resident', None)
+        fee_value = validated_data.pop('fee_value', None)
+
+        if resident:
+            instance.resident = resident
+        if fee_value:
+            instance.fee_value = fee_value
+
+        instance.status = validated_data.get('status', instance.status)
+        instance.image = validated_data.get('image', instance.image)
+
+        instance.save()
+        return instance
 
 
 class ResidentItemsInLockerSerializer(serializers.ModelSerializer):
