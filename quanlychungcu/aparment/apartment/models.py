@@ -1,3 +1,5 @@
+from dataclasses import fields
+
 from cloudinary.provisioning import users
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from ckeditor.fields import RichTextField
@@ -23,7 +25,6 @@ class Role(Enum):
     @classmethod
     def choices(cls):
         return [(role.value, role.name.capitalize()) for role in cls]
-
 
 class User(AbstractUser):
     avatar = CloudinaryField('avatar', null=True, blank=True)
@@ -57,13 +58,21 @@ class Admin(BaseModel):
     def __str__(self, user=None):
         return self.user.username
 
+
+class Address(BaseModel):
+    name = models.TextField(null=False)
+
+    def __str__(self):
+        return self.name
+
+
 class Resident(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     gender = models.BooleanField(choices=[(True, 'Male'), (False, 'Female')], default=True)
     day_of_birth = models.DateField(null=False)
-    address = models.TextField(null=False)
-    phone = models.IntegerField(null=False, unique=True)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=10, null=False, unique=True)
     citizen_identification = models.CharField(max_length=12, null=False, blank=True)
     change_password_image = models.BooleanField(default=False)
 
@@ -80,17 +89,45 @@ class FeeValue(BaseModel):
     def __str__(self):
         return self.name
 
+class Month(models.Model):
+    MONTH_CHOICES = [
+        ('Tháng 1', 'Tháng 1'),
+        ('Tháng 2', 'Tháng 2'),
+        ('Tháng 3', 'Tháng 3'),
+        ('Tháng 4', 'Tháng 4'),
+        ('Tháng 5', 'Tháng 5'),
+        ('Tháng 6', 'Tháng 6'),
+        ('Tháng 7', 'Tháng 7'),
+        ('Tháng 8', 'Tháng 8'),
+        ('Tháng 9', 'Tháng 9'),
+        ('Tháng 10', 'Tháng 10'),
+        ('Tháng 11', 'Tháng 11'),
+        ('Tháng 12', 'Tháng 12'),
+    ]
+
+    name = models.CharField(max_length=20, choices=MONTH_CHOICES)  # Chỉ cho phép giá trị từ 12 tháng
+    year = models.PositiveIntegerField()  # Năm linh động
+
+    class Meta:
+        unique_together = ['name', 'year']  # Một tháng của một năm chỉ xuất hiện một lần
+        ordering = ['year', 'name']
+
+    def __str__(self):
+        return f"{self.name} {self.year}"
+
 
 class Fee(BaseModel):
     name = models.TextField(null=False)
     image = CloudinaryField('fee', null=True, blank = True)
     fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
+    month = models.ForeignKey(Month, on_delete=models.CASCADE)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         (True, 'Đã thanh toán'),
         (False, 'Chưa thanh toán'),
     ]
     status = models.BooleanField(choices=STATUS_CHOICES, default=False)
+
     class Meta:
         abstract = True
 
@@ -99,16 +136,16 @@ class Fee(BaseModel):
 
 
 class ManagingFees(Fee):
-    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
+    pass
 
 
 class ParkingFees(Fee):
-    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
+    pass
 
 
 class ParkingForRelatives(BaseModel):
     name_relative = models.TextField(null=False)
-    phone_relative = models.IntegerField(null=False, unique=True)
+    phone_relative = models.CharField(max_length=10, null=False, unique=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -116,7 +153,7 @@ class ParkingForRelatives(BaseModel):
 
 
 class ServiceFees(Fee):
-    fee_value = models.FloatField(null=False, blank=True)
+    pass
 
 
 class Locker(BaseModel):
@@ -126,10 +163,16 @@ class Locker(BaseModel):
         (False, 'Có đồ cần lấy'),
     ]
     status = models.BooleanField(choices=STATUS_CHOICES, default=True)
-    resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
+    resident = models.OneToOneField(
+        Resident,  # Đảm bảo quan hệ một-một
+        on_delete=models.CASCADE,
+        related_name='locker',  # Tên truy cập ngược từ Resident
+    )
 
     def __str__(self):
         return self.name
+
+
 
 
 class ItemsInLocker(BaseModel):

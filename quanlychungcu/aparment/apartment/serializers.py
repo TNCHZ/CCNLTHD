@@ -31,6 +31,12 @@ class ResidentInformationSerializer(serializers.ModelSerializer):
         fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
 
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        field = ['id', 'name']
+
+
 class ResidentFeeValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeeValue
@@ -38,12 +44,37 @@ class ResidentFeeValueSerializer(serializers.ModelSerializer):
 
 
 class ResidentManagingFeeSerializer(serializers.ModelSerializer):
-    fee_value = ResidentFeeValueSerializer()
-    resident = ResidentInformationSerializer()
 
     class Meta:
         model = ManagingFees
         fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
+
+    def create(self, validated_data):
+        resident = validated_data.pop('resident')  # Đây sẽ là ID của resident
+        fee_value = validated_data.pop('fee_value')  # Đây sẽ là ID của fee_value
+
+        managing_fee = ManagingFees.objects.create(
+            resident=resident,
+            fee_value=fee_value,
+            **validated_data
+        )
+
+        return managing_fee
+
+    def update(self, instance, validated_data):
+        resident = validated_data.pop('resident', None)
+        fee_value = validated_data.pop('fee_value', None)
+
+        if resident:
+            instance.resident = resident
+        if fee_value:
+            instance.fee_value = fee_value
+
+        instance.status = validated_data.get('status', instance.status)
+        instance.image = validated_data.get('image', instance.image)
+
+        instance.save()
+        return instance
 
 
 class ResidentParkingFeeSerializer(serializers.ModelSerializer):
@@ -90,6 +121,8 @@ class ResidentSurveySerializer(serializers.ModelSerializer):
 
 
 class ResidentSurveyResponseSerializer(serializers.ModelSerializer):
+    survey = ResidentSurveySerializer()
+
     class Meta:
         model = SurveyResident
         fields = ['id', 'survey', 'resident', 'response_content', 'created_date']
