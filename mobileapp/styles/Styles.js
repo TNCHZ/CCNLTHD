@@ -75,4 +75,15 @@ export default StyleSheet.create({
         marginRight: 10,
         elevation: 10,
     },
+    dateText: {
+        height: 50,
+        lineHeight: 50,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        marginBottom: 15,
+        backgroundColor: '#fff',
+        color: '#555',
+    },
 });
