@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import Permission
 
 from . import models
 
@@ -34,4 +35,4 @@ admin.site.register(models.FeeValue)
 admin.site.register(models.ParkingForRelatives)
 admin.site.register(models.ItemsInLocker)
 admin.site.register(models.Locker)
-
+admin.site.register(models.Address)
