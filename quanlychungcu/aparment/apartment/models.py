@@ -1,4 +1,5 @@
 from dataclasses import fields
+from datetime import datetime
 
 from cloudinary.provisioning import users
 from django.contrib.auth.models import AbstractUser, Group, Permission
@@ -73,7 +74,7 @@ class Resident(BaseModel):
     day_of_birth = models.DateField(null=False)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     phone = models.CharField(max_length=10, null=False, unique=True)
-    citizen_identification = models.CharField(max_length=12, null=False, blank=True)
+    citizen_identification = models.CharField(max_length=12, null=False, unique=True)
     change_password_image = models.BooleanField(default=False)
 
     class Meta:
@@ -106,7 +107,7 @@ class Month(models.Model):
     ]
 
     name = models.CharField(max_length=20, choices=MONTH_CHOICES)  # Chỉ cho phép giá trị từ 12 tháng
-    year = models.PositiveIntegerField()  # Năm linh động
+    year = models.PositiveIntegerField(default=datetime.now().year)
 
     class Meta:
         unique_together = ['name', 'year']  # Một tháng của một năm chỉ xuất hiện một lần
@@ -130,6 +131,8 @@ class Fee(BaseModel):
 
     class Meta:
         abstract = True
+        unique_together = ['resident', 'month']  # Ràng buộc duy nhất giữa cư dân và tháng
+
 
     def __str__(self):
         return self.name
