@@ -1,54 +1,85 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker';
 import Styles from '../../styles/Styles';
 
 const Create_Resident = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [date, setDate] = useState(new Date());
+    const [form, setForm] = useState({
+        'fullName': '',
+        'gender': true,
+        'dayOfBirth': date,
+        'address': '',
+        'phone': '',
+        'citizenId': '',
+        'password': '1',
+        'changePasswordImage': false,
+    });
 
-    const register = () => {
-        if (!username || !email || !password || !confirmPassword) {
-            Alert.alert('Lỗi', 'Vui lòng điền đầy đủ thông tin.');
+    const showDatePicker = () => {
+        DateTimePickerAndroid.open({
+            value: date,
+            mode: 'date',
+            is24Hour: true,
+            onChange: (event, selectedDate) => {
+                if (selectedDate) {
+                    update('dayOfBirth', selectedDate);
+                    setDate(selectedDate); // Cập nhật ngày khi người dùng chọn
+                }
+            },
+        });
+    };
+
+    const update = (field, value) => {
+        setForm({ ...form, [field]: value });
+    };
+
+    const submit = () => {
+        const { fullName, address, phone, citizenId } = form;
+
+        if (!fullName || !address || !phone || !citizenId) {
+            Alert.alert('Cảnh Báo', 'Vui lòng điền đầy đủ thông tin !');
             return;
         }
-        if (password !== confirmPassword) {
-            Alert.alert('Lỗi', 'Mật khẩu và xác nhận mật khẩu không khớp.');
-            return;
-        }
-        
-        // Giả sử quá trình đăng ký thành công
-        Alert.alert('Thông báo', 'Đăng ký thành công!');
+        // Chỗ xử lý
+        Alert.alert('Đăng ký thành công', 'Tài khoản đã được lưu !');
     };
 
     return (
-        <View style={Styles.container}>
-            <Text style={Styles.title}>Đăng ký tài khoản</Text>
-            <View style={Styles.row}>
-                <Text>Tên người dùng</Text>
-                <TextInput style={Styles.input} placeholder="Nhập tên người dùng" value={username} onChangeText={setUsername}/>
-            </View>
+        <ScrollView style={{flex: 1, padding: 20, backgroundColor: '#f8f9fa',}}>
+        <Text style={Styles.title}>ĐĂNG KÝ TÀI KHOẢN</Text>
 
-            <View style={Styles.row}>
-                <Text>Email</Text>
-                <TextInput style={Styles.input} placeholder="Nhập email của bạn" value={email} onChangeText={setEmail} />
-            </View>
+        <TextInput style={Styles.input} placeholder="Họ và Tên"
+            value={form.fullName}  onChangeText={(value) => update('fullName', value)} />
 
-            <View style={Styles.row}>
-                <Text>Mật khẩu</Text>
-                <TextInput style={Styles.input} placeholder="Nhập mật khẩu" secureTextEntry value={password} onChangeText={setPassword} />
-            </View>
+        <Picker selectedValue={form.gender}
+            style={Styles.input} onValueChange={(value) => update('gender', value)} >
+            <Picker.Item label="Nam" value={true}/>
+            <Picker.Item label="Nữ" value={false}/>
+        </Picker>
 
-            <View style={Styles.row}>
-                <Text>Xác nhận mật khẩu</Text>
-                <TextInput style={Styles.input} placeholder="Xác nhận mật khẩu" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
-            </View>
-
-            <TouchableOpacity style={Styles.button} >
-                <Text style={Styles.buttonText}>Đăng Ký</Text>
+        <View style={Styles.row}>
+            <Text style={Styles.subtitle}>Ngày sinh:</Text>
+            <TouchableOpacity style={{ width: "60%", backgroundColor: "#ffffff" , padding: 10, borderWidth: 1, marginBottom: 10 }} onPress={showDatePicker}>
+                <Text style={{justifyContent:"center"}}>{date.toLocaleDateString("vi-VN")}</Text>
+                <Text>{form.dayOfBirth.toDateString()}</Text>
             </TouchableOpacity>
         </View>
+
+        <TextInput style={[Styles.input, {backgroundColor: "#ff0000"}]} placeholder="Số Căn Hộ"
+            value={form.address} onChangeText={(value) => update('address', value)}/>
+
+        <TextInput style={Styles.input} placeholder="Số điện thoại"
+            keyboardType="numeric" value={form.phone} onChangeText={(value) => update('phone', value)} />
+
+        <TextInput style={Styles.input} placeholder="CCCD/CMND"
+            value={form.citizenId} onChangeText={(value) => update('citizenId', value)} />
+
+        <Button style={Styles.button} title="Đăng Ký" onPress={submit} />
+        </ScrollView>
     );
-}
+
+};
+
 export default Create_Resident;

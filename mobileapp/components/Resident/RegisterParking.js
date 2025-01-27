@@ -1,23 +1,10 @@
 import { Button, TouchableOpacity, Text, TextInput, View } from "react-native";
 import Styles from "../../styles/Styles";
 import React, { useState } from "react";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { ShowDatePicker } from "../../configs/ShowDatePicker";
 
 const RegisterParking = () => {
     const [date, setDate] = useState(new Date());
-
-    const showDatePicker = () => {
-        DateTimePickerAndroid.open({
-            value: date,
-            mode: 'date',
-            is24Hour: true,
-            onChange: (event, selectedDate) => {
-                if (selectedDate) {
-                    setDate(selectedDate); // Cập nhật ngày khi người dùng chọn
-                }
-            },
-        });
-    };
 
     return (
         <View style={Styles.container}>
@@ -28,7 +15,7 @@ const RegisterParking = () => {
 
             <View style={Styles.row}>
                 <Text style={Styles.subtitle}>Ngày đăng ký:</Text>
-                <TouchableOpacity style={{ width: "50%", backgroundColor: "#ffffff" , padding: 10, borderWidth: 1, marginBottom: 10 }} onPress={showDatePicker}>
+                <TouchableOpacity style={{ width: "50%", backgroundColor: "#ffffff" , padding: 10, borderWidth: 1, marginBottom: 10 }} onPress={() => ShowDatePicker(date, setDate)}>
                     <Text style={{justifyContent:"center"}}>{date.toLocaleDateString("vi-VN")}</Text>
                 </TouchableOpacity>
             </View>
