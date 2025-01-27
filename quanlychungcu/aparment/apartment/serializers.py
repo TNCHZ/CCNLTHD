@@ -31,6 +31,12 @@ class ResidentInformationSerializer(serializers.ModelSerializer):
         fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
 
 
+class MonthSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Month
+        field = '__all__'
+
+
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
@@ -44,7 +50,6 @@ class ResidentFeeValueSerializer(serializers.ModelSerializer):
 
 
 class ResidentManagingFeeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ManagingFees
         fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']

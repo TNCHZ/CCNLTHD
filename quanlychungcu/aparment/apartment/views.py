@@ -8,6 +8,12 @@ from . import serializers
 from .perms import *
 from rest_framework.response import Response
 
+
+class MonthViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Month.objects.all()
+    serializer_class = serializers.MonthSerializer
+
+
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
@@ -96,6 +102,17 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         survey_residents = SurveyResident.objects.filter(resident=resident)
         survey_resident_serializer = serializers.SurveyResidentSerializer(survey_residents, many=True)
         return Response(survey_resident_serializer.data)
+
+    @action(methods=['get'], url_path='feedback', detail=True)
+    def get_feedbacks(self, request, pk=None):
+        try:
+            resident = Resident.objects.get(pk=pk)
+        except Resident.DoesNotExist:
+            return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        feedback_resident = Feedback.objects.filter(resident=resident)
+        feedback_resident_serializer = serializers.ResidentFeedBackSerializer(survey_residents, many=True)
+        return Response(feedback_resident_serializer.data)
 
 
     @action(methods=['get'], url_path='all-fees', detail=True)
