@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import MyContext, { MyAccountContext } from "../../configs/MyContext"
-import APIs, { endpoints } from "../../configs/APIs"
+import APIs, { authApis, endpoints } from "../../configs/APIs"
 import Styles from"../../styles/Styles"
 import { TextInput, TouchableOpacity, View, Text, ActivityIndicator, Alert } from "react-native";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({navigation}) => {
     const [account, setAccount] = useState({
@@ -11,6 +11,7 @@ const Login = ({navigation}) => {
         "password": ""
     });
     const [loading, setLoading] = useState(false);
+    
     const accounts = { //Mảng account
         "username": {
             "title": "Tên đăng nhập",
@@ -37,59 +38,61 @@ const Login = ({navigation}) => {
             setLoading(true);
 
             console.log("Account trước khi đăng nhập:", account);
-            // Kiểm tra nếu thông tin tài khoản chưa đầy đủ
             if (!account.username || !account.password) {
                 console.error("Account không hợp lệ:", account);
                 return;
             }
-            if (account.username=="admin" && account.password=="123"){
-                dispatch({"type": "login", 
-                    "payload": {
-                        "username": account.username,
-                        "password": account.password,
-                    }
-                });
-                navigation.navigate("home");
-            }
-
 
             // Gửi yêu cầu đăng nhập
-            // const res = await APIs.post(endpoints['login'], {
-            //     'client_id': "7mxk1Nj7dhNt7a4ylmiHFRWnwIYlyh5jahcqbEjKn",
-            //     'client_secret': "pbkdf2_sha256$870000$Nmvk3Nrf121JViCHczos1d$hNaMJlJNlcEvRMfZXK3TAAYwXAEM6utGo49NsO6r34A=",
-            //     "grant_type": "password", //<-Đang lỗi
-            //     ...account
-            // });
-            // if (res?.data?.access_token) {
-            //     console.info("Token:", res.data.access_token);
-            //     await AsyncStorage.setItem('token', res.data.access_token);
+            const res = await APIs.post(endpoints['login'], {
+                client_id: "9qEK7HysUVMMNzMAo8zNntbeRywEJfAVlRYcfG9a",
+                client_secret: "18kUgDq0fyVk6qz23GpbvN8ccMf3ZmjkMvC277dtlcJ8GfcdhqnVzkbUTfACSCsKwmhhrla3VP5cp7Hu4DiteoptWjNkBWyrfMS4KO9ybtzGtFvly0T5OFziywKYvv1C",
+                grant_type: "password",
+                username: account.username,
+                password: account.password
+            },{
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                }
+            });
+
+            if (res?.data?.access_token) {
+                console.info("Token:", res.data.access_token);
+                await AsyncStorage.setItem('token', res.data.access_token);
     
-            //     // Lấy thông tin người dùng sau khi đăng nhập thành công
-            //     const token = await AsyncStorage.getItem("token");
+                // Lấy thông tin người dùng sau khi đăng nhập thành công
+                const token = await AsyncStorage.getItem("token");
     
-            //     if (!token) {
-            //         console.error("Không tìm thấy token!");
-            //         return;
-            //     }
+                if (!token) {
+                    console.error("Không tìm thấy token!");
+                    return;
+                }
     
-            //     account = await authApis(token).get(endpoints['current-user']);
-            //     // Gửi hành động đăng nhập với dữ liệu người dùng
-            //     dispatch({
-            //         "type": "login", 
-            //         "payload": {
-            //             "username": account.username,
-            //             "password": account.password
-            //         }
-            //     });
-            //     // Điều hướng đến trang chủ sau khi đăng nhập thành công
-            //     navigation.navigate("home");
-            // } else {
-            //     console.error("Lỗi từ API: Không có token trả về");
-            //     Alert.alert("Lỗi", "Đăng nhập không thành công.");
-            // }
+                const userAccount = await authApis(token).get(endpoints["current-user"]);
+                console.log("Thông tin người dùng:", userAccount.data);
+    
+                // Cập nhật lại state account
+                setAccount({
+                    username: userAccount.data.username,
+                    password: account.password,
+                });
+    
+                // Gửi hành động đăng nhập với Redux/Context API
+                dispatch({
+                    type: "login",
+                    payload: {
+                        username: userAccount.data.username,
+                        password: account.password,
+                    },
+                });
+    
+                navigation.navigate("home");
+            } else {
+                console.error("Lỗi từ API: Không có token trả về");
+                Alert.alert("Lỗi", "Đăng nhập không thành công.");
+            }
         } catch(ex) {
             console.error("Lỗi đăng nhập:", ex);
-            // Ghi lại lỗi chi tiết
             if (ex.response) {
                 console.error("Lỗi response:", ex.response.status, ex.response.data);
             } else if (ex.request) {
