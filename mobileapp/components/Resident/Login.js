@@ -8,23 +8,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Login = ({navigation}) => {
     const [account, setAccount] = useState({
         "username": "",
-        "password": ""
+        "password": "",
     });
     const [loading, setLoading] = useState(false);
-    
-    const accounts = { //Mảng account
-        "username": {
-            "title": "Tên đăng nhập",
-            "field": "username",
-            "secure": false,
-            "icon": "text"
-        },  "password": {
-            "title": "Mật khẩu",
-            "field": "password",
-            "secure": true,
-            "icon": "eye"
-        }
-    }
 
     const [accountState, dispatch] = useContext(MyAccountContext);
 
@@ -45,8 +31,8 @@ const Login = ({navigation}) => {
 
             // Gửi yêu cầu đăng nhập
             const res = await APIs.post(endpoints['login'], {
-                client_id: "9qEK7HysUVMMNzMAo8zNntbeRywEJfAVlRYcfG9a",
-                client_secret: "18kUgDq0fyVk6qz23GpbvN8ccMf3ZmjkMvC277dtlcJ8GfcdhqnVzkbUTfACSCsKwmhhrla3VP5cp7Hu4DiteoptWjNkBWyrfMS4KO9ybtzGtFvly0T5OFziywKYvv1C",
+                client_id: "GsKvJoLxAuYAv8cdtpb3KC6JOl7x7M3wMbLIgwz8",
+                client_secret: "27hDKxAJMJztjHzMkAfhu74F1SaV5zAiuIx7hlHY5tdFhkoF3Utdw2UjQB008kEVek6BulK1kVXHQcEmw0h5dwWAPjbAU0gOIQw72k5BsicUBzXOaRrnGhwapTWjHAlE",
                 grant_type: "password",
                 username: account.username,
                 password: account.password
@@ -81,6 +67,10 @@ const Login = ({navigation}) => {
                 dispatch({
                     type: "login",
                     payload: {
+                        avatar: userAccount.data.avatar,
+                        first_name: userAccount.data.first_name,
+                        last_name: userAccount.data.last_name,
+                        role: userAccount.data.role,
                         username: userAccount.data.username,
                         password: account.password,  
                         id: userAccount.data.id,           // Thêm id
