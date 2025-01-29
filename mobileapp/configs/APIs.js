@@ -8,6 +8,7 @@ const BASE_URL = 'http://192.168.1.7:8000/';
 export const endpoints = {
     'login': '/o/token/',
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
+    'resident-information': '/resident-information/'
 }
 
 export const authApis = (token) =>  {
