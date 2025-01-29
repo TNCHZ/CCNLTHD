@@ -26,8 +26,8 @@ import Create_Survey from './components/Admin/Create_Survey';
 import RegisterParking from './components/Resident/RegisterParking';
 
 
-
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
+
 
 const App =() => {
   const [account, dispatch] = useReducer(MyAccountReducer, null);
