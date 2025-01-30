@@ -80,7 +80,6 @@ class Resident(BaseModel):
     phone = models.CharField(max_length=10, null=False, unique=True)
     citizen_identification = models.CharField(max_length=12, null=False, unique=True)
 
-
     class Meta:
         ordering = ["user"]  # Sắp xếp theo khóa chính (user)
 

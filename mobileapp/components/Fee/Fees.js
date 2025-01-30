@@ -1,87 +1,112 @@
-import { View, Text, TouchableOpacity, FlatList, RefreshControl, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, RefreshControl, ActivityIndicator, ScrollView } from "react-native";
 import Styles from "../../styles/Styles";
 import FeeStyles from "./FeeStyles";
 import Items from "./Items";
 import { Chip, Searchbar } from "react-native-paper";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
+import { MyAccountContext } from "../../configs/MyContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Fee = ({navigation}) => {
+    const [accountState] = useContext(MyAccountContext);
     const [managingFees, setManagingFees] = useState([]);
     const [parkingFees, setParkingFees] = useState([]);
     const [serviceFees, setServiceFees] = useState([]);
     const [feeType, setFeeType] = useState('');
     const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(1);
     const [q, setQ] = useState("");
 
-    const loadManages = async () => {
-        if (page > 0) {
-            setLoading(true);
-            try {
-                let url = `${endpoints['managing-fees']}?page=${page}`;
-                //Tìm managing_fee nếu q có giá trị
-                if (q){
-                    url = `${url}&managing_fee&q=${q}`;
-                }
-                let res = await APIs.get(url);
-                if (page > 1){
-                    setManagingFees(current => [...current, ...res.data.results]);
-                }else{
-                    setManagingFees(res.data.results);
-                }
-
-                if (res.data.next === null){
-                    setPage(0);
-                }
-            }catch(ex){
-                console.error(ex);
-            }finally{
-                setLoading(false);
+//==========================================================================================
+    const loadManagingFees = async () => {
+        setLoading(true);
+        try {
+            const token = await AsyncStorage.getItem("token");
+            if (!token) throw new Error("Không tìm thấy token");
+            
+            const url = `${endpoints['resident-information']}${accountState.id}/managing-fees/`;
+            //Tìm managing_fee nếu q có giá trị
+            if (q){
+                url = `${url}&managing_fee&q=${q}`;
             }
+
+            let res = await APIs.get(url, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setManagingFees(res.data);
+            
+        }catch(ex){
+            console.error("Lỗi managingfees: ", ex);
+        }finally{
+            setLoading(false);
         }
     }
-    useEffect(() => {
-        let timer = setTimeout(() => loadManages() , 500);
-        
-        return () => clearTimeout(timer);
-    }, [q, page]);
 
-    const loadParks = async () => {
-        if (page > 0) {
-            setLoading(true);
-            try {
-                let url = `${endpoints['parking-fees']}?page=${page}`;
-                //Tìm parking_fee nếu q có giá trị
-                if (q){
-                    url = `${url}&parking_fee&q=${q}`;
-                }
-                let res = await APIs.get(url);
-                if (page > 1){
-                    setParkingFees(current => [...current, ...res.data.results]);
-                }else{
-                    setParkingFees(res.data.results);
-                }
-
-                if (res.data.next === null){
-                    setPage(0);
-                }
-            }catch(ex){
-                console.error(ex);
-            }finally{
-                setLoading(false);
+    const loadParkingFees = async () => {
+        setLoading(true);
+        try {
+            const token = await AsyncStorage.getItem("token");
+            if (!token) throw new Error("Không tìm thấy token");
+            
+            const url = `${endpoints['resident-information']}${accountState.id}/parking-fees/`;
+            
+            if (q){
+                url = `${url}&parking_fee&q=${q}`;
             }
+
+            let res = await APIs.get(url, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setParkingFees(res.data);
+
+        }catch(ex){
+            console.error("Lỗi ParkingFees",ex);
+        }finally{
+            setLoading(false);
         }
     }
+
+    const loadServiceFees = async () => {
+        setLoading(true);
+        try {
+            const token = await AsyncStorage.getItem("token");
+            if (!token) throw new Error("Không tìm thấy token");
+            
+            const url = `${endpoints['resident-information']}${accountState.id}/service-fees/`;
+            
+            if (q){
+                url = `${url}&service_fee&q=${q}`;
+            }
+
+            let res = await APIs.get(url, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setServiceFees(res.data);
+
+        }catch(ex){
+            console.error("Lỗi ParkingFees",ex);
+        }finally{
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
         let timer = setTimeout(() => {
-            loadParks()
+            if (accountState?.id){
+                if (feeType === 'managingFees') {
+                    loadManagingFees(); }
+                if (feeType === 'parkingFees') {
+                    loadParkingFees(); }
+                if (feeType === 'serviceFees') {
+                    loadManagingFees(); }
+            }
         }, 500);
         return () => clearTimeout(timer);
-    }, [q, page]);
-
-
+    }, [feeType, accountState , q]);
     //====================================================
 
     const getFeeData = () => {
@@ -97,21 +122,15 @@ const Fee = ({navigation}) => {
         }
     };
 
-    const loadMore = () => {
-        if (page > 0 && !loading)
-            setPage(page + 1);
-    }
-
     const search = (value, callback) => {
-        setPage(1);
         callback(value);
     }
 
     const refresh = () => {
-        setPage(1);
         loadManages();
         loadParks();
     }
+
 
     return (
         <View style={FeeStyles.container}>
@@ -135,11 +154,11 @@ const Fee = ({navigation}) => {
 
             <Text style={Styles.text}>Danh sách chi phí</Text>
             <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
-                onEndReached={loadMore} data={getFeeData()} 
+                data={getFeeData()} 
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({item}) => <Items item={item} routeName={feeType === 'managingFees' ? 'managingFeeDetail'
                     : feeType === 'parkingFees' ? 'parkingFeeDetail' : 'serviceFeeDetail'
                 } params={{'manageID': item.id, 'parkID': item.id, 'serviceID': item.id, }} />}
-                keyExtractor={(item, index) => index.toString()}
             />
         </View>
     );
