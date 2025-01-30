@@ -1,12 +1,10 @@
 import { View, Text, TouchableOpacity, FlatList, RefreshControl, ActivityIndicator, ScrollView } from "react-native";
 import Styles from "../../styles/Styles";
-import FeeStyles from "./FeeStyles";
 import Items from "./Items";
 import { Chip, Searchbar } from "react-native-paper";
 import React, { useContext, useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
 import { MyAccountContext } from "../../configs/MyContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Fee = ({navigation}) => {
@@ -22,23 +20,17 @@ const Fee = ({navigation}) => {
     const loadManagingFees = async () => {
         setLoading(true);
         try {
-            const token = await AsyncStorage.getItem("token");
-            if (!token) throw new Error("Không tìm thấy token");
-            
-            const url = `${endpoints['resident-information']}${accountState.id}/managing-fees/`;
-            //Tìm managing_fee nếu q có giá trị
+            let url = `${endpoints['managing-fees'](accountState)}`
+
             if (q){
-                url = `${url}&managing_fee&q=${q}`;
+                url = `${url}q=${q}`;
             }
-
-            let res = await APIs.get(url, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
+            
+            let res = await APIs.get(url);
             setManagingFees(res.data);
             
         }catch(ex){
-            console.error("Lỗi managingfees: ", ex);
+            console.error("Lỗi Managingfees: ", ex);
         }finally{
             setLoading(false);
         }
@@ -47,18 +39,13 @@ const Fee = ({navigation}) => {
     const loadParkingFees = async () => {
         setLoading(true);
         try {
-            const token = await AsyncStorage.getItem("token");
-            if (!token) throw new Error("Không tìm thấy token");
-            
-            const url = `${endpoints['resident-information']}${accountState.id}/parking-fees/`;
-            
-            if (q){
-                url = `${url}&parking_fee&q=${q}`;
-            }
+            let url = `${endpoints['parking-fees'](accountState)}`
 
-            let res = await APIs.get(url, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            if (q){
+                url = `${url}q=${q}`;
+            }
+            
+            let res = await APIs.get(url);
 
             setParkingFees(res.data);
 
@@ -72,23 +59,18 @@ const Fee = ({navigation}) => {
     const loadServiceFees = async () => {
         setLoading(true);
         try {
-            const token = await AsyncStorage.getItem("token");
-            if (!token) throw new Error("Không tìm thấy token");
-            
-            const url = `${endpoints['resident-information']}${accountState.id}/service-fees/`;
-            
+            let url = `${endpoints['service-fees'](accountState)}`
+
             if (q){
-                url = `${url}&service_fee&q=${q}`;
+                url = `${url}q=${q}`;
             }
             
-            let res = await APIs.get(url, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            let res = await APIs.get(url);
 
             setServiceFees(res.data);
 
         }catch(ex){
-            console.error("Lỗi ParkingFees",ex);
+            console.error("Lỗi ServiceFee",ex);
         }finally{
             setLoading(false);
         }
@@ -140,7 +122,7 @@ const Fee = ({navigation}) => {
 
 
     return (
-        <View style={FeeStyles.container}>
+        <View style={Styles.containerNoCenter}>
             <View style={Styles.row}>
                 <TouchableOpacity style={Styles.touchable} onPress={() => setFeeType('managingFees')}>
                     <Chip style={Styles.chip} icon="clipboard-text">Phí Quản Lí</Chip>
@@ -162,7 +144,7 @@ const Fee = ({navigation}) => {
             <Text style={Styles.text}>Danh sách chi phí</Text>
             <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
                 data={getFeeData()} 
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
                 renderItem={({item}) => <Items item={item} routeName={feeType === 'managingFees' ? 'managingFeeDetail'
                     : feeType === 'parkingFees' ? 'parkingFeeDetail' : 'serviceFeeDetail'
                 } params={{'managingFeeID': item.id, 'parkingFeeID': item.id, 'serviceFeeID': item.id, }} />}

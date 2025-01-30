@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
-import Styles from "../../components/Home/HomeStyle";
 import React, { useContext } from "react";
 import { MyAccountContext } from "../../configs/MyContext";
+import Styles from "../../styles/Styles";
 
 const Home = ({navigation}) =>{
     const [account] = useContext(MyAccountContext);
@@ -9,18 +9,18 @@ const Home = ({navigation}) =>{
     const locker = "Không có đồ";
 
     return (
-        <View style={Styles.container}>
+        <View style={[Styles.containerNoCenter, {backgroundColor: "#fff", justifyContent: "space-between"}]}>
             {/* Header */}
-            <View style={Styles.header}>
-            <Image
-                source={require('../../assets/JpHome.png')} // Thay bằng ảnh phù hợp
-                style={Styles.image}
-            />
-            <Text style={Styles.title}>Chào mừng bạn đến với Chung cư tiện ích JpHome!</Text>
+            <View style={{alignItems: "center", marginTop: 20}}>
+                <Image
+                    source={require('../../assets/JpHome.png')} // Thay bằng ảnh phù hợp
+                    style={Styles.image}
+                />
+                <Text style={Styles.title}>Chào mừng bạn đến với Chung cư tiện ích JpHome!</Text>
             </View>
     
             {/* Content */}
-            <ScrollView style={Styles.content}>
+            <ScrollView style={{padding: 10}}>
                 <Text style={Styles.description}>
                     Chung cư JpHome là biểu tượng của phong cách sống hiện đại, 
                     tiện nghi và đẳng cấp, tọa lạc tại vị trí đắc địa giữa trung tâm thành phố. 

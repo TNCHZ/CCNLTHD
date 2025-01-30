@@ -5,9 +5,12 @@ const BASE_URL = 'http://192.168.1.7:8000/';
 // const BASE_URL = ' http://127.0.0.1:8000/';
 
 export const endpoints = {
-    'managing-fee': '',
-    'parking-fee': '',
-    'service-fee': '',
+    'managing-fees': (accountState) => `/resident-information/${accountState.id}/managing-fees/`,
+    'parking-fees': (accountState) => `/resident-information/${accountState.id}/parking-fees/`,
+    'service-fees': (accountState) => `/resident-information/${accountState.id}/service-fees/`,
+    'feedback': (accountState) => `/resident-information/${accountState.id}/feedback/`,
+    'locker': (accountState) => `/resident-information/${accountState.id}/loker/`,
+    'surveys': (accountState) => `/resident-information/${accountState.id}/surveys/`,
     'login': '/o/token/',
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
     'resident-information': '/resident-information/'

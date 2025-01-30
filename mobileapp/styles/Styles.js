@@ -4,13 +4,19 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f2f2f2',
-        alignItems: 'center',
+        alignItems: 'center', // Align center
+        padding: 20,
+      },
+    containerNoCenter: {
+        flex: 1,
+        backgroundColor: '#f2f2f2',
         padding: 20,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginVertical: 5,
+        textAlign: "center",
         color: '#000000',
     },
     subtitle: {
@@ -24,6 +30,17 @@ export default StyleSheet.create({
         fontSize: 18,
         fontweight: "boid",
         color: "blue",
+    },
+    txt: {
+        fontSize: 16,
+        fontweight: "boid",
+    },
+    description: {
+        fontSize: 14,
+        color: "#555",
+        textAlign: "center",
+        marginBottom: 10,
+        lineHeight: 24,
     },
     input: {
         width: "100%",
@@ -44,6 +61,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
+        marginVertical: 5,
     },
     buttonText: {
         color: '#fff',
@@ -85,5 +103,15 @@ export default StyleSheet.create({
         marginBottom: 15,
         backgroundColor: '#fff',
         color: '#555',
+    },
+    footer: {
+        alignItems: "center",
+        marginBottom: 0,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        resizeMode: "contain",
+        margin: 10,
     },
 });

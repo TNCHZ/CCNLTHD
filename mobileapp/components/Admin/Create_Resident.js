@@ -47,7 +47,7 @@ const Create_Resident = () => {
     };
 
     return (
-        <ScrollView style={{flex: 1, padding: 20, backgroundColor: '#f8f9fa',}}>
+        <ScrollView style={Styles.containerNoCenter}>
         <Text style={Styles.title}>ĐĂNG KÝ TÀI KHOẢN</Text>
 
         <TextInput style={Styles.input} placeholder="Họ và Tên"

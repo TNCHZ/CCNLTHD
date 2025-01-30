@@ -1,16 +1,37 @@
-import { View, Text, Button, TouchableOpacity } from "react-native";
+import { View, Text, Button, TouchableOpacity, ActivityIndicator } from "react-native";
 import Styles from "../../styles/Styles";
-import LockerStyle from "./LockerStyle";
+import { useContext, useEffect, useState } from "react";
+import { MyAccountContext } from "../../configs/MyContext";
+import APIs, { endpoints } from "../../configs/APIs";
+
 const Locker = ({navigation}) => {
-    const roomNumber = "0000";
-    const locker = "Không có đồ";
+    const accountState = useContext(MyAccountContext);
+    const [loading, setLoading]= useState(false);
+    const [locker, setLocker]=useState([]);
+
+    const loadLocker = async () => {
+        try {
+            setLoading(true);
+            let res = await APIs.get(endpoints['locker'](accountState));
+            setLocker(res.data);
+
+        } catch(ex) {
+            console.error("Lỗi: ", ex);
+        } finally {
+            setLoading(false);
+        }
+    }
+    useEffect(() => {
+        loadLocker();
+    }, [accountState.id]);
+
     return (
-        <View style={LockerStyle.container}>
-            <Text style={LockerStyle.title}>Số Căn Hộ: A-{roomNumber} </Text>
-            <Text style={LockerStyle.subtitle}>QUẢN LÝ TỦ ĐỒ CÁ NHÂN</Text>
+        <View style={Styles.containerNoCenter}>
+            <Text style={Styles.title}>QUẢN LÝ TỦ ĐỒ CÁ NHÂN</Text>
+            {loading && <ActivityIndicator/>}
             <View style={Styles.row}>
-                <Text style={LockerStyle.subtitle}>Mã tủ đồ: T-{roomNumber}</Text>
-                <Text style={LockerStyle.textView}>{locker}</Text>
+                <Text style={[Styles.subtitle, {textAlign: "left"}]}>Mã tủ đồ: T-{locker.name}</Text>
+                
             </View>
         </View>
     )
