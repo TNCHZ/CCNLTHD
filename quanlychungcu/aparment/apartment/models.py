@@ -9,6 +9,9 @@ from cloudinary.models import CloudinaryField
 from django.db import models
 from enum import Enum
 
+from django.template.defaultfilters import default
+
+
 class BaseModel(models.Model):
     active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True, null=True)
@@ -28,7 +31,8 @@ class Role(Enum):
         return [(role.value, role.name.capitalize()) for role in cls]
 
 class User(AbstractUser):
-    avatar = CloudinaryField('avatar', null=True, blank=True)
+    avatar = CloudinaryField('avatar', null=True, blank=True, default="https://res.cloudinary.com/dqlk15sot/image/upload/v1738150398/default-avatar-profile-icon-of-social-media-user-vector_qydb7c.jpg")
+    change_password_image = models.BooleanField(default=False)
 
     role = models.CharField(
         max_length=20,
@@ -75,7 +79,7 @@ class Resident(BaseModel):
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     phone = models.CharField(max_length=10, null=False, unique=True)
     citizen_identification = models.CharField(max_length=12, null=False, unique=True)
-    change_password_image = models.BooleanField(default=False)
+
 
     class Meta:
         ordering = ["user"]  # Sắp xếp theo khóa chính (user)

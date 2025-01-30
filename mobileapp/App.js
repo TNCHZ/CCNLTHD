@@ -27,8 +27,8 @@ import RegisterParking from './components/Resident/RegisterParking';
 import APIs from './configs/APIs';
 
 
-
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
+
 
 const App =() => {
   const [account, dispatch] = useReducer(MyAccountReducer, null);

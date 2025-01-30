@@ -22,25 +22,25 @@ class UserSerializer(serializers.ModelSerializer):
             }
         }
 
-#============================================|| Resident ||============================================#
-class ResidentInformationSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
+class AddressSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Resident
-        fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
+        model = Address
+        fields = ['id', 'name']
 
 
 class MonthSerializer(serializers.ModelSerializer):
     class Meta:
         model = Month
-        field = '__all__'
+        fields = ['id', 'name']
 
 
-class AddressSerializer(serializers.ModelSerializer):
+#============================================|| Resident ||============================================#
+class ResidentInformationSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+
     class Meta:
-        model = Address
-        field = ['id', 'name']
+        model = Resident
+        fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
 
 
 class ResidentFeeValueSerializer(serializers.ModelSerializer):

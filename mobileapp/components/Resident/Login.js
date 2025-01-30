@@ -73,10 +73,15 @@ const Login = ({navigation}) => {
                         last_name: userAccount.data.last_name,
                         role: userAccount.data.role,
                         username: userAccount.data.username,
-                        password: account.password,
+                        password: account.password,  
+                        id: userAccount.data.id,           // Thêm id
+                        first_name: userAccount.data.first_name, // Thêm first_name
+                        last_name: userAccount.data.last_name,   // Thêm last_name
+                        avatar: userAccount.data.avatar,       // Thêm avatar
+                        role: userAccount.data.role           // Thêm role
                     },
                 });
-    
+                
                 navigation.navigate("home");
             } else {
                 console.error("Lỗi từ API: Không có token trả về");

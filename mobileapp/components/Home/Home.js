@@ -40,7 +40,6 @@ const Home = ({navigation}) =>{
                         <Text style={Styles.buttonText}>Đăng nhập</Text>
                     </TouchableOpacity>
                 </>:<>
-                    <Text style={Styles.title}>Số Căn Hộ: Apartment-{roomNumber}</Text>
                 </>}
             </View>
             
