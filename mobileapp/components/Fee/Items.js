@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { List } from "react-native-paper";
 import moment from "moment";
-import { Image, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity, View, Text } from "react-native";
 import Styles from "../../styles/Styles";
 
 const Items = ({item, routeName, params}) => {
@@ -16,6 +16,8 @@ const Items = ({item, routeName, params}) => {
                             {`Value: ${item.value}`}
                         </Text>
                     )}
+                    <Text>Giá trị: {item.fee_value.value} VNĐ</Text>
+                    <Text>Trạng thái: {item.status ? "Đã thanh toán" : "Chưa thanh toán"}</Text>
                 </View>
             )}
             description={item.created_date && moment(item.created_date).fromNow()} 

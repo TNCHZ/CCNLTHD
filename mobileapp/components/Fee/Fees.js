@@ -93,6 +93,12 @@ const Fee = ({navigation}) => {
             setLoading(false);
         }
     }
+    
+    useEffect(() => {
+        loadManagingFees();
+        loadParkingFees();
+        loadServiceFees();
+    }, []);
 
     useEffect(() => {
         let timer = setTimeout(() => {
