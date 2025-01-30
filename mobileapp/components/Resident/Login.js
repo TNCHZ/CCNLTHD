@@ -67,6 +67,7 @@ const Login = ({navigation}) => {
                 dispatch({
                     type: "login",
                     payload: {
+                        id: userAccount.data.id,
                         avatar: userAccount.data.avatar,
                         first_name: userAccount.data.first_name,
                         last_name: userAccount.data.last_name,

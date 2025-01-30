@@ -2,6 +2,7 @@ const MyAccountReducer = (currentState, action) => { //currentState thay bằng 
     switch (action.type) {
         case "login": {
             return {
+                "id": action.payload.id,
                 "avatar": action.payload.avatar,
                 "first_name": action.payload.first_name,
                 "last_name": action.payload.last_name,
