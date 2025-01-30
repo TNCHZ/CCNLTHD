@@ -9,17 +9,16 @@ const Items = ({item, routeName, params}) => {
     return(
         <List.Item key={item.id}
             title={() => (
-                <View>
+                <TouchableOpacity onPress={() => {nav.navigate(routeName, params)}}>
                     <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
-                    {item.value && (
+                    {item.fee_value.value && (
                         <Text style={{ fontSize: 14, color: 'gray', marginTop: 4 }}>
-                            {`Value: ${item.value}`}
+                            Giá trị: {`Value: ${item.fee_value.value}`} VND
                         </Text>
                     )}
-                    <Text>Giá trị: {item.fee_value.value} VNĐ</Text>
                     <Text>Trạng thái: {item.status ? "Đã thanh toán" : "Chưa thanh toán"}</Text>
-                </View>
-            )}
+                </TouchableOpacity>
+            )} 
             description={item.created_date && moment(item.created_date).fromNow()} 
             left={porps => (
                 <TouchableOpacity onPress={() => {nav.navigate(routeName, params)}}>

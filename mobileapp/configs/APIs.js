@@ -5,6 +5,9 @@ const BASE_URL = 'http://192.168.1.7:8000/';
 // const BASE_URL = ' http://127.0.0.1:8000/';
 
 export const endpoints = {
+    'managing-fee': '',
+    'parking-fee': '',
+    'service-fee': '',
     'login': '/o/token/',
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
     'resident-information': '/resident-information/'

@@ -80,7 +80,7 @@ const Fee = ({navigation}) => {
             if (q){
                 url = `${url}&service_fee&q=${q}`;
             }
-
+            
             let res = await APIs.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -93,7 +93,7 @@ const Fee = ({navigation}) => {
             setLoading(false);
         }
     }
-    
+
     useEffect(() => {
         loadManagingFees();
         loadParkingFees();
@@ -133,8 +133,9 @@ const Fee = ({navigation}) => {
     }
 
     const refresh = () => {
-        loadManages();
-        loadParks();
+        loadManagingFees();
+        loadParkingFees();
+        loadServiceFees();
     }
 
 
@@ -161,10 +162,10 @@ const Fee = ({navigation}) => {
             <Text style={Styles.text}>Danh sách chi phí</Text>
             <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
                 data={getFeeData()} 
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({item}) => <Items item={item} routeName={feeType === 'managingFees' ? 'managingFeeDetail'
                     : feeType === 'parkingFees' ? 'parkingFeeDetail' : 'serviceFeeDetail'
-                } params={{'manageID': item.id, 'parkID': item.id, 'serviceID': item.id, }} />}
+                } params={{'managingFeeID': item.id, 'parkingFeeID': item.id, 'serviceFeeID': item.id, }} />}
             />
         </View>
     );

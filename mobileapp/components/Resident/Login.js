@@ -31,8 +31,8 @@ const Login = ({navigation}) => {
 
             // Gửi yêu cầu đăng nhập
             const res = await APIs.post(endpoints['login'], {
-                client_id: "GsKvJoLxAuYAv8cdtpb3KC6JOl7x7M3wMbLIgwz8",
-                client_secret: "27hDKxAJMJztjHzMkAfhu74F1SaV5zAiuIx7hlHY5tdFhkoF3Utdw2UjQB008kEVek6BulK1kVXHQcEmw0h5dwWAPjbAU0gOIQw72k5BsicUBzXOaRrnGhwapTWjHAlE",
+                client_id: "MH4TCwTXdmpAOulasshJv0ofgFaHYpyRV7Q0huNe",
+                client_secret: "Oqe03MRLrsTQzUcLNs6p9F8j2v3toIoeo8nzcCIZejNCm0BQ6HVa4VKDMy0APCaubWxq0qJlhekqyXvaWHxRd8B5VLrKD0FM3ca0KZTHZxi7yN3WeXaHQ4SxMp1XA4b7",
                 grant_type: "password",
                 username: account.username,
                 password: account.password
@@ -73,12 +73,7 @@ const Login = ({navigation}) => {
                         last_name: userAccount.data.last_name,
                         role: userAccount.data.role,
                         username: userAccount.data.username,
-                        password: account.password,  
-                        id: userAccount.data.id,           // Thêm id
-                        first_name: userAccount.data.first_name, // Thêm first_name
-                        last_name: userAccount.data.last_name,   // Thêm last_name
-                        avatar: userAccount.data.avatar,       // Thêm avatar
-                        role: userAccount.data.role           // Thêm role
+                        password: account.password,
                     },
                 });
                 
