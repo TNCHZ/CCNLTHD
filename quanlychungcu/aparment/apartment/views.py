@@ -1,7 +1,5 @@
-from django.contrib.admindocs.utils import get_view_name
-from django.db.models.functions import Trunc
 from requests import Response
-from rest_framework import viewsets, generics, status, permissions
+from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action, permission_classes
 from .models import *
 from . import serializers
@@ -9,12 +7,13 @@ from .perms import *
 from rest_framework.response import Response
 
 
+
 class MonthViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = Month.objects.all()
     serializer_class = serializers.MonthSerializer
 
 
-class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
+class UserViewSet(viewsets.ViewSet):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
 
@@ -28,7 +27,41 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     def get_current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
 
+    @action(detail=True, methods=['patch'], url_path='update-avatar-password')
+    def update_avatar_password(self, request, pk=None):
+        user = self.get_object()  # Lấy người dùng hiện tại
+
+        # Kiểm tra nếu có avatar hoặc password được gửi trong request
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()  # Lưu lại dữ liệu đã cập nhật
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+class ResidentCreateViewSet(viewsets.ViewSet):
+    queryset = Resident.objects.all()
+    serializer_class = serializers.CreateResidentSerializer
+    permission_classes = [AdminPermission]
+
+    def create(self, request):
+        serializer = serializers.CreateResidentSerializer(data=request.data)
+        if serializer.is_valid():
+            resident = serializer.save()  # Gọi create() của serializer
+            return Response(
+                {"message": "Resident created successfully!", "resident_id": resident.user.id},
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 #============================================|| Resident ||============================================#
+class ListResident(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Resident.objects.all()
+    serializer_class = serializers.ResidentInformationSerializer
+
+
+
 class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = Resident.objects.all()
     serializer_class = serializers.ResidentInformationSerializer
@@ -258,5 +291,5 @@ class ResidentSurveyResponseViewSet(viewsets.ViewSet, generics.ListAPIView):
 
 
 class AddressViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Address.objects.all()
+    queryset = Address.objects.filter(is_free=True).all()
     serializer_class = serializers.AddressSerializer

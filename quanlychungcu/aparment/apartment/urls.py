@@ -15,7 +15,7 @@ router.register(r'resident-locker', views.ResidentLockerViewSet, basename='resid
 router.register(r'resident-survey', views.ResidentSurveyViewSet)
 router.register(r'resident-survey-response', views.ResidentSurveyResponseViewSet)
 router.register(r'address', views.AddressViewSet)
-
+router.register(r'resident-create', views.ResidentCreateViewSet, basename='resident-create')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -11,13 +11,15 @@ export const endpoints = {
     'feedback': (accountState) => `/resident-information/${accountState.id}/feedback/`,
     'locker': (accountState) => `/resident-information/${accountState.id}/loker/`,
     'surveys': (accountState) => `/resident-information/${accountState.id}/surveys/`,
+    'address': '/address/',
     'login': '/o/token/',
+    'update-avatar-password': '/user/update-avatar-password/',
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
-    'resident-information': '/resident-information/'
+    'resident-information': '/resident-information/',
+    'resident-create': '/resident-create/'
 }
 
 export const authApis = (token) =>  {
-    console.info("User",token);
     return axios.create({
         baseURL: BASE_URL, 
         headers: {

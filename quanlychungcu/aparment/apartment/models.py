@@ -66,6 +66,7 @@ class Admin(BaseModel):
 
 class Address(BaseModel):
     name = models.TextField(null=False)
+    is_free = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
