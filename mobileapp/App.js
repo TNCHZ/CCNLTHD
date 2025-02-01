@@ -34,7 +34,7 @@ const Drawer= createDrawerNavigator(); //tạo màn hình kéo
 const App =() => {
   //Đối tượng đăng nhập, khởi gán ban đầu là null
   const [account, dispatch] = useReducer(MyAccountReducer, null);
-  
+
   return (
     <MyAccountContext.Provider value={[account, dispatch]}>
       <NavigationContainer>
@@ -49,7 +49,7 @@ const App =() => {
             <TouchableOpacity style={Styles.headerRight}
               onPress={() => {console.info(account); navigation.navigate("profile")}}>
               <View style={Styles.row}>
-                <Text style={{marginHorizontal: 5, color: "#4c4c4c", fontSize: 18, fontWeight: 'bold'}}>Chào {account.username}!</Text>
+                <Text style={{marginHorizontal: 5, color: "#4c4c4c", fontSize: 18, fontWeight: 'bold'}}>Chào {account.last_name}!</Text>
               </View>
             </TouchableOpacity>
           ),
@@ -58,7 +58,11 @@ const App =() => {
         })}>
           {/* Trang Home */}
           <Drawer.Screen name="home" component={Home} options={{title: 'Giới Thiệu'}}/>
-          <Drawer.Screen name='updateInfo' component={UpdateInfo} options={{title: 'Cập nhật thông tin'}} />
+          <Drawer.Screen name='updateInfo' component={UpdateInfo} options={() => ({
+            title: 'Cập nhật thông tin',
+            drawerItemStyle: account === null ? { display: "none" } : {}
+          })} />
+
           {/* Trang Login khi account = null */}
           {account === null ? <>
             <Drawer.Screen name="login" component={Login} options={{title:"Đăng Nhập"}}/>
