@@ -20,9 +20,9 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
 
         try {
             setLoading(true);
-            let url = `${endpoints['resident-information'](accountState)}`
-            console.log("url", url);
-            let res = await APIs.get(url);
+            const token = await AsyncStorage.getItem("token");
+            if(!token) throw new Error("Không tìm thấy token");
+            const res = await authApis(token).get(endpoints['resident-information'](accountState));
             console.log("res: ", res.data);
             //setResidentInfo(res.data);
 
