@@ -14,7 +14,7 @@ const Home = ({navigation}) =>{
             <View style={{alignItems: "center", marginTop: 20}}>
                 <Image
                     source={require('../../assets/JpHome.png')} // Thay bằng ảnh phù hợp
-                    style={Styles.image}
+                    style={Styles.imageLogo}
                 />
                 <Text style={Styles.title}>Chào mừng bạn đến với Chung cư tiện ích JpHome!</Text>
             </View>

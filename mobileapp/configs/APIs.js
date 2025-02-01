@@ -18,7 +18,7 @@ export const endpoints = {
     'login': '/o/token/',
     'update-avatar-password': (accountState) => `/user/${accountState.id}/update-avatar-password/`,
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
-    'resident-information': (accountState) => `/resident-information/${accountState.id}`,
+    'resident-information': (accountState) => `/resident-information/${accountState.id}/`,
     'resident-create': '/resident-create/'
 }
 

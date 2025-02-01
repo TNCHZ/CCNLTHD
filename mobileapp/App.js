@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import MyAccountReducer from './configs/MyAccountReducer';
 import { MyAccountContext } from './configs/MyContext';
 import Styles from './styles/Styles';
+import APIs from './configs/APIs';
 
 import Home from './components/Home/Home';
 import Locker from './components/Resident/Locker'
@@ -24,16 +25,15 @@ import Create_Fee from './components/Admin/Create_Fee';
 import Create_Resident from './components/Admin/Create_Resident';
 import Create_Survey from './components/Admin/Create_Survey';
 import RegisterParking from './components/Resident/RegisterParking';
-import APIs from './configs/APIs';
-import ChangePassword from './components/Resident/ChangePassword';
+import UpdateInfo from './components/Resident/UpdateInfo';
 
 
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
 
 
 const App =() => {
-  const [account, dispatch] = useReducer(MyAccountReducer, null);
   //Đối tượng đăng nhập, khởi gán ban đầu là null
+  const [account, dispatch] = useReducer(MyAccountReducer, null);
   
   return (
     <MyAccountContext.Provider value={[account, dispatch]}>
@@ -58,18 +58,16 @@ const App =() => {
         })}>
           {/* Trang Home */}
           <Drawer.Screen name="home" component={Home} options={{title: 'Giới Thiệu'}}/>
-          
+          <Drawer.Screen name='updateInfo' component={UpdateInfo} options={{title: 'Cập nhật thông tin', drawerItemStyle:{display: 'none'}}} />
           {/* Trang Login khi account = null */}
           {account === null ? <>
             <Drawer.Screen name="login" component={Login} options={{title:"Đăng Nhập"}}/>
           </> : <>
-            
             {/* Ẩn vì chỉ cần load nội dung*/}
             <Drawer.Screen name='profile' component={Profile} options={{title:"Trang cá nhân", drawerItemStyle:{display: 'none'}}}/>
             <Drawer.Screen name='managingFeeDetail' component={ManagingFee_Detail} options={{title: 'Phí Quản Lý', drawerItemStyle:{display: 'none'}}}/>
             <Drawer.Screen name='parkingFeeDetail' component={ParkingFee_Detail} options={{title: 'Phí Đỗ Xe', drawerItemStyle:{display: 'none'}}}/>
             <Drawer.Screen name='serviceFeeDetail' component={ServiceFee_Detail} options={{title: 'Phí Dịch Vụ', drawerItemStyle:{display: 'none'}}}/>
-            <Drawer.Screen name='changePassword' component={ChangePassword} options={{title: 'Cập nhật thông tin'}} />
             
             {account.role === "Admin" ? <>
               {/* Hiện tương tác của ADMIN */}
@@ -85,6 +83,7 @@ const App =() => {
               <Drawer.Screen name='checkin' component={Checkin} options={{title: 'Đăng Ký Ra/Vào Chung Cư'}}/>
               <Drawer.Screen name='feedBack' component={FeedBack} options={{title: 'Góp ý'}}/>
             </>}
+            
             <Drawer.Screen name='logout' component={Logout} options={{title: "Đăng Xuất"}}/>
           </>}
           

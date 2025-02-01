@@ -4,7 +4,7 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f2f2f2',
-        alignItems: 'center', // Align center
+        alignItems: 'center',
         padding: 20,
       },
     containerNoCenter: {
@@ -60,7 +60,7 @@ export default StyleSheet.create({
         backgroundColor: '#007bff',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 20,
         marginVertical: 5,
     },
     buttonText: {
@@ -108,10 +108,17 @@ export default StyleSheet.create({
         alignItems: "center",
         marginBottom: 0,
     },
-    image: {
+    imageLogo: {
         width: 200,
         height: 200,
-        resizeMode: "contain",
+        borderRadius: 100,
+        //resizeMode: "contain",
+        margin: 10,
+    },
+    imageAvatar: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
         margin: 10,
     },
 });

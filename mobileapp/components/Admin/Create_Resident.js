@@ -140,11 +140,7 @@ const Create_Resident = () => {
 
             {/* ComboBox để chọn địa chỉ */}
             <Text style={Styles.subtitle}>Số Căn Hộ:</Text>
-            <Picker
-                selectedValue={form.address}
-                style={Styles.input}
-                onValueChange={(value) => update("address", value)}
-            >
+            <Picker selectedValue={form.address} style={Styles.input} onValueChange={(value) => update("address", value)} >
                 <Picker.Item label="Chọn căn hộ" value="" />
                 {addresses.map((addr) => (
                     <Picker.Item key={addr.id} label={addr.name} value={addr.id} />

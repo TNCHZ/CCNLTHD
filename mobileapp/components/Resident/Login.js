@@ -76,8 +76,14 @@ const Login = ({navigation}) => {
                         password: account.password,
                     },
                 });
-                
-                navigation.navigate("home");
+
+                if (userAccount.data.avatar) {
+                    // Nếu có avatar, điều hướng đến màn hình "home"
+                    navigation.navigate("home");
+                  } else {
+                    // Nếu không có avatar, điều hướng đến màn hình "upload"
+                    navigation.navigate("updateInfo");
+                  }                  
             } else {
                 console.error("Lỗi từ API: Không có token trả về");
                 Alert.alert("Lỗi", "Đăng nhập không thành công.");

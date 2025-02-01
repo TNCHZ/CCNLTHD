@@ -57,7 +57,7 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
                     <Text style={Styles.txt}>Địa chỉ: {residentInfo.address.name}</Text>
 
                     {/* Nút đổi mật khẩu */}
-                    <Button title="Đổi mật khẩu" onPress={() => navigation.navigate("ChangePassword")} />
+                    <Button title="Đổi Avatar/Mật khẩu" onPress={() => navigation.navigate("updateInfo")} />
                 </>
             ) : (
                 <Text>Không có thông tin cư dân</Text>
