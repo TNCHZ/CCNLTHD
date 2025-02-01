@@ -1,4 +1,6 @@
 const testMomo = () => {
+    //link xem: https://www.youtube.com/watch?v=Wts0ic42bSU
+
     //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
     //parameters
     var accessKey = 'F8BBA842ECF85';

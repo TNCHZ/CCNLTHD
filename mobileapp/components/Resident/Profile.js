@@ -20,12 +20,12 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
 
         try {
             setLoading(true);
+            let url = `${endpoints['resident-information'](accountState)}`
+            console.log("url", url);
+            let res = await APIs.get(url);
+            console.log("res: ", res.data);
+            //setResidentInfo(res.data);
 
-            const token = await AsyncStorage.getItem("token");
-            if (!token) throw new Error("Không tìm thấy token");
-            
-            const res = await authApis(token).get(`${endpoints["resident-information"]}${accountState.id}/`);
-            setResidentInfo(res.data);
         } catch (error) {
             console.error("Lỗi lấy dữ liệu cư dân:", error);
             Alert.alert("Lỗi", "Không thể tải thông tin cư dân");

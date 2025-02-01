@@ -1,8 +1,11 @@
 import axios from "axios";
 
-// const BASE_URL = 'http://10.0.2.2:8000/';
-const BASE_URL = 'http://192.168.1.7:8000/';
+const BASE_URL = 'http://192.168.206.3:8000/';
+// const BASE_URL = 'http://192.168.1.7:8000/';
 // const BASE_URL = ' http://127.0.0.1:8000/';
+
+export const client_id = "MH4TCwTXdmpAOulasshJv0ofgFaHYpyRV7Q0huNe";
+export const client_secret = "Oqe03MRLrsTQzUcLNs6p9F8j2v3toIoeo8nzcCIZejNCm0BQ6HVa4VKDMy0APCaubWxq0qJlhekqyXvaWHxRd8B5VLrKD0FM3ca0KZTHZxi7yN3WeXaHQ4SxMp1XA4b7";
 
 export const endpoints = {
     'managing-fees': (accountState) => `/resident-information/${accountState.id}/managing-fees/`,
@@ -13,9 +16,9 @@ export const endpoints = {
     'surveys': (accountState) => `/resident-information/${accountState.id}/surveys/`,
     'address': '/address/',
     'login': '/o/token/',
-    'update-avatar-password': '/user/update-avatar-password/',
+    'update-avatar-password': (accountState) => `/user/${accountState.id}/update-avatar-password/`,
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
-    'resident-information': '/resident-information/',
+    'resident-information': (accountState) => `/resident-information/${accountState.id}`,
     'resident-create': '/resident-create/'
 }
 

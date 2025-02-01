@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import MyContext, { MyAccountContext } from "../../configs/MyContext"
-import APIs, { authApis, endpoints } from "../../configs/APIs"
+import APIs, { authApis, endpoints, client_id, client_secret } from "../../configs/APIs"
 import Styles from"../../styles/Styles"
 import { TextInput, TouchableOpacity, View, Text, ActivityIndicator, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -31,8 +31,8 @@ const Login = ({navigation}) => {
 
             // Gửi yêu cầu đăng nhập
             const res = await APIs.post(endpoints['login'], {
-                client_id: "GsKvJoLxAuYAv8cdtpb3KC6JOl7x7M3wMbLIgwz8",
-                client_secret: "27hDKxAJMJztjHzMkAfhu74F1SaV5zAiuIx7hlHY5tdFhkoF3Utdw2UjQB008kEVek6BulK1kVXHQcEmw0h5dwWAPjbAU0gOIQw72k5BsicUBzXOaRrnGhwapTWjHAlE",
+                client_id: client_id,
+                client_secret: client_secret,
                 grant_type: "password",
                 username: account.username,
                 password: account.password
