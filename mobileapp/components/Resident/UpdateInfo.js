@@ -1,6 +1,6 @@
 import { Alert, Button, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Styles from "../../styles/Styles";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MyAccountContext } from "../../configs/MyContext";
 import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
@@ -14,26 +14,16 @@ const UpdateInfo = () => {
     const [avatar, setAvatar] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const pickImage = async () => {
-        // Yêu cầu quyền truy cập thư viện ảnh
-        let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
-        if (status !== 'granted') {
-          Alert.alert('Quyền bị từ chối', 'Bạn cần cấp quyền truy cập vào thư viện ảnh.');
-        } else {
-            const result = await ImagePicker.launchImageLibraryAsync();
-            if (!result.canceled) {
-              setAvatar(result.assets[0]);
-              console.log("avatar", avatar);  // Lưu ảnh được chọn vào trạng thái
-            } else {
-              console.log('Bộ chọn hình ảnh đã bị hủy');
-            }
-        }
-    }
+//axios.patch(url, data, config) 
+// url: Địa chỉ API endpoint.
+// data: Dữ liệu muốn cập nhật (chỉ cần gửi các trường thay đổi).
+// config (tùy chọn): Headers, token xác thực, v.v.
 
+//Có biến avatar và newPassword cần xử lý, gửi lên server theo patch
     const changePassword = async (userId, oldPassword, newPassword) => {
         try {
-            const response = await axios.post(APIs.get(endpoints['update-avatar-password']), {
+            const response = await axios.patch(APIs.get(endpoints['update-avatar-password']), {
                 user_id: userId,
                 old_password: oldPassword,
                 new_password: newPassword
@@ -45,11 +35,21 @@ const UpdateInfo = () => {
             console.log(response.data.message);
             return response.data;
         } catch (error) {
-            console.error("Lỗi đổi mật khẩu:", error.response?.data || error.message);
+            console.error("Lỗi:", error.response?.data || error.message);
             return null;
         }
     };
 
+    const changeAvatar = async () => {
+
+    };
+
+    const changeAll = async () => {
+
+    };
+
+
+//================================================================================================
     const handleChangePassword = async () => {
         try {
             setLoading(true)
@@ -78,11 +78,28 @@ const UpdateInfo = () => {
             setLoading(false);
         }
     };
-  
+
+    const pickImage = async () => {
+        // Yêu cầu quyền truy cập thư viện ảnh
+        let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+        if (status !== 'granted') {
+          Alert.alert('Quyền bị từ chối', 'Bạn cần cấp quyền truy cập vào thư viện ảnh.');
+        } else {
+            const result = await ImagePicker.launchImageLibraryAsync();
+            if (!result.canceled) {
+              setAvatar(result.assets[0]);
+              console.log("avatar", avatar);  // Lưu ảnh được chọn vào trạng thái
+            } else {
+              console.log('Bộ chọn hình ảnh đã bị hủy');
+            }
+        }
+    };
+
     return (
-    <KeyboardAvoidingView style={[Styles.containerNoCenter, {padding:5}]}  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView style={Styles.containerNoCenter}>
+        <ScrollView>
             <TouchableOpacity style={{alignItems:"center"}} onPress={pickImage}>
                 <Text style={Styles.title}>Chọn ảnh đại diện</Text>
                 {/* Hiển thị ảnh đại diện nếu đã chọn */}
@@ -108,8 +125,15 @@ const UpdateInfo = () => {
                 <Text style={[Styles.subtitle, {textAlign: "left"}]}>Nhập lại mật khẩu mới:</Text>
                 <TextInput style={Styles.input} secureTextEntry={true} value={confirm}
                     placeholder="Nhập lại mật khẩu mới" onChangeText={setConfirm}
-                /> 
-                <Button style={Styles.button} title="Xác Nhận" onPress={handleChangePassword} />
+                />
+            </View>
+
+            <View>
+                <View style={Styles.row}>
+                    <Button style={[Styles.button, {with: "50%"}]} title="Đổi mật khẩu" onPress={handleChangePassword} />
+                    <Button style={[Styles.button, {with: "50%"}]} title="Đổi avatar" onPress={changeAvatar} />
+                </View>
+                <Button style={Styles.button} title="Cập nhật avatar và mật khẩu" onPress={changeAll} />
             </View>
         </ScrollView>
         </TouchableWithoutFeedback>

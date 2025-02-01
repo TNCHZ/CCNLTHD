@@ -24,7 +24,7 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
             if(!token) throw new Error("Không tìm thấy token");
             const res = await authApis(token).get(endpoints['resident-information'](accountState));
             console.log("res: ", res.data);
-            //setResidentInfo(res.data);
+            setResidentInfo(res.data);
 
         } catch (error) {
             console.error("Lỗi lấy dữ liệu cư dân:", error);
@@ -46,7 +46,7 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
                 <>
                     <Text style={Styles.title}>Thông tin cá nhân</Text>
                     {residentInfo.avatar ? (
-                        <Image source={{ uri: residentInfo.avatar }} style={Styles.avatar} />
+                        <Image source={{ uri: residentInfo.avatar }} style={Styles.imageAvatar} />
                     ) : (
                         <Text style={Styles.text}>Không có ảnh đại diện</Text>
                     )}

@@ -77,13 +77,13 @@ const Login = ({navigation}) => {
                     },
                 });
 
-                if (userAccount.data.avatar) {
+                if (userAccount.data.change_password_image) {
                     // Nếu có avatar, điều hướng đến màn hình "home"
                     navigation.navigate("home");
-                  } else {
+                } else {
                     // Nếu không có avatar, điều hướng đến màn hình "upload"
                     navigation.navigate("updateInfo");
-                  }                  
+                }                  
             } else {
                 console.error("Lỗi từ API: Không có token trả về");
                 Alert.alert("Lỗi", "Đăng nhập không thành công.");

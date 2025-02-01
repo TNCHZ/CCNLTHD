@@ -38,6 +38,7 @@ class UserViewSet(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+
 class ResidentCreateViewSet(viewsets.ViewSet):
     queryset = Resident.objects.all()
     serializer_class = serializers.CreateResidentSerializer

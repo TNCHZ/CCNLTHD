@@ -7,7 +7,7 @@ import Styles from "../../styles/Styles";
 const Items = ({item, routeName, params}) => {
     const nav = useNavigation();
     return(
-        <List.Item key={item.id}
+        <List.Item key={`${item.id}-${item.name}`}
             title={() => (
                 <TouchableOpacity onPress={() => {nav.navigate(routeName, params)}}>
                     <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>

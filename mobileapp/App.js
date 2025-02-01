@@ -58,7 +58,7 @@ const App =() => {
         })}>
           {/* Trang Home */}
           <Drawer.Screen name="home" component={Home} options={{title: 'Giới Thiệu'}}/>
-          <Drawer.Screen name='updateInfo' component={UpdateInfo} options={{title: 'Cập nhật thông tin', drawerItemStyle:{display: 'none'}}} />
+          <Drawer.Screen name='updateInfo' component={UpdateInfo} options={{title: 'Cập nhật thông tin'}} />
           {/* Trang Login khi account = null */}
           {account === null ? <>
             <Drawer.Screen name="login" component={Login} options={{title:"Đăng Nhập"}}/>
