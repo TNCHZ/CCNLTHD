@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 
 
-class MonthViewSet(viewsets.ViewSet, generics.CreateAPIView):
+class MonthViewSet(viewsets.ModelViewSet):
     queryset = Month.objects.all()
     serializer_class = serializers.MonthSerializer
 
@@ -16,6 +16,7 @@ class MonthViewSet(viewsets.ViewSet, generics.CreateAPIView):
 class UserViewSet(viewsets.ViewSet):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
+
 
     def get_permissions(self):
         if self.action in ['get_current_user']:
@@ -27,14 +28,13 @@ class UserViewSet(viewsets.ViewSet):
     def get_current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
 
-    @action(detail=True, methods=['patch'], url_path='update-avatar-password')
-    def update_avatar_password(self, request, pk=None):
-        user = self.get_object()  # Lấy người dùng hiện tại
+    @action(detail=False, methods=['patch'], url_path='update-avatar-password')
+    def update_avatar_password(self, request):
+        user = request.user  # Lấy user hiện tại từ request
 
-        # Kiểm tra nếu có avatar hoặc password được gửi trong request
-        serializer = self.get_serializer(user, data=request.data, partial=True)
+        serializer = self.serializer_class(user, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()  # Lưu lại dữ liệu đã cập nhật
+            serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
@@ -57,10 +57,10 @@ class ResidentCreateViewSet(viewsets.ViewSet):
 
 
 #============================================|| Resident ||============================================#
-class ListResident(viewsets.ViewSet, generics.ListAPIView):
+class ListResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Resident.objects.all()
     serializer_class = serializers.ResidentInformationSerializer
-
+    # permission_classes = AdminPermission
 
 
 class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):

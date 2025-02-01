@@ -16,6 +16,9 @@ router.register(r'resident-survey', views.ResidentSurveyViewSet)
 router.register(r'resident-survey-response', views.ResidentSurveyResponseViewSet)
 router.register(r'address', views.AddressViewSet)
 router.register(r'resident-create', views.ResidentCreateViewSet, basename='resident-create')
+router.register(r'list-user', views.ListResidentViewSet, basename='list-resident')
+router.register(r'month-fee', views.MonthViewSet, basename='month-fee')
+
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import MyContext, { MyAccountContext } from "../../configs/MyContext"
 import APIs, { authApis, endpoints, client_id, client_secret } from "../../configs/APIs"
-import Styles from"../../styles/Styles"
+import Styles from "../../styles/Styles"
 import { TextInput, TouchableOpacity, View, Text, ActivityIndicator, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
     const [account, setAccount] = useState({
         "username": "",
         "password": "",
@@ -16,7 +16,7 @@ const Login = ({navigation}) => {
 
     // Cập nhật lại state account với giá trị mới
     const updateAccount = (value, field) => {
-        setAccount({...account, [field]: value });
+        setAccount({ ...account, [field]: value });
     }
 
     const login = async () => {
@@ -36,7 +36,7 @@ const Login = ({navigation}) => {
                 grant_type: "password",
                 username: account.username,
                 password: account.password
-            },{
+            }, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                 }
@@ -45,24 +45,24 @@ const Login = ({navigation}) => {
             if (res?.data?.access_token) {
                 console.info("Token:", res.data.access_token);
                 await AsyncStorage.setItem('token', res.data.access_token);
-    
+
                 // Lấy thông tin người dùng sau khi đăng nhập thành công
                 const token = await AsyncStorage.getItem("token");
-    
+
                 if (!token) {
                     console.error("Không tìm thấy token!");
                     return;
                 }
-    
+
                 const userAccount = await authApis(token).get(endpoints["current-user"]);
                 console.log("Thông tin người dùng:", userAccount.data);
-    
+
                 // Cập nhật lại state account
                 setAccount({
                     username: userAccount.data.username,
                     password: account.password,
                 });
-    
+
                 // Gửi hành động đăng nhập với Redux/Context API
                 dispatch({
                     type: "login",
@@ -77,18 +77,23 @@ const Login = ({navigation}) => {
                     },
                 });
 
-                if (userAccount.data.change_password_image) {
-                    // Nếu có avatar, điều hướng đến màn hình "home"
+                if (userAccount.data.role == "Admin") {
                     navigation.navigate("home");
-                } else {
-                    // Nếu không có avatar, điều hướng đến màn hình "upload"
-                    navigation.navigate("updateInfo");
-                }                  
+                }
+                else {
+                    if (userAccount.data.change_password_image) {
+                        // Nếu có avatar, điều hướng đến màn hình "home"
+                        navigation.navigate("home");
+                    } else {
+                        // Nếu không có avatar, điều hướng đến màn hình "upload"
+                        navigation.navigate("updateInfo");
+                    }
+                }
             } else {
                 console.error("Lỗi từ API: Không có token trả về");
                 Alert.alert("Lỗi", "Đăng nhập không thành công.");
             }
-        } catch(ex) {
+        } catch (ex) {
             console.error("Lỗi đăng nhập:", ex);
             if (ex.response) {
                 console.error("Lỗi response:", ex.response.status, ex.response.data);
@@ -106,8 +111,8 @@ const Login = ({navigation}) => {
     return (
         <View style={Styles.container}>
             <Text style={Styles.title}>Đăng nhập</Text>
-            <TextInput style={Styles.input} value={account.username} onChangeText={(t) => updateAccount(t, "username")} placeholder="Tên đăng nhập"/>
-            <TextInput style={Styles.input} value={account.password} secureTextEntry={true} onChangeText={(p) => updateAccount(p, "password")} placeholder="Nhập mật khẩu"/>
+            <TextInput style={Styles.input} value={account.username} onChangeText={(t) => updateAccount(t, "username")} placeholder="Tên đăng nhập" />
+            <TextInput style={Styles.input} value={account.password} secureTextEntry={true} onChangeText={(p) => updateAccount(p, "password")} placeholder="Nhập mật khẩu" />
             <TouchableOpacity onPress={login} style={Styles.button} disabled={loading}>
                 {loading ? (
                     <ActivityIndicator size="small" color="#fff" />

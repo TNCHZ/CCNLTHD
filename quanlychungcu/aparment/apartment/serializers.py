@@ -81,10 +81,12 @@ class ResidentInformationSerializer(serializers.ModelSerializer):
 
         return resident
 
+
 class ResidentFeeValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeeValue
         fields = ['id', 'name', 'value']
+
 
 
 class ResidentManagingFeeSerializer(serializers.ModelSerializer):

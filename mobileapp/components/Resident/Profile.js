@@ -20,9 +20,9 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
 
         try {
             setLoading(true);
-            const token = await AsyncStorage.getItem("token");
-            if(!token) throw new Error("Không tìm thấy token");
-            const res = await authApis(token).get(endpoints['resident-information'](accountState));
+            let url = `${endpoints['resident-information'](accountState)}`
+            console.log("url", url);
+            let res = await APIs.get(url);
             console.log("res: ", res.data);
             setResidentInfo(res.data);
 
@@ -46,7 +46,7 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
                 <>
                     <Text style={Styles.title}>Thông tin cá nhân</Text>
                     {residentInfo.avatar ? (
-                        <Image source={{ uri: residentInfo.avatar }} style={Styles.imageAvatar} />
+                        <Image source={{ uri: residentInfo.avatar }} style={Styles.avatar} />
                     ) : (
                         <Text style={Styles.text}>Không có ảnh đại diện</Text>
                     )}
@@ -57,7 +57,7 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
                     <Text style={Styles.txt}>Địa chỉ: {residentInfo.address.name}</Text>
 
                     {/* Nút đổi mật khẩu */}
-                    <Button title="Đổi Avatar/Mật khẩu" onPress={() => navigation.navigate("updateInfo")} />
+                    <Button title="Cập nhật mật khẩu và ảnh đại diện" onPress={() => navigation.navigate("updateInfo")} />
                 </>
             ) : (
                 <Text>Không có thông tin cư dân</Text>
