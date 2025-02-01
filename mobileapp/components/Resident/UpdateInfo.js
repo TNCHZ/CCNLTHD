@@ -6,7 +6,7 @@ import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
 import APIs, { client_id, client_secret, endpoints } from "../../configs/APIs";
 
-const UpdateInfo = () => {
+const UpdateInfo = ({navigation}) => {
     const accountState = useContext(MyAccountContext);
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -21,38 +21,9 @@ const UpdateInfo = () => {
 // config (tùy chọn): Headers, token xác thực, v.v.
 
 //Có biến avatar và newPassword cần xử lý, gửi lên server theo patch
-    const changePassword = async (userId, oldPassword, newPassword) => {
+    const changePassword = async () => {
         try {
-            const response = await axios.patch(APIs.get(endpoints['update-avatar-password']), {
-                user_id: userId,
-                old_password: oldPassword,
-                new_password: newPassword
-            }, {
-                headers: {
-                'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
-                }
-            });
-            console.log(response.data.message);
-            return response.data;
-        } catch (error) {
-            console.error("Lỗi:", error.response?.data || error.message);
-            return null;
-        }
-    };
-
-    const changeAvatar = async () => {
-
-    };
-
-    const changeAll = async () => {
-
-    };
-
-
-//================================================================================================
-    const handleChangePassword = async () => {
-        try {
-            setLoading(true)
+            setLoading(true);
             if (!oldPassword || !newPassword || !confirm) {
                 Alert.alert("Lỗi", "Vui lòng nhập đủ thông tin");
                 return;
@@ -65,20 +36,62 @@ const UpdateInfo = () => {
                 Alert.alert("Xác nhận mật khẩu mới không thành công !", "Vui lòng nhập lại đúng mật khẩu mới !!");
                 return;
             }
-            const response = await changePassword(accountState.id, oldPassword, newPassword);
-    
-            if (response) {
+            const response = await axios.patch(APIs.get(endpoints['update-avatar-password']), {
+                old_password: oldPassword,
+                new_password: newPassword
+            }, {
+                headers: {
+                'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
+                }
+            });
+            console.log(response.data.message);
+            if (response.data) {
                 Alert.alert("Thành công !", "Mật khẩu đã được thay đổi");
             } else {
                 Alert.alert("Thất bại !", "Có lỗi xảy ra tại response");
             }
         } catch (error) {
-            console.error("Lỗi", error)
+            console.error("Lỗi:", error.response?.data || error.message);
         } finally {
             setLoading(false);
         }
     };
 
+    const changeAvatar = async () => {
+        try {
+            setLoading(true)
+
+            if (!avatar) {
+                Alert.alert("Lỗi: Chưa chọn ảnh !", "Vui lòng chọn ảnh để avatar.");
+                return;
+            }
+
+            const response = await axios.patch(APIs.get(endpoints['update-avatar-password']), {
+                uri: avatar.uri,
+                name: avatar.fileName,
+                type: avatar.type
+            }, {
+                headers: {
+                'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
+                }
+            });
+            console.log(response.data.message);
+            navigation.navigate("home");
+        } catch (error) {
+            console.error("Lỗi:", error.response?.data || error.message);
+        } finally {
+            setLoading(false)
+        }
+    };
+
+    const changeAll = async () => {
+        changePassword();
+        changeAvatar();
+        navigation.navigate("home");
+    };
+
+
+//================================================================================================
     const pickImage = async () => {
         // Yêu cầu quyền truy cập thư viện ảnh
         let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -130,7 +143,7 @@ const UpdateInfo = () => {
 
             <View>
                 <View style={Styles.row}>
-                    <Button style={[Styles.button, {with: "50%"}]} title="Đổi mật khẩu" onPress={handleChangePassword} />
+                    <Button style={[Styles.button, {with: "50%"}]} title="Đổi mật khẩu" onPress={changePassword} />
                     <Button style={[Styles.button, {with: "50%"}]} title="Đổi avatar" onPress={changeAvatar} />
                 </View>
                 <Button style={Styles.button} title="Cập nhật avatar và mật khẩu" onPress={changeAll} />
