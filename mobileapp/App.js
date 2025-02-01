@@ -25,6 +25,7 @@ import Create_Resident from './components/Admin/Create_Resident';
 import Create_Survey from './components/Admin/Create_Survey';
 import RegisterParking from './components/Resident/RegisterParking';
 import APIs from './configs/APIs';
+import ChangePassword from './components/Resident/ChangePassword';
 
 
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
@@ -68,6 +69,7 @@ const App =() => {
             <Drawer.Screen name='managingFeeDetail' component={ManagingFee_Detail} options={{title: 'Phí Quản Lý', drawerItemStyle:{display: 'none'}}}/>
             <Drawer.Screen name='parkingFeeDetail' component={ParkingFee_Detail} options={{title: 'Phí Đỗ Xe', drawerItemStyle:{display: 'none'}}}/>
             <Drawer.Screen name='serviceFeeDetail' component={ServiceFee_Detail} options={{title: 'Phí Dịch Vụ', drawerItemStyle:{display: 'none'}}}/>
+            <Drawer.Screen name='changePassword' component={ChangePassword} options={{title: 'Cập nhật thông tin'}} />
             
             {account.role === "Admin" ? <>
               {/* Hiện tương tác của ADMIN */}
