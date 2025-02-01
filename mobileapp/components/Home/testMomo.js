@@ -3,56 +3,63 @@ const testMomo = () => {
 
     //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
     //parameters
-    var accessKey = 'F8BBA842ECF85';
-    var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
-    var orderInfo = 'pay with MoMo';
-    var partnerCode = 'MOMO';
-    var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b'; //Trang sẽ đến sau khi thaanh toán xong
-    var ipnUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
-    var requestType = "payWithMethod";
-    var amount = '50000';
-    var orderId = partnerCode + new Date().getTime();
-    var requestId = orderId;
-    var extraData ='';
-    var paymentCode = 'T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==';
-    var orderGroupId ='';
-    var autoCapture =true;
-    var lang = 'vi';
+
+    //Momo cung cấp example của momo
+    var partnerCode = "MOMO";
+    var accessKey = "F8BBA842ECF85";
+    var secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+    //Chuỗi ngẫu nhiên để phân biệt cái request
+    var requestId = partnerCode + new Date().getTime();
+    //mã đơn hàng
+    var orderId = requestId;
+    var orderInfo = "pay with MoMo";
+    //cung cấp page khi thanh toán xong sẽ tới
+    var redirectUrl = "https://momo.vn/return";
+    //page thanks
+    var ipnUrl = "https://callback.url/notify";
+    // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
+    // Biến số dư tài khoản
+    var amount = "10000000";
+    // Show thông tin thẻ, dưới QR, trên điền form
+    var requestType = "captureWallet"
+    var extraData = ""; //pass empty value if your merchant does not have stores
 
     //before sign HMAC SHA256 with format
     //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
-    var rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
+    //biến lớn tổng hợp các biến trên
+    var rawSignature = "accessKey="+accessKey+"&amount=" + amount+"&extraData=" + extraData+"&ipnUrl=" + ipnUrl+"&orderId=" + orderId+"&orderInfo=" + orderInfo+"&partnerCode=" + partnerCode +"&redirectUrl=" + redirectUrl+"&requestId=" + requestId+"&requestType=" + requestType
     //puts raw signature
     console.log("--------------------RAW SIGNATURE----------------")
     console.log(rawSignature)
     //signature
+
+    //Tạo ra thuật toán
     const crypto = require('crypto');
-    var signature = crypto.createHmac('sha256', secretKey)
+    var signature = crypto.createHmac('sha256', secretkey) //secretkey của momo cung cấp sẵn
         .update(rawSignature)
-        .digest('hex');
+        .digest('hex'); //chữ ký chuyển sang mã 16
     console.log("--------------------SIGNATURE----------------")
     console.log(signature)
 
-    //json object send to MoMo endpoint
+    //json object send to MoMo endpoint //gửi những thông tin lên API của momo
     const requestBody = JSON.stringify({
         partnerCode : partnerCode,
-        partnerName : "Test",
-        storeId : "MomoTestStore",
+        accessKey : accessKey,
         requestId : requestId,
         amount : amount,
         orderId : orderId,
         orderInfo : orderInfo,
         redirectUrl : redirectUrl,
         ipnUrl : ipnUrl,
-        lang : lang,
-        requestType: requestType,
-        autoCapture: autoCapture,
         extraData : extraData,
-        orderGroupId: orderGroupId,
-        signature : signature
+        requestType : requestType,
+        signature : signature,
+        lang: 'en'
     });
-    //Create the HTTPS objects
+
+    //Create the HTTPS objects //tạo server, https để call các API khác và của Momo
     const https = require('https');
+    //Yêu cầu truyền đi
     const options = {
         hostname: 'test-payment.momo.vn',
         port: 443,
@@ -63,17 +70,20 @@ const testMomo = () => {
             'Content-Length': Buffer.byteLength(requestBody)
         }
     }
-    //Send the request and get the response
+    //Send the request and get the response // Gửi yêu cầu và lấy kết quả trả về từ momo
     const req = https.request(options, res => {
         console.log(`Status: ${res.statusCode}`);
         console.log(`Headers: ${JSON.stringify(res.headers)}`);
         res.setEncoding('utf8');
+        // trả về body là khi mình call momo
         res.on('data', (body) => {
             console.log('Body: ');
             console.log(body);
-            console.log('resultCode: ');
-            console.log(JSON.parse(body).resultCode);
+            console.log('payUrl: ');
+            //url đến thanh toán momo
+            console.log(JSON.parse(body).payUrl);
         });
+        //Dùng để bắt lỗi
         res.on('end', () => {
             console.log('No more data in response.');
         });
@@ -86,6 +96,5 @@ const testMomo = () => {
     console.log("Sending....")
     req.write(requestBody);
     req.end();
-
 };
 export default testMomo;

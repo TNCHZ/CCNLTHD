@@ -14,7 +14,7 @@ const ChangePassword = () => {
 
     const changePassword = async (userId, oldPassword, newPassword) => {
         try {
-            const response = await axios.post(APIs.get(endpoints['change-assword']), {
+            const response = await axios.post(APIs.get(endpoints['update-avatar-password']), {
                 // client_id: client_id,
                 // client_secret: client_secret,
                 user_id: userId,
@@ -22,10 +22,9 @@ const ChangePassword = () => {
                 new_password: newPassword
             }, {
                 headers: {
-                  'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
+                'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
                 }
-              });
-    
+            });
             console.log(response.data.message);
             return response.data;
         } catch (error) {
@@ -41,16 +40,20 @@ const ChangePassword = () => {
                 Alert.alert("Lỗi", "Vui lòng nhập đủ thông tin");
                 return;
             }
+            if (oldPassword != accountState[0].password) {
+                Alert.alert("Mật khẩu cũ không chính xác !", "Vui lòng kiểm tra lại mật khẩu cũ !");
+                return;
+            }
             if (newPassword != confirm) {
-                Alert.alert("Lỗi", "Vui lòng nhập lại đúng mật khẩu mới !!");
+                Alert.alert("Xác nhận mật khẩu mới không thành công !", "Vui lòng nhập lại đúng mật khẩu mới !!");
                 return;
             }
             const response = await changePassword(accountState.id, oldPassword, newPassword);
     
             if (response) {
-                Alert.alert("Thành công", "Mật khẩu đã được thay đổi");
+                Alert.alert("Thành công !", "Mật khẩu đã được thay đổi");
             } else {
-                Alert.alert("Lỗi", "Mật khẩu cũ không đúng hoặc có lỗi xảy ra");
+                Alert.alert("Thất bại !", "Có lỗi xảy ra tại response");
             }
         } catch (error) {
             console.error("Lỗi", error)
@@ -64,20 +67,17 @@ const ChangePassword = () => {
             <Text style={Styles.title}>Thay đổi mật khẩu</Text>
             <Text style={Styles.subtitle}>Nhập mật khẩu cũ:</Text>
             <TextInput style={Styles.input} secureTextEntry value={oldPassword}
-                placeholder="Nhập mật khẩu hiện tại"
-                onEndEditing={(event) => setOldPassword(event.nativeEvent.text)}
+                placeholder="Nhập mật khẩu hiện tại" onChangeText={setOldPassword}
             />
             
             <Text style={Styles.subtitle}>Nhập mật khẩu mới:</Text>
             <TextInput style={Styles.input} secureTextEntry value={newPassword}
-                placeholder="Nhập mật khẩu mới"
-                onEndEditing={(event) => setNewPassword(event.nativeEvent.text)}
+                placeholder="Nhập mật khẩu mới" onChangeText={setNewPassword}
             />
 
             <Text style={Styles.subtitle}>Nhập lại mật khẩu mới:</Text>
             <TextInput style={Styles.input} secureTextEntry value={confirm}
-                placeholder="Nhập lại mật khẩu mới"
-                onEndEditing={(event) => setConfirm(event.nativeEvent.text)}
+                placeholder="Nhập lại mật khẩu mới" onChangeText={setConfirm}
             />
 
             <Button style={Styles.button} title="Đổi mật khẩu" onPress={handleChangePassword} />
