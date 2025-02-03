@@ -77,7 +77,7 @@ class Resident(BaseModel):
 
     gender = models.BooleanField(choices=[(True, 'Male'), (False, 'Female')], default=True)
     day_of_birth = models.DateField(null=False)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
     phone = models.CharField(max_length=10, null=False, unique=True)
     citizen_identification = models.CharField(max_length=12, null=False, unique=True)
 

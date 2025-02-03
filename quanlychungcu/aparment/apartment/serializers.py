@@ -21,7 +21,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'avatar', 'username', 'password', 'role', 'change_password_image']
+        fields = ['id', 'username', 'first_name', 'last_name', 'avatar', 'username', 'password', 'role', 'change_password_image', 'is_active']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -81,11 +81,18 @@ class CreateResidentSerializer(serializers.ModelSerializer):
 
 #============================================|| Resident ||============================================#
 class ResidentInformationSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    userdetail = serializers.SerializerMethodField()
+
     address = AddressSerializer()
 
     class Meta:
         model = Resident
-        fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
+        fields = ['user', 'userdetail', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
+
+    def get_userdetail(self, obj):
+        return UserSerializer(obj.user).data
+
 
 
 class ManagingFeeSerializer(serializers.ModelSerializer):

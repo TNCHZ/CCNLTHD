@@ -16,7 +16,7 @@ router.register(r'survey', views.SurveyViewSet)
 router.register(r'resident-survey-response', views.ResidentSurveyResponseViewSet)
 router.register(r'address', views.AddressViewSet)
 router.register(r'resident-create', views.ResidentCreateViewSet, basename='resident-create')
-router.register(r'list-user', views.ListResidentViewSet, basename='list-user')
+router.register(r'list-user', views.ResidentViewSet, basename='list-user')
 router.register(r'month-fee', views.MonthViewSet, basename='month-fee')
 router.register(r'feedback', views.FeedbackViewSet)
 

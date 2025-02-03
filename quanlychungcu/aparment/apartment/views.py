@@ -17,6 +17,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
 
+
 class UserViewSet(viewsets.ViewSet):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
@@ -61,10 +62,10 @@ class ResidentCreateViewSet(viewsets.ViewSet):
 
 
 #============================================|| Resident ||============================================#
-class ListResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
+class ResidentViewSet(viewsets.ModelViewSet):
     queryset = Resident.objects.all()
     serializer_class = serializers.ResidentInformationSerializer
-    permission_classes = [AdminPermission]
+    # permission_classes = [AdminPermission]
 
 
 class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
