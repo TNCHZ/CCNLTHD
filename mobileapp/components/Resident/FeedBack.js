@@ -1,21 +1,45 @@
 import { TextInput, View, Text, TouchableOpacity, Alert } from "react-native";
 import FeedBackStyle from "./FeedBackStyle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Styles from "../../styles/Styles";
+import { MyAccountContext } from "../../configs/MyContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authApis, endpoints } from "../../configs/APIs";
 
 const FeedBack = ({navigation}) => {
+    const [accountState] = useContext(MyAccountContext);
     const [feedback, setFeedback] = useState("");
 
-    const thanks = () => {
+    const thanks = async () => {
         try {
-            Alert.alert("FeedBack","Cảm ơn bạn đã đóng góp ý kiển để cải thiện chất lượng của JpHome !",);
-            setFeedback("");
-            console.info("Gửi FeedBack thành công");
+            const feedbackData = { 
+                content: feedback,
+                resident: accountState.id 
+            }; 
+    
+            const token = await AsyncStorage.getItem("token");
+    
+            const response = await authApis(token).post(endpoints["feedback"], feedbackData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            // Kiểm tra phản hồi từ server
+            if (response.status === 200 || response.status === 201) {
+                Alert.alert("FeedBack", "Cảm ơn bạn đã đóng góp ý kiến để cải thiện chất lượng của JpHome!");
+                setFeedback("");  // Reset lại nội dung feedback
+                console.info("Gửi FeedBack thành công");
+            } else {
+                Alert.alert("FeedBack", "Đã có lỗi xảy ra khi gửi ý kiến của bạn. Vui lòng thử lại.");
+                console.error("Gửi FeedBack thất bại");
+            }
         } catch (error) {
-            console.error("Gửi FeedBack thất bại");
+            // Xử lý lỗi nếu có
+            Alert.alert("FeedBack", "Có lỗi khi gửi phản hồi. Vui lòng thử lại.");
+            console.error("Gửi FeedBack thất bại", error);
         }
-    }
-
+    };
     return (
         <View style={Styles.container}>
             <Text style={Styles.title}>THƯ GÓP Ý</Text>
