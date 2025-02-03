@@ -12,15 +12,19 @@ export const endpoints = {
     'parking-fees': (accountState) => `/resident-information/${accountState.id}/parking-fees/`,
     'service-fees': (accountState) => `/resident-information/${accountState.id}/service-fees/`,
     'feedback': (accountState) => `/resident-information/${accountState.id}/feedback/`,
-    'locker': (accountState) => `/resident-information/${accountState.id}/loker/`,
-    'surveys': (accountState) => `/resident-information/${accountState.id}/surveys/`,
+    'locker': (accountState) => `/resident-information/${accountState.id}/locker/`,
+    'survey-response': (accountState) => `/resident-information/${accountState.id}/survey/`,
     'address': '/address/',
     'login': '/o/token/',
+    'survey': '/survey/',
+    'feedback': '/feedback/',
+    'resident-survey-response': '/resident-survey-response/',
+    'month-fee': '/month-fee/',
     'update-avatar-password': `/user/update-avatar-password/`,
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
     'resident-information': (accountState) => `/resident-information/${accountState.id}/`,
     'resident-create': '/resident-create/',
-    'list-resident': '/list-user/'
+    'list-user': '/list-user/'
 }
 
 export const authApis = (token) =>  {

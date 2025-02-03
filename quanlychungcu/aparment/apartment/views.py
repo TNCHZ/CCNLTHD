@@ -1,3 +1,4 @@
+from django.db.models.functions import Trunc
 from requests import Response
 from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action, permission_classes
@@ -9,9 +10,12 @@ from rest_framework.response import Response
 
 
 class MonthViewSet(viewsets.ModelViewSet):
-    queryset = Month.objects.all()
+    queryset = Month.objects.all().order_by('year', 'name')
     serializer_class = serializers.MonthSerializer
 
+class FeedbackViewSet(viewsets.ModelViewSet):
+    queryset = Feedback.objects.all()
+    serializer_class = serializers.FeedbackSerializer
 
 class UserViewSet(viewsets.ViewSet):
     queryset = User.objects.filter(is_active=True)
@@ -47,7 +51,7 @@ class ResidentCreateViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = serializers.CreateResidentSerializer(data=request.data)
         if serializer.is_valid():
-            resident = serializer.save()  # Gọi create() của serializer
+            resident = serializer.save()
             return Response(
                 {"message": "Resident created successfully!", "resident_id": resident.user.id},
                 status=status.HTTP_201_CREATED
@@ -60,7 +64,7 @@ class ResidentCreateViewSet(viewsets.ViewSet):
 class ListResidentViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Resident.objects.all()
     serializer_class = serializers.ResidentInformationSerializer
-    # permission_classes = AdminPermission
+    permission_classes = [AdminPermission]
 
 
 class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
@@ -86,7 +90,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
         managing_fees = ManagingFees.objects.filter(resident=resident, status=False)
-        managing_fees_serializer = serializers.ResidentManagingFeeSerializer(managing_fees, many=True)
+        managing_fees_serializer = serializers.ManagingFeeSerializer(managing_fees, many=True)
 
         return Response(managing_fees_serializer.data)
 
@@ -99,7 +103,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
         parking_fees = ParkingFees.objects.filter(resident=resident, status=False)
-        parking_fees_serializer = serializers.ResidentParkingFeeSerializer(parking_fees, many=True)
+        parking_fees_serializer = serializers.ParkingFeeSerializer(parking_fees, many=True)
         return Response(parking_fees_serializer.data)
 
 
@@ -111,7 +115,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
         parking_fees = ServiceFees.objects.filter(resident=resident, status=False)
-        parking_fees_serializer = serializers.ResidentParkingFeeSerializer(parking_fees, many=True)
+        parking_fees_serializer = serializers.ParkingFeeSerializer(parking_fees, many=True)
         return Response(parking_fees_serializer.data)
 
 
@@ -126,16 +130,6 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         locker_serializer = serializers.ResidentLockerSerializer(locker)
         return Response(locker_serializer.data)
 
-    @action(methods=['get'], url_path='surveys', detail=True)
-    def get_surveys(self, request, pk=None):
-        try:
-            resident = Resident.objects.get(pk=pk)
-        except Resident.DoesNotExist:
-            return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        survey_residents = SurveyResident.objects.filter(resident=resident)
-        survey_resident_serializer = serializers.SurveyResidentSerializer(survey_residents, many=True)
-        return Response(survey_resident_serializer.data)
 
     @action(methods=['get'], url_path='feedback', detail=True)
     def get_feedbacks(self, request, pk=None):
@@ -145,8 +139,19 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
         feedback_resident = Feedback.objects.filter(resident=resident)
-        feedback_resident_serializer = serializers.ResidentFeedBackSerializer(survey_residents, many=True)
+        feedback_resident_serializer = serializers.ResidentFeedBackSerializer(feedback_resident, many=True)
         return Response(feedback_resident_serializer.data)
+
+    @action(methods=['get'], url_path='survey', detail=True)
+    def get_survey(self, request, pk=None):
+        try:
+            resident = Resident.objects.get(pk=pk)
+        except Resident.DoesNotExist:
+            return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        survey = SurveyResident.objects.filter(resident=resident, is_response=False)
+        survey_serializer = serializers.ResidentSurveyResponseSerializer(survey, many=True)
+        return Response(survey_serializer.data)
 
 
     @action(methods=['get'], url_path='all-fees', detail=True)
@@ -162,9 +167,9 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         service_fees = ServiceFees.objects.filter(resident=resident)
 
         # Tuần tự hóa dữ liệu từng loại phí
-        managing_fees_serializer = serializers.ResidentManagingFeeSerializer(managing_fees, many=True)
-        parking_fees_serializer = serializers.ResidentParkingFeeSerializer(parking_fees, many=True)
-        service_fees_serializer = serializers.ResidentServiceFeeSerializer(service_fees, many=True)
+        managing_fees_serializer = serializers.ManagingFeeSerializer(managing_fees, many=True)
+        parking_fees_serializer = serializers.ParkingFeeSerializer(parking_fees, many=True)
+        service_fees_serializer = serializers.ServiceFeeSerializer(service_fees, many=True)
 
         # Gộp tất cả phí thành một danh sách
         all_fees = {
@@ -175,57 +180,44 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
 
         return Response(all_fees)
 
-class ResidentManagingFeeViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = ManagingFees.objects.all()
-    serializer_class = serializers.ResidentManagingFeeSerializer
+class ManagingFeeViewSet(viewsets.ModelViewSet):
+    queryset = ManagingFees.objects.all().order_by("id")
+    serializer_class = serializers.ManagingFeeSerializer
+
+    # def get_permissions(self):
+    #     if self.request.method == "POST" or self.request.method == "GET":
+    #         return [permissions.IsAuthenticated(), AdminPermission()]
+    #     elif self.request.method == "PATCH":
+    #         return [permissions.IsAuthenticated(), ResidentPermission()]
+    #     return super().get_permissions()
+
+
+
+class ParkingFeeViewSet(viewsets.ModelViewSet):
+    queryset = ParkingFees.objects.all().order_by("id")
+    serializer_class = serializers.ParkingFeeSerializer
 
     def get_permissions(self):
-        if self.request.method == "POST":  # POST: Admin only
+        if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
             return [permissions.IsAuthenticated(), AdminPermission()]
         elif self.request.method == "PATCH": # PATCH: Resident only
             return [permissions.IsAuthenticated(), ResidentPermission()]
-        elif self.request.method == "GET":
-            return [permissions.IsAuthenticated()]
         return super().get_permissions()
 
-    def get_queryset(self):
-        queries = self.queryset
-
-        q = self.request.query_params.get("q")
-        if q:
-            queries = queries.filter(username__icontains = q)
-
-        return queries
 
 
 
-class ResidentParkingFeeViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = ParkingFees.objects.filter(active = True, status=False).all()
-    serializer_class = serializers.ResidentParkingFeeSerializer
-    permission_classes = [permissions.AllowAny]
+class ServiceFeeViewSet(viewsets.ModelViewSet):
+    queryset = ServiceFees.objects.all().order_by("id")
+    serializer_class = serializers.ServiceFeeSerializer
 
-    def get_queryset(self):
-        queries = self.queryset
+    def get_permissions(self):
+        if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
+            return [permissions.IsAuthenticated(), AdminPermission()]
+        elif self.request.method == "PATCH": # PATCH: Resident only
+            return [permissions.IsAuthenticated(), ResidentPermission()]
+        return super().get_permissions()
 
-        q = self.request.query_params.get("q")
-        if q:
-            queries = queries.filter(username__icontains = q)
-
-        return queries
-
-
-class ResidentServiceFeeViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = ServiceFees.objects.all()
-    serializer_class = serializers.ResidentServiceFeeSerializer
-
-    def get_queryset(self):
-        queries = self.queryset
-
-        q = self.request.query_params.get("q")
-        if q:
-            queries = queries.filter(username__icontains = q)
-
-        return queries
 
 
 class ResidentLockerViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -262,33 +254,15 @@ class ResidentFeedBackViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return queries
 
-class ResidentSurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
+class SurveyViewSet(viewsets.ModelViewSet):
     queryset = Survey.objects.all()
-    serializer_class = serializers.ResidentSurveySerializer
+    serializer_class = serializers.SurveySerializer
 
 
-    def get_queryset(self):
-        queries = self.queryset
 
-        q = self.request.query_params.get("q")
-        if q:
-            queries = queries.filter(username__icontains=q)
-
-        return queries
-
-
-class ResidentSurveyResponseViewSet(viewsets.ViewSet, generics.ListAPIView):
+class ResidentSurveyResponseViewSet(viewsets.ModelViewSet):
     queryset = SurveyResident.objects.select_related('survey', 'resident').all()
     serializer_class = serializers.ResidentSurveyResponseSerializer
-
-    def get_queryset(self):
-        queries = self.queryset
-
-        q = self.request.query_params.get("q")
-        if q:
-            queries = queries.filter(username__icontains=q)
-
-        return queries
 
 
 class AddressViewSet(viewsets.ViewSet, generics.ListAPIView):

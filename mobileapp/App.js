@@ -19,7 +19,6 @@ import ParkingFee_Detail from './components/Fee/ParkingFee_Detail';
 import ServiceFee_Detail from './components/Fee/ServiceFee_Detail';
 import Profile from './components/Resident/Profile';
 import FeedBack from './components/Resident/FeedBack';
-import Checkin from './components/Resident/Checkin';
 import Delete_Resident from './components/Admin/Delete_Resident';
 import Create_Fee from './components/Admin/Create_Fee';
 import Create_Resident from './components/Admin/Create_Resident';
@@ -27,6 +26,7 @@ import Create_Survey from './components/Admin/Create_Survey';
 import RegisterParking from './components/Resident/RegisterParking';
 import UpdateInfo from './components/Resident/UpdateInfo';
 import Momo from './components/Home/Momo';
+import Surveys from './components/Resident/Surveys';
 
 
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
@@ -86,7 +86,7 @@ const App =() => {
               <Drawer.Screen name='momo' component={Momo} options={{title: "Thanh toán"}} />
               <Drawer.Screen name='locker' component={Locker} options={{title: 'Tủ Đồ Cá Nhân'}}/>
               <Drawer.Screen name='registerParking' component={RegisterParking} options={{title: 'Đăng Ký Đậu Xe'}}/>
-              <Drawer.Screen name='checkin' component={Checkin} options={{title: 'Đăng Ký Ra/Vào Chung Cư'}}/>
+              <Drawer.Screen name='survey' component={Surveys} options={{title: 'Khảo sát'}}/>
               <Drawer.Screen name='feedBack' component={FeedBack} options={{title: 'Góp ý'}}/>
             </>}
             

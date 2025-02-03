@@ -3,12 +3,12 @@ import { View, Text, TextInput, Button, TouchableOpacity, ScrollView, Alert } fr
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import Styles from '../../styles/Styles';
-import APIs, { authApis, endpoints } from "../../configs/APIs"
+import APIs, { authApis, endpoints } from "../../configs/APIs";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Create_Resident = () => {
     const [date, setDate] = useState(new Date());
-    const [addresses, setAddresses] = useState([]); // Danh sách căn hộ từ API
+    const [addresses, setAddresses] = useState([]);
 
     const showDatePicker = () => {
         DateTimePickerAndroid.open({
@@ -18,34 +18,33 @@ const Create_Resident = () => {
             onChange: (event, selectedDate) => {
                 if (selectedDate) {
                     update('dayOfBirth', selectedDate);
-                    setDate(selectedDate); // Cập nhật ngày khi người dùng chọn
+                    setDate(selectedDate);
                 }
             },
         });
     };
 
-    const [form, setForm] = useState({
+    const [json, setJson] = useState({
         fullName: "",
         gender: true,
         dayOfBirth: date,
-        address: "", // ID của căn hộ
+        address: "",
         phone: "",
         citizenId: "",
         password: "1",
     });
 
-     // Hàm lấy toàn bộ danh sách căn hộ (gọi tất cả trang)
-     const fetchAddresses = async () => {
+    const fetchAddresses = async () => {
         let allAddresses = [];
-        let nextUrl = endpoints["address"]; // URL trang đầu tiên
+        let nextUrl = endpoints["address"];
 
         try {
             while (nextUrl) {
                 const response = await APIs.get(nextUrl);
-                allAddresses = [...allAddresses, ...response.data.results]; // Thêm dữ liệu vào danh sách
-                nextUrl = response.data.next; // Cập nhật URL trang tiếp theo
+                allAddresses = [...allAddresses, ...response.data.results];
+                nextUrl = response.data.next;
             }
-            setAddresses(allAddresses); // Lưu toàn bộ danh sách vào state
+            setAddresses(allAddresses);
         } catch (error) {
             console.error("Lỗi khi tải danh sách căn hộ:", error);
         }
@@ -56,34 +55,32 @@ const Create_Resident = () => {
     }, []);
 
     const update = (field, value) => {
-        setForm({ ...form, [field]: value });
+        setJson({ ...json, [field]: value });
     };
 
     const submit = async () => {
-        const { fullName, gender, dayOfBirth, address, phone, citizenId, password } = form;
+        const { fullName, gender, dayOfBirth, address, phone, citizenId, password } = json;
 
         if (!fullName || !address || !phone || !citizenId) {
-            Alert.alert('Cảnh Báo', 'Vui lòng điền đầy đủ thông tin !');
+            Alert.alert('Cảnh Báo', 'Vui lòng điền đầy đủ thông tin!');
             return;
         }
 
-        // Tách họ tên thành first_name và last_name
         const nameParts = fullName.trim().split(" ");
         const firstName = nameParts.slice(0, -1).join(" ");
         const lastName = nameParts.slice(-1).join(" ");
 
-        // Tạo payload đúng format JSON backend yêu cầu
         const payload = {
             user: {
-                username: phone,  // Giả sử username là số điện thoại
+                username: phone,
                 first_name: firstName,
                 last_name: lastName,
                 password: password,
                 role: "Resident"
             },
             gender: gender,
-            day_of_birth: dayOfBirth.toISOString().split("T")[0], // Format YYYY-MM-DD
-            address: parseInt(address, 10), // Chuyển thành số nguyên
+            day_of_birth: dayOfBirth.toISOString().split("T")[0],
+            address: parseInt(address, 10),
             phone: phone,
             citizen_identification: citizenId
         };
@@ -98,7 +95,7 @@ const Create_Resident = () => {
 
             if (response.status === 201) {
                 Alert.alert("Thành công", "Tài khoản đã được tạo!", [{ text: "OK" }]);
-                setForm({
+                setJson({
                     fullName: "",
                     gender: true,
                     dayOfBirth: new Date(),
@@ -107,7 +104,7 @@ const Create_Resident = () => {
                     citizenId: "",
                     password: "1",
                 });
-                setDate(new Date()); // Cập nhật lại ngày sinh về mặc định
+                setDate(new Date());
             } else {
                 Alert.alert("Lỗi", response.data.message || "Đăng ký thất bại!");
             }
@@ -117,15 +114,14 @@ const Create_Resident = () => {
         }
     };
 
-
     return (
         <ScrollView style={Styles.containerNoCenter}>
             <Text style={Styles.title}>ĐĂNG KÝ TÀI KHOẢN</Text>
 
             <TextInput style={Styles.input} placeholder="Họ và Tên"
-                value={form.fullName} onChangeText={(value) => update('fullName', value)} />
+                value={json.fullName} onChangeText={(value) => update('fullName', value)} />
 
-            <Picker selectedValue={form.gender}
+            <Picker selectedValue={json.gender}
                 style={Styles.input} onValueChange={(value) => update('gender', value)} >
                 <Picker.Item label="Nam" value={true} />
                 <Picker.Item label="Nữ" value={false} />
@@ -138,9 +134,8 @@ const Create_Resident = () => {
                 </TouchableOpacity>
             </View>
 
-            {/* ComboBox để chọn địa chỉ */}
             <Text style={Styles.subtitle}>Số Căn Hộ:</Text>
-            <Picker selectedValue={form.address} style={Styles.input} onValueChange={(value) => update("address", value)} >
+            <Picker selectedValue={json.address} style={Styles.input} onValueChange={(value) => update("address", value)} >
                 <Picker.Item label="Chọn căn hộ" value="" />
                 {addresses.map((addr) => (
                     <Picker.Item key={addr.id} label={addr.name} value={addr.id} />
@@ -148,15 +143,14 @@ const Create_Resident = () => {
             </Picker>
 
             <TextInput style={Styles.input} placeholder="Số điện thoại"
-                keyboardType="numeric" value={form.phone} onChangeText={(value) => update('phone', value)} />
+                keyboardType="numeric" value={json.phone} onChangeText={(value) => update('phone', value)} />
 
             <TextInput style={Styles.input} placeholder="CCCD/CMND"
-                value={form.citizenId} onChangeText={(value) => update('citizenId', value)} />
+                value={json.citizenId} onChangeText={(value) => update('citizenId', value)} />
 
             <Button style={Styles.button} title="Đăng Ký" onPress={submit} />
         </ScrollView>
     );
-
 };
 
 export default Create_Resident;

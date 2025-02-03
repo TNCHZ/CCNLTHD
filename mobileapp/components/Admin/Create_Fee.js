@@ -1,61 +1,70 @@
-import { Button, Text, TextInput, View } from "react-native";
+import { Button, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Styles from "../../styles/Styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Checkbox, Chip } from "react-native-paper";
+import APIs, { authApis, endpoints } from "../../configs/APIs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
+import { Picker } from "@react-native-picker/picker";
 
 const Create_Fee = () => {
-
-    const numberToWords = (num) => {
-        const units = [ //hàng đơn vị
-          '', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín',
-        ];
-        const tens = [ //hàng chục
-          '', '', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi',
-        ];
-        const scales = ['', 'nghìn', 'triệu', 'tỷ']; //hàng giá trị
-      
-        if (num === 0) return 'không';
-
-        let numStr = num.toString();
-        const groups = [];
-        while (numStr.length > 0) {
-            groups.unshift(numStr.slice(-3));
-            numStr = numStr.slice(0, -3);
-        }
-      
-        let result = ''; //Text value
-        for (let i = 0; i < groups.length; i++) {
-            const group = parseInt(groups[i], 10);
-            if (group === 0) continue;
-        
-            const hundred = Math.floor(group / 100);
-            const ten = Math.floor((group % 100) / 10);
-            const unit = group % 10;
-        
-            const groupStr = [];
-            if (hundred) groupStr.push(units[hundred] + ' trăm');
-            if (ten || unit) {
-                if (ten) {
-                    groupStr.push(tens[ten]);
-                } else if (hundred && !ten && unit) {
-                    groupStr.push('lẻ');
-                }
-                if (unit) {
-                    if (ten && unit === 1) {
-                        groupStr.push('mốt');
-                    } else if (ten && unit === 5) {
-                        groupStr.push('lăm');
-                    } else {
-                        groupStr.push(units[unit]);
-                    }
-                }
-            }
-          result += groupStr.join(' ') + ' ' + scales[groups.length - i - 1] + ' ';
-        }
-        return result.trim();
-    };
-
+    const [selectedOption, setSelectedOption] = useState("all"); // "all" hoặc "individual"
+    const [user, setUser] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]); // Lưu user được chọn
+    const [time, setTime] = useState([]);
+    const [selectedTime, setSelectedTime] = useState('');
     const [number, setNumber] = useState('');
     const [text, setText] = useState('0');
+    const [feeName, setFeeName] = useState('');
+    const [loading, setLoading] = useState(false); // Trạng thái tải dữ liệu
+
+    const fetchTime = async () =>{
+        setLoading(true);
+        let allTime = [];
+        let nextUrl = endpoints["month-fee"];
+        
+        try {
+            while (nextUrl) {
+                const token = await AsyncStorage.getItem("token");
+                const response = await authApis(token).get(nextUrl);
+                allTime = [...allTime, ...response.data.results];
+                nextUrl = response.data.next;
+            }
+
+            setTime(allTime);
+        } catch (error) {
+            console.error("Lỗi khi tải danh sách user:", error.response?.data || error);
+        } finally {
+            setLoading(false); // Kết thúc tải dữ liệu
+        }
+    }
+
+    const fetchUsers = async () => {
+        setLoading(true); // Bắt đầu tải dữ liệu
+        let allUsers = [];
+        let nextUrl = endpoints["list-user"];
+
+        try {
+            while (nextUrl) {
+                const token = await AsyncStorage.getItem("token");
+                const response = await authApis(token).get(nextUrl);
+                allUsers = [...allUsers, ...response.data.results];
+                nextUrl = response.data.next;
+            }
+
+            setUser(allUsers);
+        } catch (error) {
+            console.error("Lỗi khi tải danh sách user:", error.response?.data || error);
+        } finally {
+            setLoading(false); // Kết thúc tải dữ liệu
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+        fetchTime();
+    }, []);
+
     const handleChange = (value) => {
         const num = parseInt(value.replace(/[^0-9]/g, ''), 10); // Chỉ lấy số
         if (!isNaN(num)) {
@@ -67,25 +76,86 @@ const Create_Fee = () => {
         }
     };
 
-    return(
-        <View style={Styles.container}>
-            <Text style={Styles.title}>Phiếu đóng tiền</Text>
-            <TextInput style={Styles.input} placeholder="Nhập Tên Phí" />
+    const toggleUserSelection = (userId) => {
+        setSelectedUsers((prev) =>
+            prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+        );
+    };
 
+    return (
+        <ScrollView>
             <View style={Styles.row}>
-                <TextInput style={[Styles.input, {width: "80%"}]} placeholder="Nhập số tiền"
-                keyboardType="numeric"value={number} onChangeText={handleChange} />
-                <Text style={[Styles.subtitle, {widht: "20%", marginLeft: 10}]}>VND</Text>
+                <TouchableOpacity style={Styles.touchable} onPress={() => setFeeName('Phí Quản Lí')}>
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Quản Lí</Chip>
+                </TouchableOpacity>
+                <TouchableOpacity style={Styles.touchable} onPress={() => setFeeName('Phí Đỗ Xe')}>
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Đỗ Xe</Chip>
+                </TouchableOpacity>
+                <TouchableOpacity style={Styles.touchable} onPress={() => setFeeName('Phí Dịch Vụ')}>
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Dịch Vụ</Chip>
+                </TouchableOpacity>
             </View>
-            <Text style={Styles.text}>{text} đồng</Text>
+
+            <Text style={Styles.title}>Phiếu đóng tiền {feeName}</Text>
+            <Text>Chọn Thời Gian:</Text>
             
-            <View style={Styles.row}>
-                <Text style={[Styles.subtitle,{width: "40%"}]}>Số Căn Hộ:</Text>
-                <TextInput style={[Styles.input, {width: "60%"}]} placeholder="Nhập Số Căn Hộ (0000)"/>
+            {loading ? (
+                <ActivityIndicator size="large" color="#0000ff" />
+            ) : (
+                <Picker
+                    selectedValue={selectedTime}
+                    onValueChange={(itemValue) => setSelectedTime(itemValue)}
+                >
+                    {time.map((item) => (
+                        <Picker.Item key={item.id} label={"Tháng" + " " + item.name + " " + item.year} value={item.id} />
+                    ))}
+                </Picker>
+            )}
+
+            <View style={[Styles.row, { flexDirection: "row", alignItems: "center" }]}>
+                <TextInput
+                    style={[Styles.input, { flex: 1 }]}
+                    placeholder="Nhập số tiền"
+                    keyboardType="numeric"
+                    value={number}
+                    onChangeText={handleChange}
+                />
+                <Text style={[Styles.subtitle, { marginLeft: 10 }]}>VND</Text>
             </View>
-            <Button title="Lưu"/>
-            
-        </View>
+
+
+            <View style={Styles.container}>
+                <Text style={Styles.subtitle}>Áp dụng cho:</Text>
+                <Picker selectedValue={selectedOption} style={Styles.input}
+                    onValueChange={(value) => setSelectedOption(value)}>
+                    <Picker.Item label="Tất cả dân cư" value="all" />
+                    <Picker.Item label="Từng dân cư" value="individual" />
+                </Picker>
+
+                {/* Nếu chọn "Từng dân cư" thì hiển thị danh sách với checkbox */}
+                {selectedOption === "individual" && (
+                    <ScrollView style={{ marginTop: 10 }}>
+                        {loading ? <Text>Đang tải danh sách...</Text> :
+                            user.map((user) => (
+                                <View key={user.user} style={Styles.row}>
+                                    <Checkbox
+                                        status={selectedUsers.includes(user.user) ? "checked" : "unchecked"}
+                                        onPress={() => toggleUserSelection(user.user)}
+                                    />
+                                    <Text>{user.address.name} - {user.phone}</Text>
+                                </View>
+                            ))
+                        }
+                    </ScrollView>
+                )}
+
+                {/* Nếu chọn "Tất cả dân cư", thì lưu tất cả */}
+                <TouchableOpacity style={Styles.button}
+                    onPress={() => console.log(selectedOption === "all" ? user : selectedUsers)}>
+                    <Text style={Styles.buttonText}>Lưu danh sách</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     );
 }
 export default Create_Fee;

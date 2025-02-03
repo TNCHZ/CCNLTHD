@@ -2,12 +2,12 @@ import { View, Text, TouchableOpacity, FlatList, RefreshControl, ActivityIndicat
 import Styles from "../../styles/Styles";
 import Items from "./Items";
 import { Chip, Searchbar } from "react-native-paper";
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
 import { MyAccountContext } from "../../configs/MyContext";
 
 
-const Fee = ({navigation}) => {
+const Fee = ({ navigation }) => {
     const [accountState] = useContext(MyAccountContext);
     const [managingFees, setManagingFees] = useState([]);
     const [parkingFees, setParkingFees] = useState([]);
@@ -22,16 +22,16 @@ const Fee = ({navigation}) => {
         try {
             let url = `${endpoints['managing-fees'](accountState)}`
 
-            if (q){
+            if (q) {
                 url = `${url}q=${q}`;
             }
-            
+
             let res = await APIs.get(url);
             setManagingFees(res.data);
-            
-        }catch(ex){
+
+        } catch (ex) {
             console.error("Lỗi Managingfees: ", ex);
-        }finally{
+        } finally {
             setLoading(false);
         }
     }
@@ -41,17 +41,17 @@ const Fee = ({navigation}) => {
         try {
             let url = `${endpoints['parking-fees'](accountState)}`
 
-            if (q){
+            if (q) {
                 url = `${url}q=${q}`;
             }
-            
+
             let res = await APIs.get(url);
 
             setParkingFees(res.data);
 
-        }catch(ex){
-            console.error("Lỗi ParkingFees",ex);
-        }finally{
+        } catch (ex) {
+            console.error("Lỗi ParkingFees", ex);
+        } finally {
             setLoading(false);
         }
     }
@@ -61,17 +61,17 @@ const Fee = ({navigation}) => {
         try {
             let url = `${endpoints['service-fees'](accountState)}`
 
-            if (q){
+            if (q) {
                 url = `${url}q=${q}`;
             }
-            
+
             let res = await APIs.get(url);
 
             setServiceFees(res.data);
 
-        }catch(ex){
-            console.error("Lỗi ServiceFee",ex);
-        }finally{
+        } catch (ex) {
+            console.error("Lỗi ServiceFee", ex);
+        } finally {
             setLoading(false);
         }
     }
@@ -84,17 +84,20 @@ const Fee = ({navigation}) => {
 
     useEffect(() => {
         let timer = setTimeout(() => {
-            if (accountState?.id){
+            if (accountState?.id) {
                 if (feeType === 'managingFees') {
-                    loadManagingFees(); }
+                    loadManagingFees();
+                }
                 if (feeType === 'parkingFees') {
-                    loadParkingFees(); }
+                    loadParkingFees();
+                }
                 if (feeType === 'serviceFees') {
-                    loadManagingFees(); }
+                    loadManagingFees();
+                }
             }
         }, 500);
         return () => clearTimeout(timer);
-    }, [feeType, accountState , q]);
+    }, [feeType, accountState, q]);
     //====================================================
 
     const getFeeData = () => {
@@ -128,26 +131,26 @@ const Fee = ({navigation}) => {
                     <Chip style={Styles.chip} icon="clipboard-text">Phí Quản Lí</Chip>
                 </TouchableOpacity>
                 <TouchableOpacity style={Styles.touchable} onPress={() => setFeeType('parkingFees')}>
-                    <Chip style={Styles.chip} icon="clipboard-text">Phí Đỗ Xe</Chip> 
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Đỗ Xe</Chip>
                 </TouchableOpacity>
                 <TouchableOpacity style={Styles.touchable} onPress={() => setFeeType('serviceFees')}>
-                    <Chip style={Styles.chip} icon="clipboard-text">Phí Dịch Vụ</Chip> 
+                    <Chip style={Styles.chip} icon="clipboard-text">Phí Dịch Vụ</Chip>
                 </TouchableOpacity>
                 <TouchableOpacity style={Styles.touchable} onPress={() => setFeeType('')}>
-                    <Chip style={Styles.chip} icon="label-outline">Tất cả chi phí</Chip> 
+                    <Chip style={Styles.chip} icon="label-outline">Tất cả chi phí</Chip>
                 </TouchableOpacity>
             </View>
-            
-            <Searchbar style={{marginVertical: 2}} placeholder="Tìm kiếm ..." value={q} onChange={t => search(t, setQ)}/>
+
+            <Searchbar style={{ marginVertical: 2 }} placeholder="Tìm kiếm ..." value={q} onChange={t => search(t, setQ)} />
             {loading && <ActivityIndicator />}
 
             <Text style={Styles.text}>Danh sách chi phí</Text>
-            <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
-                data={getFeeData()} 
+            <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh} />}
+                data={getFeeData()}
                 keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
-                renderItem={({item}) => <Items item={item} routeName={feeType === 'managingFees' ? 'managingFeeDetail'
+                renderItem={({ item }) => <Items item={item} routeName={feeType === 'managingFees' ? 'managingFeeDetail'
                     : feeType === 'parkingFees' ? 'parkingFeeDetail' : 'serviceFeeDetail'
-                } params={{'managingFeeID': item.id, 'parkingFeeID': item.id, 'serviceFeeID': item.id, }} />}
+                } params={{ 'managingFeeID': item.id, 'parkingFeeID': item.id, 'serviceFeeID': item.id, }} />}
             />
         </View>
     );

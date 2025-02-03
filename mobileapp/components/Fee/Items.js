@@ -11,9 +11,9 @@ const Items = ({item, routeName, params}) => {
             title={() => (
                 <TouchableOpacity onPress={() => {nav.navigate(routeName, params)}}>
                     <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{item.name}</Text>
-                    {item.fee_value.value && (
+                    {item.fee_value && (
                         <Text style={{ fontSize: 14, color: 'gray', marginTop: 4 }}>
-                            Giá trị: {`Value: ${item.fee_value.value}`} VND
+                            Giá trị: {`Value: ${item.fee_value}`} VND
                         </Text>
                     )}
                     <Text>Trạng thái: {item.status ? "Đã thanh toán" : "Chưa thanh toán"}</Text>

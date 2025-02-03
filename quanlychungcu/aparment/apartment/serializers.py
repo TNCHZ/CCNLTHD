@@ -4,13 +4,18 @@ from .models import *
 class MonthSerializer(serializers.ModelSerializer):
     class Meta:
         model = Month
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'year']
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ['id', 'name', 'is_free']
 
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['id', 'content', 'resident']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -49,15 +54,6 @@ class CreateResidentSerializer(serializers.ModelSerializer):
         model = Resident
         fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
 
-
-#============================================|| Resident ||============================================#
-class ResidentInformationSerializer(serializers.ModelSerializer):
-    address = AddressSerializer()
-
-    class Meta:
-        model = Resident
-        fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
-
     def create(self, validated_data):
         from django.core.exceptions import ValidationError
         user_data = validated_data.pop('user')
@@ -82,116 +78,33 @@ class ResidentInformationSerializer(serializers.ModelSerializer):
         return resident
 
 
-class ResidentFeeValueSerializer(serializers.ModelSerializer):
+
+#============================================|| Resident ||============================================#
+class ResidentInformationSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+
     class Meta:
-        model = FeeValue
-        fields = ['id', 'name', 'value']
+        model = Resident
+        fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
 
 
-
-class ResidentManagingFeeSerializer(serializers.ModelSerializer):
-    fee_value = ResidentFeeValueSerializer()
-
+class ManagingFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ManagingFees
-        fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
-
-    def create(self, validated_data):
-        resident = validated_data.pop('resident')
-        fee_value = validated_data.pop('fee_value')
-
-        managing_fee = ManagingFees.objects.create(
-            resident=resident,
-            fee_value=fee_value,
-            **validated_data
-        )
-
-        return managing_fee
-
-    def update(self, instance, validated_data):
-        resident = validated_data.pop('resident', None)
-        fee_value = validated_data.pop('fee_value', None)
-
-        if resident:
-            instance.resident = resident
-        if fee_value:
-            instance.fee_value = fee_value
-
-        instance.status = validated_data.get('status', instance.status)
-        instance.image = validated_data.get('image', instance.image)
-
-        instance.save()
-        return instance
+        fields = ['id', 'name', 'image', 'status', 'month', 'updated_date', 'resident', 'fee_value']
 
 
-class ResidentParkingFeeSerializer(serializers.ModelSerializer):
-    fee_value = ResidentFeeValueSerializer()
-
+class ParkingFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingFees
-        fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
-
-    def create(self, validated_data):
-        resident = validated_data.pop('resident')  # Đây sẽ là ID của resident
-        fee_value = validated_data.pop('fee_value')  # Đây sẽ là ID của fee_value
-
-        managing_fee = ManagingFees.objects.create(
-            resident=resident,
-            fee_value=fee_value,
-            **validated_data
-        )
-
-        return managing_fee
-
-    def update(self, instance, validated_data):
-        resident = validated_data.pop('resident', None)
-        fee_value = validated_data.pop('fee_value', None)
-
-        if resident:
-            instance.resident = resident
-        if fee_value:
-            instance.fee_value = fee_value
-
-        instance.status = validated_data.get('status', instance.status)
-        instance.image = validated_data.get('image', instance.image)
-
-        instance.save()
-        return instance
+        fields = ['id', 'name', 'image', 'status', 'month', 'updated_date', 'resident', 'fee_value']
 
 
-class ResidentServiceFeeSerializer(serializers.ModelSerializer):
-    fee_value = ResidentFeeValueSerializer()
-
+class ServiceFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingFees
-        fields = ['id', 'name', 'image', 'status', 'updated_date', 'resident', 'fee_value']
+        fields = ['id', 'name', 'image', 'status', 'month', 'updated_date', 'resident', 'fee_value']
 
-    def create(self, validated_data):
-        resident = validated_data.pop('resident')  # Đây sẽ là ID của resident
-        fee_value = validated_data.pop('fee_value')  # Đây sẽ là ID của fee_value
-
-        managing_fee = ManagingFees.objects.create(
-            resident=resident,
-            fee_value=fee_value,
-            **validated_data
-        )
-
-        return managing_fee
-
-    def update(self, instance, validated_data):
-        resident = validated_data.pop('resident', None)
-        fee_value = validated_data.pop('fee_value', None)
-
-        if resident:
-            instance.resident = resident
-        if fee_value:
-            instance.fee_value = fee_value
-
-        instance.status = validated_data.get('status', instance.status)
-        instance.image = validated_data.get('image', instance.image)
-
-        instance.save()
-        return instance
 
 
 class ResidentItemsInLockerSerializer(serializers.ModelSerializer):
@@ -214,21 +127,23 @@ class ResidentFeedBackSerializer(serializers.ModelSerializer):
         field = ['id', 'title', 'content', 'resident']
 
 
-class ResidentSurveySerializer(serializers.ModelSerializer):
+class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
         fields = ['id', 'name', 'content']
 
 
 class ResidentSurveyResponseSerializer(serializers.ModelSerializer):
-    survey = ResidentSurveySerializer()
+    # Dùng PrimaryKeyRelatedField để chỉ nhận ID của Survey khi POST
+    survey = serializers.PrimaryKeyRelatedField(queryset=Survey.objects.all())
+
+    # Sử dụng SerializerMethodField để lấy dữ liệu đầy đủ của survey khi GET
+    survey_details = serializers.SerializerMethodField()
 
     class Meta:
         model = SurveyResident
-        fields = ['id', 'survey', 'resident', 'response_content', 'created_date']
+        fields = ['id', 'survey', 'survey_details', 'resident', 'response_content', 'updated_date', 'is_response']
 
-    def create(self, validated_data):
-        survey_data = validated_data.pop('survey')
-        survey, _ = Survey.objects.get_or_create(**survey_data)
-        return SurveyResident.objects.create(survey=survey, **validated_data)
-#============================================|| Admin ||============================================#
+    # Hàm để trả về dữ liệu đầy đủ của Survey khi GET
+    def get_survey_details(self, obj):
+        return SurveySerializer(obj.survey).data

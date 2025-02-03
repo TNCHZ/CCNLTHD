@@ -87,45 +87,23 @@ class Resident(BaseModel):
     def __str__(self, user=None):
         return self.user.first_name + " " + self.user.last_name
 
-class FeeValue(BaseModel):
-    name = models.TextField(null=False)
-    value = models.FloatField(null=False)
-
-    def __str__(self):
-        return self.name
 
 class Month(models.Model):
-    MONTH_CHOICES = [
-        ('Tháng 1', 'Tháng 1'),
-        ('Tháng 2', 'Tháng 2'),
-        ('Tháng 3', 'Tháng 3'),
-        ('Tháng 4', 'Tháng 4'),
-        ('Tháng 5', 'Tháng 5'),
-        ('Tháng 6', 'Tháng 6'),
-        ('Tháng 7', 'Tháng 7'),
-        ('Tháng 8', 'Tháng 8'),
-        ('Tháng 9', 'Tháng 9'),
-        ('Tháng 10', 'Tháng 10'),
-        ('Tháng 11', 'Tháng 11'),
-        ('Tháng 12', 'Tháng 12'),
-    ]
-
-    name = models.CharField(max_length=20, choices=MONTH_CHOICES)  # Chỉ cho phép giá trị từ 12 tháng
+    name = models.PositiveIntegerField(default=datetime.now().month)
     year = models.PositiveIntegerField(default=datetime.now().year)
 
     class Meta:
-        unique_together = ['name', 'year']  # Một tháng của một năm chỉ xuất hiện một lần
+        unique_together = ['name', 'year']
         ordering = ['year', 'name']
 
     def __str__(self):
-        return f"{self.name} {self.year}"
-
+        return "Tháng " + f"{self.name} {self.year}"
 
 class Fee(BaseModel):
     name = models.TextField(null=False)
     image = CloudinaryField('fee', null=True, blank = True)
-    fee_value = models.ForeignKey(FeeValue, on_delete=models.CASCADE)
     month = models.ForeignKey(Month, on_delete=models.CASCADE)
+    fee_value = models.CharField(max_length=20, blank=True, null=False)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         (True, 'Đã thanh toán'),
@@ -190,12 +168,11 @@ class ItemsInLocker(BaseModel):
         return self.name
 
 class Feedback(BaseModel):
-    title = models.TextField()
     content = RichTextField(null=False, blank=True)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title
+        return self.resident
 
 
 class Survey(BaseModel):
@@ -215,6 +192,7 @@ class SurveyResident(BaseModel):
     survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
     resident = models.ForeignKey('Resident', on_delete=models.CASCADE)
     response_content = RichTextField(null=False, blank=True)
+    is_response = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ['survey', 'resident']
