@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component, useEffect } from 'react';
 import { Platform, StyleSheet, Text, View, TouchableOpacity, TextInput, DeviceEventEmitter,
   SafeAreaView ,Image, NativeModules, NativeEventEmitter, ActivityIndicator} from 'react-native';
 import reactNativeMomosdk from 'react-native-momosdk';
@@ -14,52 +14,260 @@ const billdescription = "Tiền thuê căn hộ chung cư";
 const amount = 100000;
 const enviroment = "0"; //"1": production
 
-const Momo = () => {
-    const [textAmount, setTextAmount] = useState(formatNumberToMoney(amount, null, ""));
-    const [amountState, setAmount] = useState(amount);
-    const [description, setDescription] = useState("");
-    const [processing, setProcessing] = useState(false);
+// const Momo = () => {
+//     const [textMoney, setTextMoney] = useState(formatNumberToMoney(amount, "0", "VND"));
+//     const [money, setMoney] = useState(amount);
+//     const [content, setContent] = useState("");
+//     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const listenerTokenReceived = EventEmitter.addListener('RCTMoMoNoficationCenterRequestTokenReceived', (response) => {
-        console.log("<MoMoPay>Listen.Event::" + JSON.stringify(response));
-        try {
-            if (response && response.status == 0) {
-            setDescription(JSON.stringify(response));
-            setProcessing(false);
-            let momoToken = response.data;
-            let phonenumber = response.phonenumber;
-            let message = response.message;
-            let orderId = response.refOrderId;
-            let requestId = response.refRequestId;
-            } else {
-            setDescription("message: Get token fail");
-            setProcessing(false);
-            }
-        } catch (ex) {}
+//     useEffect(() => {
+//         let isMounted = true; // Tránh cập nhật state nếu component đã ngắt kết nối
+//         const listener = EventEmitter.addListener( 'RCTMoMoNoficationCenterRequestTokenReceived', (response) => {
+//             console.log("<MoMoPay>Listen.Event::", JSON.stringify(response));
+//             try {
+//                 if (!isMounted) return;
+//                 setLoading(true);
+                
+//                 if (response?.status === 0) {
+//                     setContent(JSON.stringify(response));
+//                     const momoToken = response.data;
+//                     const phonenumber = response.phonenumber;
+//                     const message = response.message;
+//                     const orderId = response.refOrderId;
+//                     const requestId = response.refRequestId;
+
+//                     // Gửi dữ liệu momoToken, phonenumber lên server tại đây
+//                 } else {
+//                     setContent("Nhận mã thông báo không thành công");
+//                 }
+//             } catch (error) {
+//                 console.error("Lỗi: ", error);
+//             } finally {
+//                 if (isMounted){
+//                     setLoading(false);
+//                 }
+//             }
+//         });
+
+//         const tokenStateListener = EventEmitter.addListener( 'RCTMoMoNoficationCenterRequestTokenState', (response) => {
+//                 console.log("<MoMoPay>Listen.RequestTokenState:: " + response.status);
+//                 // status = 1: Thông số hợp lệ & sẵn sàng mở ứng dụng MoMo.
+//                 // status = 2: canOpenURL không thành công đối với URL ứng dụng MoMo 
+//                 // status = 3: Tham số không hợp lệ
+//             }
+//         );
+
+//         return () => {
+//             isMounted = false; // Đánh dấu component đã unmount
+//             listener.remove(); // Gỡ bỏ listener
+//             tokenStateListener.remove(); // Gỡ bỏ sự kiện khi component unmount
+//         };
+//     }, []);
+    
+//     const formatNumberToMoney = (number, defaultNum = "0", predicate = "") => {
+//         if (!number || isNaN(number)) return defaultNum + predicate;
+//         return new Intl.NumberFormat("vi-VN").format(number) + predicate;
+//     };
+
+//     const onPress = async () => {
+//         if (loading) {
+//             setContent(".....");
+//             setLoading(false);
+//             return;
+//         }
+
+//         setLoading(true);
+//         setContent("");
+
+//         let jsonData = {
+//             enviroment: "0", // "0": SANDBOX , "1": PRODUCTION
+//             action: "gettoken",
+//             isDev: true, // SANDBOX only, remove this key on PRODUCTION 
+//             merchantname: "Chung cư tiện ích JpHome",
+//             merchantcode: "Chủ chung cư",
+//             merchantnamelabel: "Nhà cung cấp",
+//             description: "Tiền thuê căn hộ chung cư",
+//             amount: 100000,
+//             orderId: "bill234284290348",
+//             requestId: "your_requestId",
+//             orderLabel: "Ma don hang",
+//             appScheme: "momocgv20170101", // iOS Only
+//         };
+
+//         console.log("data_request_payment ", JSON.stringify(jsonData));
+
+//         try {
+//             if (Platform.OS === "android") {
+//                 let dataPayment = await reactNativeMomosdk.requestPayment(jsonData);
+//                 momoHandleResponse(dataPayment);
+//                 console.log("data_request_payment ", dataPayment.status);
+//             } else {
+//                 reactNativeMomosdk.requestPayment(JSON.stringify(jsonData));
+//             }
+//         } catch (error) {
+//             console.error("Lỗi thanh toán MoMo: ", error);
+//             setContent("Lỗi khi gửi yêu cầu thanh toán.");
+//         }
+//     };
+
+//     const momoHandleResponse = async (response) => {
+//         try {
+//             if (response && response.status === 0) {
+//                 let fromapp = response.fromapp; // ALWAYS: fromapp == momotransfer
+//                 setContent(JSON.stringify(response));
+                
+//                 let momoToken = response.data;
+//                 let phonenumber = response.phonenumber;
+//                 let message = response.message;
+                
+//                 // Continue to submit momoToken, phonenumber to server
+//             } else {
+//                 setContent('Nhận mã thông báo không thành công');
+//             }
+//         } catch (error) {
+//           console.error("Lỗi: ", error);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+    
+//     const onChangeText = (value) => {
+//         let newValue = value.replace(/\./g, "").trim();
+//         let formattedAmount = formatNumberToMoney(newValue);
+//         setMoney(newValue);
+//         setTextMoney(formattedAmount);
+//         setContent("");
+//     };
+
+//     const generateQRCodeData = () => {
+//         const data = {
+//             "Chủ sở hữu": merchantname,
+//             "Mã khách hàng": merchantcode,
+//             "Số Tiền": amount,
+//             orderId: "Aparment-0000",
+//             "Nội dung": billdescription,
+//         };
+
+//         // Tạo chuỗi URL hoặc JSON để mã hóa vào mã QR
+//         const qrCodeData = JSON.stringify(data);
+//         return qrCodeData;
+//     }
+
+
+//     //=======================================================================================
+//     return (
+//         <SafeAreaView style={{flex: 1, backgroundColor: 'transparent', padding: 10}}>
+//         <View style={StyleMomo.container}>
+//             <View style={[{backgroundColor: 'transparent', alignItems:'center', justifyContent:'center', height: 100}]}>
+//                 <Image style={{flex:1, width:100, height:100, borderRadius: 50,}} source={require('../../stactic/JpHome.png')}/>
+//             </View>
+//             <Text style={[StyleMomo.text, { color: 'red', fontSize: 20 }]}>CHUNG CƯ TIỆN ÍCH JPHOME</Text>
+//             <Text style={[StyleMomo.text, { color: 'red', fontSize: 18 }]}>Cổng thanh toán momo</Text>
+//             <Text style={[StyleMomo.text, { color: '#000', fontSize: 14, marginVertical: 5, textAlign:'left', marginTop:20 }]}>Số Căn Hộ : {merchantcode}</Text>
+//             <Text style={[StyleMomo.text, { color: '#000', fontSize: 14, marginVertical: 5, textAlign:'left' }]}>"Tên : {merchantname}</Text>
+//             <Text style={[StyleMomo.text, { color: '#000', fontSize: 14, marginVertical: 5, textAlign:'left' }]}>Loại Chi phí :{billdescription}</Text>
+//             <View style={StyleMomo.formInput}>
+//                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+//                     <Text style={{flex:1, fontSize: 18, paddingHorizontal:10}}>Tổng số tiền: </Text>
+//                     <TextInput style={[StyleMomo.textInput, { flex: 1, paddingRight: 30 }]}
+//                     autoFocus={true} maxLength={11}
+//                     placeholderTextColor={"#929292"}
+//                     placeholder={"Nhập số tiền"}
+//                     keyboardType={"numeric"} returnKeyType="done"
+//                     value={textAmount == 0 ? "" : textAmount}
+//                     onChangeText={onChangeText}
+//                     underlineColorAndroid="transparent"
+//                     />
+//                     <Text style={{ position: 'absolute', right: 20, fontSize: 20 }}>VND</Text>
+//                 </View>
+//             </View>
+
+//             <TouchableOpacity onPress={onPress} style={StyleMomo.button} >
+//             {
+//                 loading ?
+//                 <Text style={StyleMomo.text}>Đang chờ phản hồi từ App MoMo</Text>
+//                 :
+//                 <Text style={StyleMomo.text}>Xác nhận thanh toán</Text>
+//             }
+//             </TouchableOpacity>
+
+//             { loading ?
+//                 <ActivityIndicator size="small" color="#000" />
+//                 : null
+//             }
+//             {
+//             content != "" ?
+//                 <Text style={[StyleMomo.text, { color: 'red' }]}>{content}</Text>
+//                 : null
+//             }
+//             <View style={StyleMomo.container}>
+//                 <Text style={[StyleMomo.text, {color: "#000"}]}>QR Code thanh toán Momo</Text>
+//                 {/* Hiển thị mã QR */}
+//                 <QRCode size={100}  // Kích thước mã QR
+//                     value={generateQRCodeData()}  // Dữ liệu thanh toán cần mã hóa thành mã QR
+//                 />
+//             </View>
+//         </View>
+
+//         </SafeAreaView>
+//     );
+
+// };
+// export default Momo;
+
+
+export default class Momo extends Component {
+    state = {
+        textAmount: this.formatNumberToMoney(amount, null, ""),
+        amount: amount,
+        description: "",
+        processing: false
+    }
+
+    componentDidMount(){
+    // Listen for native events
+        let me = this;
+        EventEmitter.addListener('RCTMoMoNoficationCenterRequestTokenReceived', (response) => {
+            console.log("<MoMoPay>Listen.Event::" + JSON.stringify(response));
+            try{
+                if (response && response.status == 0) {
+                    let fromapp = response.fromapp; //ALWAYS:: fromapp==momotransfer
+                    me.setState({ description: JSON.stringify(response), processing: false });
+                    let momoToken = response.data;
+                    let phonenumber = response.phonenumber;
+                    let message = response.message;
+                    let orderId = response.refOrderId; //your orderId
+                    let requestId = response.refRequestId; //your requestId
+                    //continue to submit momoToken,phonenumber to server
+                } else {
+                    me.setState({ description: "message: Get token fail", processing: false });
+                }
+            }catch(ex){}
+
         });
+        
+        //OPTIONAL
+        EventEmitter.addListener('RCTMoMoNoficationCenterRequestTokenState',(response) => {
+            console.log("<MoMoPay>Listen.RequestTokenState:: " + response.status);
+            // status = 1: Parameters valid & ready to open MoMo app.
+            // status = 2: canOpenURL failed for URL MoMo app 
+            // status = 3: Parameters invalid
+        })
+    }
 
-        const listenerTokenState = EventEmitter.addListener('RCTMoMoNoficationCenterRequestTokenState', (response) => {
-        console.log("<MoMoPay>Listen.RequestTokenState:: " + response.status);
-        });
-
-        return () => {
-        listenerTokenReceived.remove();
-        listenerTokenState.remove();
-        };
-    }, []);
-
-    const formatNumberToMoney = (number, defaultNum, predicate) => {
+    formatNumberToMoney(number, defaultNum, predicate) {
         predicate = !predicate ? "" : "" + predicate;
         if (number == 0 || number == '' || number == null || number == 'undefined' ||
-        isNaN(number) === true || number == '0' || number == '00' || number == '000') return "0" + predicate;
+        isNaN(number) === true ||
+        number == '0' || number == '00' || number == '000')
+        return "0" + predicate;
 
         var array = [];
         var result = '';
         var count = 0;
 
         if (!number) {
-        return defaultNum ? defaultNum : "" + predicate;
+        return defaultNum ? defaultNum : "" + predicate
         }
 
         let flag1 = false;
@@ -91,13 +299,14 @@ const Momo = () => {
         result += array[i];
         }
 
-        if (flag1) result = "-" + result;
+        if (flag1)
+        result = "-" + result;
 
         return result + predicate;
-    };
+    }
 
-    const onPress = async () => {
-        if (!processing) {
+    onPress = async () => {
+        if (!this.state.processing){
         let jsonData = {};
         jsonData.enviroment = "0"; //"0": SANBOX , "1": PRODUCTION
         jsonData.action = "gettoken";
@@ -106,73 +315,69 @@ const Momo = () => {
         jsonData.merchantcode = merchantcode;
         jsonData.merchantnamelabel = merchantNameLabel;
         jsonData.description = billdescription;
-        jsonData.amount = amountState;
+        jsonData.amount = this.state.amount;
         jsonData.orderId = "bill234284290348";
         jsonData.requestId = "your_requestId";
         jsonData.orderLabel = "Ma don hang";
-        jsonData.appScheme = "momocgv20170101"; // iOS App Only, get from Info.plist > key URL types > URL Schemes. Check Readme
-
+        jsonData.appScheme = "momocgv20170101";// iOS App Only , get from Info.plist > key URL types > URL Schemes. Check Readme
         console.log("data_request_payment " + JSON.stringify(jsonData));
-
-        if (Platform.OS === 'android') {
+        if (Platform.OS === 'android'){
             let dataPayment = await reactNativeMomosdk.requestPayment(jsonData);
-            momoHandleResponse(dataPayment);
+            this.momoHandleResponse(dataPayment);
             console.log("data_request_payment " + dataPayment.status);
-        } else {
+        }else{
             reactNativeMomosdk.requestPayment(JSON.stringify(jsonData));
         }
-        setDescription("");
-        setProcessing(true);
-        } else {
-        setDescription(".....");
-        setProcessing(false);
+        this.setState({ description: "", processing: true });
         }
-    };
+        else{
+        this.setState({ description: ".....", processing: false });
+        }
+    }
 
-    const momoHandleResponse = async (response) => {
-        try {
+    async momoHandleResponse(response){
+        try{
         if (response && response.status == 0) {
-            setDescription(JSON.stringify(response));
-            setProcessing(false);
+            let fromapp = response.fromapp; //ALWAYS:: fromapp==momotransfer
+            this.setState({ description: JSON.stringify(response), processing: false });
             let momoToken = response.data;
             let phonenumber = response.phonenumber;
             let message = response.message;
-            // continue to submit momoToken,phonenumber to server
+            //continue to submit momoToken,phonenumber to server
         } else {
-            setDescription("message: Get token fail");
-            setProcessing(false);
+            this.setState({ description: "message: Get token fail", processing: false });
         }
-        } catch (ex) {}
-    };
+        }catch(ex){}
+    }
 
-    const onChangeText = (value) => {
+    onChangeText = (value) => {
         let newValue = value.replace(/\./g, "").trim();
-        let formattedAmount = formatNumberToMoney(newValue, null, "");
-        setAmount(newValue);
-        setTextAmount(formattedAmount);
-        setDescription("");
-    };
+        let amount = this.formatNumberToMoney(newValue, null, "");
+        this.setState({ amount: newValue, textAmount: amount, description: "" });
+    }
 
     // Tạo dữ liệu QR Code
-    const generateQRCodeData = () => {
+    generateQRCodeData() {
         const data = {
-        "Chủ sở hữu": merchantname,
-        "Mã khách hàng": merchantcode,
-        "Số Tiền": amount,
-        orderId: "Aparment-0000",
-        "Nội dung": billdescription,
+            "Chủ sở hữu": merchantname,
+            "Mã khách hàng": merchantcode,
+            "Số Tiền": amount,
+            orderId: "Aparment-0000",
+            "Nội dung": billdescription,
         };
 
         // Tạo chuỗi URL hoặc JSON để mã hóa vào mã QR
         const qrCodeData = JSON.stringify(data);
         return qrCodeData;
-    };
-
-    return (
+    }
+//===========================================================================================
+    render() {
+        let { textAmount, description } = this.state; //Tạo dữ liệu sẵn cho null dựa trên các thông số trên
+        return (
         <SafeAreaView style={{flex: 1, marginTop: 30, backgroundColor: 'transparent', padding: 10}}>
         <View style={StyleMomo.container}>
             <View style={[{backgroundColor: 'transparent', alignItems:'center', justifyContent:'center', height: 100}]}>
-            <Image style={{flex:1, width:100, height:100, borderRadius: 50,}} source={require('../../stactic/JpHome.png')}/>
+                <Image style={{flex:1, width:100, height:100, borderRadius: 50,}} source={require('../../stactic/JpHome.png')}/>
             </View>
             <Text style={[StyleMomo.text, { color: 'red', fontSize: 20 }]}>CHUNG CƯ TIỆN ÍCH JPHOME</Text>
             <Text style={[StyleMomo.text, { color: 'red', fontSize: 18 }]}>Cổng thanh toán momo</Text>
@@ -180,43 +385,52 @@ const Momo = () => {
             <Text style={[StyleMomo.text, { color: '#000', fontSize: 14, marginVertical: 5, textAlign:'left' }]}>"Tên : {merchantname}</Text>
             <Text style={[StyleMomo.text, { color: '#000', fontSize: 14, marginVertical: 5, textAlign:'left' }]}>Loại Chi phí :{billdescription}</Text>
             <View style={StyleMomo.formInput}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{flex:1, fontSize: 18, paddingHorizontal:10}}>Tổng số tiền: </Text>
-                <TextInput
-                style={[StyleMomo.textInput, { flex: 1, paddingRight: 30 }]}
-                autoFocus={true} maxLength={11}
-                placeholderTextColor={"#929292"}
-                placeholder={"Nhập số tiền"}
-                keyboardType={"numeric"} returnKeyType="done"
-                value={textAmount == 0 ? "" : textAmount}
-                onChangeText={onChangeText}
-                underlineColorAndroid="transparent"
-                />
-                <Text style={{ position: 'absolute', right: 20, fontSize: 20 }}>VND</Text>
-            </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{flex:1, fontSize: 18, paddingHorizontal:10}}>Tổng số tiền: </Text>
+                    <TextInput style={[StyleMomo.textInput, { flex: 1, paddingRight: 30 }]}
+                    autoFocus={true} maxLength={11}
+                    placeholderTextColor={"#929292"}
+                    placeholder={"Nhập số tiền"}
+                    keyboardType={"numeric"} returnKeyType="done"
+                    value={textAmount == 0 ? "" : textAmount}
+                    onChangeText={this.onChangeText}
+                    underlineColorAndroid="transparent"
+                    />
+                    <Text style={{ position: 'absolute', right: 20, fontSize: 20 }}>VND</Text>
+                </View>
             </View>
 
-            <TouchableOpacity onPress={onPress} style={StyleMomo.button}>
-            {processing ? (
+            <TouchableOpacity onPress={this.onPress} style={StyleMomo.button} >
+            {
+                this.state.processing ?
                 <Text style={StyleMomo.text}>Đang chờ phản hồi từ App MoMo</Text>
-            ) : (
+                :
                 <Text style={StyleMomo.text}>Xác nhận thanh toán</Text>
-            )}
+            }
             </TouchableOpacity>
 
-            {processing ? <ActivityIndicator size="small" color="#000" /> : null}
-            {description != "" ? <Text style={[StyleMomo.text, { color: 'red' }]}>{description}</Text> : null}
-
+            { this.state.processing ?
+                <ActivityIndicator size="small" color="#000" />
+                : null
+            }
+            {
+            description != "" ?
+                <Text style={[StyleMomo.text, { color: 'red' }]}>{description}</Text>
+                : null
+            }
             <View style={StyleMomo.container}>
-            <Text style={[StyleMomo.text, {color: "#000"}]}>QR Code thanh toán Momo</Text>
-            <QRCode size={100} value={generateQRCodeData()} />
+                <Text style={[StyleMomo.text, {color: "#000"}]}>QR Code thanh toán Momo</Text>
+                {/* Hiển thị mã QR */}
+                <QRCode size={100}  // Kích thước mã QR
+                    value={this.generateQRCodeData()}  // Dữ liệu thanh toán cần mã hóa thành mã QR
+                />
             </View>
         </View>
-        </SafeAreaView>
-    );
-};
 
-export default Momo;
+        </SafeAreaView>
+        );
+    }
+}
 
 
 // Kết quả trả vê
@@ -233,5 +447,3 @@ export default Momo;
 // "requestId":"your_requestId",
 // "orderLabel":"Ma don hang",
 // "appScheme":"momocgv20170101"}
-
-//===========================================================================================
