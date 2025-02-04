@@ -83,7 +83,7 @@ const Create_Fee = () => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView style={Styles.containerNoCenter}>
             <View style={Styles.row}>
                 <TouchableOpacity style={Styles.touchable} onPress={() => setFeeName('Phí Quản Lí')}>
                     <Chip style={Styles.chip} icon="clipboard-text">Phí Quản Lí</Chip>
@@ -96,35 +96,31 @@ const Create_Fee = () => {
                 </TouchableOpacity>
             </View>
 
-            <Text style={Styles.title}>Phiếu đóng tiền {feeName}</Text>
-            <Text>Chọn Thời Gian:</Text>
+            <Text style={Styles.title}>Phiếu đóng tiền: {feeName}</Text>
+            
             
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <Picker
-                    selectedValue={selectedTime}
-                    onValueChange={(itemValue) => setSelectedTime(itemValue)}
-                >
-                    {time.map((item) => (
-                        <Picker.Item key={item.id} label={"Tháng" + " " + item.name + " " + item.year} value={item.id} />
-                    ))}
-                </Picker>
+                <View style={Styles.row}>
+                    <Text style={[Styles.subtitle,{width:"40%"}]}>Chọn Thời Gian</Text>
+                    <Picker style={[Styles.input,{width:"60%"}]} selectedValue={selectedTime} onValueChange={(itemValue) => setSelectedTime(itemValue)} >
+                        {time.map((item) => (
+                            <Picker.Item key={item.id} label={"Tháng" + " " + item.name + " " + item.year} value={item.id} />
+                        ))}
+                    </Picker>
+                </View>
             )}
 
-            <View style={[Styles.row, { flexDirection: "row", alignItems: "center" }]}>
-                <TextInput
-                    style={[Styles.input, { flex: 1 }]}
-                    placeholder="Nhập số tiền"
-                    keyboardType="numeric"
-                    value={number}
-                    onChangeText={handleChange}
+            <View style={Styles.row}>
+                <TextInput style={[Styles.input, {width:"70%"}]} placeholder="Nhập số tiền"
+                    keyboardType="numeric" value={number} onChangeText={handleChange}
                 />
                 <Text style={[Styles.subtitle, { marginLeft: 10 }]}>VND</Text>
             </View>
 
 
-            <View style={Styles.container}>
+            <View style={{alignItems: 'center',}}>
                 <Text style={Styles.subtitle}>Áp dụng cho:</Text>
                 <Picker selectedValue={selectedOption} style={Styles.input}
                     onValueChange={(value) => setSelectedOption(value)}>

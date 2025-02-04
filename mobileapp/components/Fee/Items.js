@@ -27,8 +27,9 @@ const Items = ({item, routeName, params}) => {
             )}
             right={(props) => 
                 !item.status ? (
-                    <TouchableOpacity onPress={() => nav.navigate(routeName, params)}>
-                        <Text>Thanh Toán</Text>
+                    <TouchableOpacity style={{backgroundColor: '#007bff',justifyContent: 'center', alignItems: 'center',
+                        borderRadius: 20,}} onPress={() => nav.navigate(routeName, params)}>
+                        <Text style={Styles.buttonText}>Thanh Toán</Text>
                     </TouchableOpacity>
                 ) : null
             }

@@ -115,21 +115,18 @@ const Delete_Resident = () => {
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <FlatList
+                <FlatList style={{borderColor: "#ccc", borderWidth: 1, borderRadius: 8,}}
                     data={filteredUsers}
                     keyExtractor={(item) => item.user.toString()}
                     renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={Styles.userRow}
-                            onPress={() => confirmDisableUser(item.user, item.address.id)}
-                        >
-                            <Text style={Styles.userText}>
-                                {item.userdetail?.first_name + " " + item.userdetail?.last_name || "Không có"}
-                            </Text>
-                            <Text style={Styles.addressText}>
-                                {item.address?.name || "Chưa có địa chỉ"}
-                            </Text>
-                        </TouchableOpacity>
+                        <View style={Styles.input}>
+                            <TouchableOpacity style={Styles.row} onPress={() => confirmDisableUser(item.user)}>
+                                <Text style={[Styles.txt,{width:"25%"}]}>{item.address?.name || "Chưa có địa chỉ"}</Text>
+                                <Text style={[Styles.txt,{width:"75%"}]}>
+                                    {item.userdetail?.first_name + " " + item.userdetail?.last_name || "Không có"}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                     )}
                 />
             )}

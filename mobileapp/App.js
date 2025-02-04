@@ -28,6 +28,7 @@ import UpdateInfo from './components/Resident/UpdateInfo';
 import Momo from './components/Home/Momo';
 import Surveys from './components/Resident/Surveys';
 import Resident_Feedback from './components/Admin/Resident_Feedback'
+import CheckSurvey from './components/Admin/CheckSurvey';
 
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
 
@@ -47,18 +48,21 @@ const App =() => {
               </View>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={Styles.headerRight}
-              onPress={() => {console.info(account); navigation.navigate("profile")}}>
-              <View style={Styles.row}>
-                <Text style={{marginHorizontal: 5, color: "#4c4c4c", fontSize: 18, fontWeight: 'bold'}}>Chào {account.last_name}!</Text>
-              </View>
-            </TouchableOpacity>
+            account.role === "Admin" ? (
+                <TouchableOpacity style={Styles.headerRight}
+                  onPress={() => {console.info(account); navigation.navigate("profile")}}>
+                  <View style={Styles.row}>
+                    <Text style={{marginHorizontal: 5, color: "#4c4c4c", fontSize: 18, fontWeight: 'bold'}}>Chào {account.last_name}!</Text>
+                  </View>
+                </TouchableOpacity>
+            ) : null
           ),
           headerTintColor: "#646464",
           headerStyle: {backgroundColor: "#64c8c8"},
         })}>
           {/* Trang Home */}
           <Drawer.Screen name="home" component={Home} options={{title: 'Giới Thiệu'}}/>
+
           <Drawer.Screen name='updateInfo' component={UpdateInfo} options={() => ({
             title: 'Cập nhật thông tin',
             drawerItemStyle: account === null ? { display: "none" } : {}
@@ -78,9 +82,10 @@ const App =() => {
               {/* Hiện tương tác của ADMIN */}
               <Drawer.Screen name='createResident' component={Create_Resident} options={{title:'Cấp Tài Khoản'}}/>
               <Drawer.Screen name='deleteResident' component={Delete_Resident} options={{title:'Xóa Tài Khoản'}}/>
-              <Drawer.Screen name='createFee' component={Create_Fee} options={{title: 'Quản Lý Chi Phí'}}/>
+              <Drawer.Screen name='createFee' component={Create_Fee} options={{title: 'Tạo Chi Phí'}}/>
               <Drawer.Screen name='residentFeedback' component={Resident_Feedback} options={{title: 'Xem Góp Ý'}}/>
-              <Drawer.Screen name='createSurvey'component={Create_Survey} options={{title: 'Quản Lý Khảo Sát'}}/>
+              <Drawer.Screen name='createSurvey'component={Create_Survey} options={{title: 'Tạo Khảo Sát'}}/>
+              <Drawer.Screen name='checkSurvey' component={CheckSurvey} options={{title: 'Xem Khảo Sát'}} />
             </> : <>
               {/* Hiện để tương tác của RESIDENT */}
               <Drawer.Screen name='fee' component={Fee} options={{title: 'Các Khoản Chi Phí'}}/>
