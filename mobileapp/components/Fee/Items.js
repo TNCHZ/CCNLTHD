@@ -24,7 +24,14 @@ const Items = ({item, routeName, params}) => {
                 <TouchableOpacity onPress={() => {nav.navigate(routeName, params)}}>
                     <Image source={{uri: item.image}} style={Styles.box}/>
                 </TouchableOpacity>
-            )}    
+            )}
+            right={(props) => 
+                !item.status ? (
+                    <TouchableOpacity onPress={() => nav.navigate(routeName, params)}>
+                        <Text>Thanh Toán</Text>
+                    </TouchableOpacity>
+                ) : null
+            }
         />
     );
 }
