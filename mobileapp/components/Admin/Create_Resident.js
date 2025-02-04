@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import Styles from '../../styles/Styles';
 import APIs, { authApis, endpoints } from "../../configs/APIs";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Create_Resident = () => {
     const [date, setDate] = useState(new Date());
@@ -41,7 +42,9 @@ const Create_Resident = () => {
         try {
             while (nextUrl) {
                 const response = await APIs.get(nextUrl);
-                allAddresses = [...allAddresses, ...response.data.results];
+                const filteredAddresses = response.data.results.filter(address => address.is_free === true);
+
+                allAddresses = [...allAddresses, ...filteredAddresses];
                 nextUrl = response.data.next;
             }
             setAddresses(allAddresses);
@@ -53,6 +56,12 @@ const Create_Resident = () => {
     useEffect(() => {
         fetchAddresses();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchAddresses();
+        }, [])
+    );
 
     const update = (field, value) => {
         setJson({ ...json, [field]: value });
@@ -95,6 +104,8 @@ const Create_Resident = () => {
 
             if (response.status === 201) {
                 Alert.alert("Thành công", "Tài khoản đã được tạo!", [{ text: "OK" }]);
+                fetchAddresses();
+
                 setJson({
                     fullName: "",
                     gender: true,
