@@ -52,7 +52,7 @@ const App =() => {
                     <Text style={{marginHorizontal: 5, color: "#4c4c4c", fontSize: 18, fontWeight: 'bold'}}>Chào {account.last_name}!</Text>
                   </View>
                 </TouchableOpacity>
-            ) : null
+            ) : (<Text>JpHome</Text>)
           ),
           headerTintColor: "#646464",
           headerStyle: {backgroundColor: "#64c8c8"},
