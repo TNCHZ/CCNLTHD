@@ -264,6 +264,14 @@ class ResidentSurveyResponseViewSet(viewsets.ModelViewSet):
     queryset = SurveyResident.objects.select_related('survey', 'resident').all()
     serializer_class = serializers.ResidentSurveyResponseSerializer
 
+    @action(detail=False, methods=['get'], url_path='by-survey/(?P<survey_id>\d+)')
+    def get_by_survey(self, request, survey_id=None):
+        survey_responses = self.queryset.filter(survey=survey_id, is_response = True)
+        if not survey_responses.exists():
+            return Response({"message": "Không có phản hồi nào cho khảo sát này."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(survey_responses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.filter().all()
