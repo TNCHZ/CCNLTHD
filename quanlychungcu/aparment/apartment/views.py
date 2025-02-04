@@ -267,5 +267,9 @@ class ResidentSurveyResponseViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AddressViewSet(viewsets.ModelViewSet):
-    queryset = Address.objects.filter().all()
+    queryset = Address.objects.all()
     serializer_class = serializers.AddressSerializer
+
+class ResidentRelativeRegisterViewSet(viewsets.ModelViewSet):
+    queryset = ParkingForRelatives.objects.filter(is_come=False)
+    serializer_class = serializers.ResidentRelativeRegisterSerializer

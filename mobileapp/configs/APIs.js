@@ -19,6 +19,7 @@ export const endpoints = {
     'survey': '/survey/',
     'feedback': '/feedback/',
     'locker': '/locker/',
+    'register-for-relative': '/register-for-relative/',
     'item-in-locker': '/item-in-locker/',
     'resident-survey-response': '/resident-survey-response/',
     'get-resident-response-survey': '/resident-survey-response/by-survey/',

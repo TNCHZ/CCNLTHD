@@ -142,19 +142,29 @@ class SurveySerializer(serializers.ModelSerializer):
 
 
 class ResidentSurveyResponseSerializer(serializers.ModelSerializer):
-    # Dùng PrimaryKeyRelatedField để chỉ nhận ID của Survey khi POST
     survey = serializers.PrimaryKeyRelatedField(queryset=Survey.objects.all())
     resident = serializers.PrimaryKeyRelatedField(queryset=Resident.objects.all())
-    # Sử dụng SerializerMethodField để lấy dữ liệu đầy đủ của survey khi GET
+
     survey_details = serializers.SerializerMethodField()
     resident_details = serializers.SerializerMethodField()
     class Meta:
         model = SurveyResident
         fields = ['id', 'survey', 'survey_details', 'resident', 'resident_details', 'response_content', 'updated_date', 'is_response']
 
-    # Hàm để trả về dữ liệu đầy đủ của Survey khi GET
     def get_survey_details(self, obj):
         return SurveySerializer(obj.survey).data
+
+    def get_resident_details(self, obj):
+        return ResidentInformationSerializer(obj.resident).data
+
+
+class ResidentRelativeRegisterSerializer(serializers.ModelSerializer):
+    resident = serializers.PrimaryKeyRelatedField(queryset=Resident.objects.all())
+    resident_details = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ParkingForRelatives
+        fields = ['id', 'name_relative', 'phone_relative', 'is_come', 'resident', 'resident_details', 'updated_date']
 
     def get_resident_details(self, obj):
         return ResidentInformationSerializer(obj.resident).data

@@ -130,7 +130,12 @@ class ParkingFees(Fee):
 
 class ParkingForRelatives(BaseModel):
     name_relative = models.TextField(null=False)
-    phone_relative = models.CharField(max_length=10, null=False, unique=True)
+    phone_relative = models.CharField(max_length=10, null=False)
+    STATUS_CHOICES = [
+        (True, 'Đã đến'),
+        (False, 'Chưa đến'),
+    ]
+    is_come = models.BooleanField(choices=STATUS_CHOICES, default=False)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)
 
     def __str__(self):

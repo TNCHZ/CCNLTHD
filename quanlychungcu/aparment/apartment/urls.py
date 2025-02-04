@@ -21,6 +21,8 @@ router.register(r'month-fee', views.MonthViewSet, basename='month-fee')
 router.register(r'feedback', views.FeedbackViewSet)
 router.register(r'locker', views.LockerViewSet)
 router.register(r'item-in-locker', views.ItemInLockerViewSet)
+router.register(r'register-for-relative', views.ResidentRelativeRegisterViewSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),
