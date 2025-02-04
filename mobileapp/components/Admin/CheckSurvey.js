@@ -67,13 +67,11 @@ const CheckSurvey = () => {
     }, []);
 
     return (
-        <View style={Styles.container}>
-            <Text style={Styles.subtitle}>Khảo sát của dân cư</Text>
+        <View style={Styles.containerNoCenter}>
+            <Text style={Styles.title}>Khảo sát của dân cư</Text>
             
             {/* Picker để chọn khảo sát */}
-            <Picker
-                selectedValue={selectedSurvey}
-                style={Styles.input}
+            <Picker selectedValue={selectedSurvey} style={Styles.input}
                 onValueChange={(value) => {
                     setSelectedSurvey(value);
                     fetchResidentResponses(value); // Gọi API khi chọn khảo sát
@@ -90,19 +88,20 @@ const CheckSurvey = () => {
             </Picker>
 
             {/* Hiển thị phản hồi của cư dân */}
-            <ScrollView style={{ borderColor: "#ccc", borderWidth: 1, borderRadius: 8, marginTop: 10, padding: 10 }}>
+            <ScrollView style={{ borderColor: "#ccc", borderWidth: 1, borderRadius: 8, marginTop: 10, padding: 10, backgroundColor: "#f9f9f9", }}>
                 {loadingResponses ? (
-                    <Text>Đang tải phản hồi...</Text>
+                    <Text style={{ textAlign: "center", fontStyle: "italic", color: "gray" }}>Đang tải phản hồi...</Text>
                 ) : responses.length > 0 ? (
                     responses.map((response, index) => (
-                        <View key={index} style={{ marginBottom: 10 }}>
-                            <Text style={Styles.textBold}>Cư dân: {response.residentName}</Text>
+                        <View key={index} style={{ marginBottom: 10, padding: 10,
+                            borderBottomWidth: 1, borderBottomColor: "#ddd", }}>
+                            <Text style={Styles.txt}>Cư dân: {response.residentName}</Text>
                             <ScrollView horizontal>
                                 <View>
                                     {response.questions.map((question, qIndex) => (
                                         <View key={qIndex} style={{ marginBottom: 5 }}>
-                                            <Text style={Styles.textBold}>Câu hỏi {qIndex + 1}: {question}</Text>
-                                            <Text>Trả lời: {response.answers[qIndex] || "Chưa có câu trả lời"}</Text>
+                                            <Text style={{ fontWeight: "600" }}>Câu hỏi {qIndex + 1}: {question}</Text>
+                                            <Text style={{ color: "#333", marginTop: 2 }}>Trả lời: {response.answers[qIndex] || "Chưa có câu trả lời"}</Text>
                                         </View>
                                     ))}
                                 </View>
