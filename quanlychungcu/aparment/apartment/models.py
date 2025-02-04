@@ -31,7 +31,7 @@ class Role(Enum):
         return [(role.value, role.name.capitalize()) for role in cls]
 
 class User(AbstractUser):
-    avatar = CloudinaryField('avatar', null=True, blank=True, default="https://res.cloudinary.com/dqlk15sot/image/upload/v1738150398/default-avatar-profile-icon-of-social-media-user-vector_qydb7c.jpg")
+    avatar = CloudinaryField('avatar', null=True, blank=True)
     change_password_image = models.BooleanField(default=False)
 
     role = models.CharField(
