@@ -90,7 +90,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         except Resident.DoesNotExist:
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        managing_fees = ManagingFees.objects.filter(resident=resident, status=False)
+        managing_fees = ManagingFees.objects.filter(resident=resident)
         managing_fees_serializer = serializers.ManagingFeeSerializer(managing_fees, many=True)
 
         return Response(managing_fees_serializer.data)
@@ -103,7 +103,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         except Resident.DoesNotExist:
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        parking_fees = ParkingFees.objects.filter(resident=resident, status=False)
+        parking_fees = ParkingFees.objects.filter(resident=resident)
         parking_fees_serializer = serializers.ParkingFeeSerializer(parking_fees, many=True)
         return Response(parking_fees_serializer.data)
 
@@ -115,7 +115,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         except Resident.DoesNotExist:
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        parking_fees = ServiceFees.objects.filter(resident=resident, status=False)
+        parking_fees = ServiceFees.objects.filter(resident=resident)
         parking_fees_serializer = serializers.ParkingFeeSerializer(parking_fees, many=True)
         return Response(parking_fees_serializer.data)
 
