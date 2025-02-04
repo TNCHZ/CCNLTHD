@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, FlatList, RefreshControl, ActivityIndicat
 import Styles from "../../styles/Styles";
 import Items from "./Items";
 import { Chip, Searchbar } from "react-native-paper";
-import React, { use, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
 import { MyAccountContext } from "../../configs/MyContext";
 
@@ -92,7 +92,7 @@ const Fee = ({ navigation }) => {
                     loadParkingFees();
                 }
                 if (feeType === 'serviceFees') {
-                    loadManagingFees();
+                    loadServiceFees();
                 }
             }
         }, 500);
@@ -141,16 +141,14 @@ const Fee = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            <Searchbar style={{ marginVertical: 2 }} placeholder="Tìm kiếm ..." value={q} onChange={t => search(t, setQ)} />
+            <Searchbar style={{ marginVertical: 2 }} placeholder="Tìm kiếm ..." value={q} onChangeText={t => search(t, setQ)} />
             {loading && <ActivityIndicator />}
 
             <Text style={Styles.text}>Danh sách chi phí</Text>
             <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh} />}
                 data={getFeeData()}
-                keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
-                renderItem={({ item }) => <Items item={item} routeName={feeType === 'managingFees' ? 'managingFeeDetail'
-                    : feeType === 'parkingFees' ? 'parkingFeeDetail' : 'serviceFeeDetail'
-                } params={{ 'managingFeeID': item.id, 'parkingFeeID': item.id, 'serviceFeeID': item.id, }} />}
+                keyExtractor={(item) => (item.id.toString())}
+                renderItem={({item}) => <Items item={item} routeName={'momo'} params={{ 'FeeID': item.id, 'FeeName': item.name, }} />}
             />
         </View>
     );

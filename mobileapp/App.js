@@ -14,9 +14,6 @@ import Locker from './components/Resident/Locker'
 import Login from './components/Resident/Login';
 import Logout from './components/Resident/Logout';
 import Fee from './components/Fee/Fees';
-import ManagingFee_Detail from './components/Fee/ManagingFee_Detail';
-import ParkingFee_Detail from './components/Fee/ParkingFee_Detail';
-import ServiceFee_Detail from './components/Fee/ServiceFee_Detail';
 import Profile from './components/Resident/Profile';
 import FeedBack from './components/Resident/FeedBack';
 import Delete_Resident from './components/Admin/Delete_Resident';
@@ -74,9 +71,6 @@ const App =() => {
           </> : <>
             {/* Ẩn vì chỉ cần load nội dung*/}
             <Drawer.Screen name='profile' component={Profile} options={{title:"Trang cá nhân", drawerItemStyle:{display: 'none'}}}/>
-            <Drawer.Screen name='managingFeeDetail' component={ManagingFee_Detail} options={{title: 'Phí Quản Lý', drawerItemStyle:{display: 'none'}}}/>
-            <Drawer.Screen name='parkingFeeDetail' component={ParkingFee_Detail} options={{title: 'Phí Đỗ Xe', drawerItemStyle:{display: 'none'}}}/>
-            <Drawer.Screen name='serviceFeeDetail' component={ServiceFee_Detail} options={{title: 'Phí Dịch Vụ', drawerItemStyle:{display: 'none'}}}/>
             
             {account.role === "Admin" ? <>
               {/* Hiện tương tác của ADMIN */}
