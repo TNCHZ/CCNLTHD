@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from .models import *
 
 class MonthSerializer(serializers.ModelSerializer):
@@ -55,7 +57,6 @@ class CreateResidentSerializer(serializers.ModelSerializer):
         fields = ['user', 'gender', 'day_of_birth', 'address', 'phone', 'citizen_identification']
 
     def create(self, validated_data):
-        from django.core.exceptions import ValidationError
         user_data = validated_data.pop('user')
 
         address = validated_data.get('address')

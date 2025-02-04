@@ -1,4 +1,3 @@
-from django.db.models.functions import Trunc
 from requests import Response
 from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action, permission_classes
@@ -127,7 +126,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         except Resident.DoesNotExist:
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        locker = Locker.objects.filter(resident=resident)
+        locker = Locker.objects.filter(resident=resident).first()
         locker_serializer = serializers.ResidentLockerSerializer(locker)
         return Response(locker_serializer.data)
 
@@ -139,7 +138,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         except Resident.DoesNotExist:
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        feedback_resident = Feedback.objects.filter(resident=resident)
+        feedback_resident = Feedback.objects.filter(resident=resident).all()
         feedback_resident_serializer = serializers.ResidentFeedBackSerializer(feedback_resident, many=True)
         return Response(feedback_resident_serializer.data)
 
@@ -150,7 +149,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         except Resident.DoesNotExist:
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        survey = SurveyResident.objects.filter(resident=resident, is_response=False)
+        survey = SurveyResident.objects.filter(resident=resident, is_response=False).all()
         survey_serializer = serializers.ResidentSurveyResponseSerializer(survey, many=True)
         return Response(survey_serializer.data)
 
@@ -230,7 +229,7 @@ class ResidentLockerViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         q = self.request.query_params.get("q")
         if q:
-            queries = queries.filter(username__icontains = q)
+            queries = queries.filter(name__icontains = q)
 
         return queries
 
@@ -266,6 +265,6 @@ class ResidentSurveyResponseViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ResidentSurveyResponseSerializer
 
 
-class AddressViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Address.objects.filter(is_free=True).all()
+class AddressViewSet(viewsets.ModelViewSet):
+    queryset = Address.objects.filter().all()
     serializer_class = serializers.AddressSerializer
