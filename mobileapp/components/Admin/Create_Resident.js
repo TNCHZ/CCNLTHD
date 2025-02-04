@@ -105,7 +105,6 @@ const Create_Resident = () => {
             if (response.status === 201) {
                 Alert.alert("Thành công", "Tài khoản đã được tạo!", [{ text: "OK" }]);
                 fetchAddresses();
-
                 setJson({
                     fullName: "",
                     gender: true,
