@@ -29,6 +29,7 @@ import Momo from './components/Home/Momo';
 import Surveys from './components/Resident/Surveys';
 import Resident_Feedback from './components/Admin/Resident_Feedback'
 import CheckSurvey from './components/Admin/CheckSurvey';
+import Locker_Resident from './components/Admin/Locker_Resident'
 
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
 
@@ -83,6 +84,7 @@ const App =() => {
               <Drawer.Screen name='createResident' component={Create_Resident} options={{title:'Cấp Tài Khoản'}}/>
               <Drawer.Screen name='deleteResident' component={Delete_Resident} options={{title:'Xóa Tài Khoản'}}/>
               <Drawer.Screen name='createFee' component={Create_Fee} options={{title: 'Tạo Chi Phí'}}/>
+              <Drawer.Screen name='LockerResident' component={Locker_Resident} options={{title: 'Quản lý tủ điện tử'}}/>
               <Drawer.Screen name='residentFeedback' component={Resident_Feedback} options={{title: 'Xem Góp Ý'}}/>
               <Drawer.Screen name='createSurvey'component={Create_Survey} options={{title: 'Tạo Khảo Sát'}}/>
               <Drawer.Screen name='checkSurvey' component={CheckSurvey} options={{title: 'Xem Khảo Sát'}} />

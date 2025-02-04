@@ -19,6 +19,8 @@ router.register(r'resident-create', views.ResidentCreateViewSet, basename='resid
 router.register(r'list-user', views.ResidentViewSet, basename='list-user')
 router.register(r'month-fee', views.MonthViewSet, basename='month-fee')
 router.register(r'feedback', views.FeedbackViewSet)
+router.register(r'locker', views.LockerViewSet)
+router.register(r'item-in-locker', views.ItemInLockerViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

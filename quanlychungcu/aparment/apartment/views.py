@@ -16,6 +16,14 @@ class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
 
+class LockerViewSet(viewsets.ModelViewSet):
+    queryset = Locker.objects.all()
+    serializer_class = serializers.ResidentLockerSerializer
+
+class ItemInLockerViewSet(viewsets.ModelViewSet):
+    queryset = ItemsInLocker.objects.all()
+    serializer_class = serializers.ResidentItemsInLockerSerializer
+
 
 class UserViewSet(viewsets.ViewSet):
     queryset = User.objects.filter(is_active=True)
@@ -139,7 +147,7 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
 
         feedback_resident = Feedback.objects.filter(resident=resident).all()
-        feedback_resident_serializer = serializers.ResidentFeedBackSerializer(feedback_resident, many=True)
+        feedback_resident_serializer = serializers.FeedbackSerializer(feedback_resident, many=True)
         return Response(feedback_resident_serializer.data)
 
     @action(methods=['get'], url_path='survey', detail=True)
@@ -240,24 +248,9 @@ class ResidentLockerViewSet(viewsets.ViewSet, generics.ListAPIView):
         return Response(serializers.ResidentItemsInLockerSerializer(items_in_locker, many=True))
 
 
-
-class ResidentFeedBackViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Feedback.objects.all()
-    serializer_class = serializers.ResidentFeedBackSerializer
-
-    def get_queryset(self):
-        queries = self.queryset
-
-        q = self.request.query_params.get("q")
-        if q:
-            queries = queries.filter(username__icontains=q)
-
-        return queries
-
 class SurveyViewSet(viewsets.ModelViewSet):
     queryset = Survey.objects.all()
     serializer_class = serializers.SurveySerializer
-
 
 
 class ResidentSurveyResponseViewSet(viewsets.ModelViewSet):

@@ -15,9 +15,15 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
+    serializers.PrimaryKeyRelatedField(queryset=Resident.objects.all())
+    resident_details = serializers.SerializerMethodField()
+
     class Meta:
         model = Feedback
-        fields = ['id', 'content', 'resident']
+        fields = ['id', 'content', 'resident', 'resident_details']
+
+    def get_resident_details(self, obj):
+        return ResidentInformationSerializer(obj.resident).data
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -118,7 +124,7 @@ class ServiceFeeSerializer(serializers.ModelSerializer):
 class ResidentItemsInLockerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemsInLocker
-        fields = ['id', 'name', 'created_date']  # Bao gồm các trường bạn muốn hiển thị
+        fields = ['id', 'name', 'status', 'locker', 'created_date']  # Bao gồm các trường bạn muốn hiển thị
 
 
 class ResidentLockerSerializer(serializers.ModelSerializer):
@@ -127,12 +133,6 @@ class ResidentLockerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Locker
         fields = ['id', 'name', 'resident', 'items_in_locker']
-
-
-class ResidentFeedBackSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Feedback
-        field = ['id', 'title', 'content', 'resident']
 
 
 class SurveySerializer(serializers.ModelSerializer):

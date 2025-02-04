@@ -143,11 +143,6 @@ class ServiceFees(Fee):
 
 class Locker(BaseModel):
     name = models.TextField(null = False)
-    STATUS_CHOICES = [
-        (True, 'Không có đồ cần lấy'),
-        (False, 'Có đồ cần lấy'),
-    ]
-    status = models.BooleanField(choices=STATUS_CHOICES, default=True)
     resident = models.OneToOneField(
         Resident,  # Đảm bảo quan hệ một-một
         on_delete=models.CASCADE,
@@ -158,12 +153,14 @@ class Locker(BaseModel):
         return self.name
 
 
-
-
 class ItemsInLocker(BaseModel):
     name = models.TextField(null=False)
     locker = models.ForeignKey(Locker, on_delete=models.CASCADE)
-
+    STATUS_CHOICES = [
+        (True, 'Đã lấy'),
+        (False, 'Chưa lấy'),
+    ]
+    status = models.BooleanField(choices=STATUS_CHOICES, default=False)
     def __str__(self):
         return self.name
 

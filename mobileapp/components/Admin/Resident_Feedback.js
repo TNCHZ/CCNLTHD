@@ -1,127 +1,59 @@
-import { useEffect, useState } from "react";
-import { View, Text, TextInput, FlatList, ActivityIndicator, Alert, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, ActivityIndicator } from "react-native";
 import Styles from "../../styles/Styles";
-import APIs, { authApis, endpoints } from "../../configs/APIs";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import APIs, { authApis, endpoints } from "../../configs/APIs";
 
-const Delete_Resident = () => {
-    const [users, setUsers] = useState([]);  // Lưu danh sách user
-    const [loading, setLoading] = useState(true);
-    const [searchText, setSearchText] = useState(""); // Lọc theo tài khoản
-    const [searchAddress, setSearchAddress] = useState(""); // Lọc theo căn hộ
 
-    const fetchUsers = async () => {
+const CheckFeedback = () => {
+    const [loading, setLoading] = useState(false);
+    const [feedbackList, setFeedbackList] = useState([]);
+
+    // Hàm lấy dữ liệu từ API
+    const fetchFeedback = async () => {
         setLoading(true);
-        let allUsers = [];
-        let nextUrl = endpoints["list-user"];
-
         try {
-            while (nextUrl) {
-                const token = await AsyncStorage.getItem("token");
-                const response = await authApis(token).get(nextUrl);
-                allUsers = [...allUsers, ...response.data.results];
-                nextUrl = response.data.next;
-            }
-            setUsers(allUsers);
+            const token = await AsyncStorage.getItem("token");
+            const response = await authApis(token).get(endpoints["feedback"]);
+            setFeedbackList(response.data.results);
         } catch (error) {
-            console.error("Lỗi khi tải danh sách user:", error.response?.data || error);
+            console.error("Lỗi khi tải phản hồi:", error.response?.data || error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchUsers();
+        fetchFeedback();
     }, []);
-
-    // Hàm để hiển thị hộp thoại xác nhận
-    const confirmDisableUser = (userId) => {
-        Alert.alert(
-            "Dừng hoạt động tài khoản",
-            "Bạn có chắc chắn muốn dừng hoạt động tài khoản này?",
-            [
-                { text: "Hủy", style: "cancel" },
-                { text: "Xác nhận", onPress: () => disableUser(userId) }
-            ]
-        );
-    };
-
-    const disableUser = async (userId) => {
-        try {
-            const token = await AsyncStorage.getItem("token");
-            const url = `${endpoints['list-user']}${userId}/`;  // Giả định API hỗ trợ PATCH
-    
-            const data = {
-                is_active: false,  
-                address: null     
-            };
-    
-            // Gửi PATCH request
-            const response = await authApis(token).patch(url, data, {
-                headers: { "Content-Type": "application/json" }
-            });
-    
-            console.log("Cập nhật thành công:", response.data);
-            Alert.alert("Thành công", "Tài khoản đã bị vô hiệu hóa!");    
-            
-            // Cập nhật UI sau khi thành công
-            setUsers(users.map(user => 
-                user.user === userId ? { ...user, is_active: false, address: null } : user
-            ));
-    
-        } catch (error) {
-            console.error("Lỗi khi dừng hoạt động tài khoản:", error);
-            Alert.alert("Lỗi", "Không thể dừng hoạt động tài khoản.");
-        }
-    };
-    
-
-    // Lọc danh sách theo tài khoản hoặc căn hộ
-    const filteredUsers = users.filter(user => 
-        (user.userdetail?.first_name + " " + user.userdetail?.last_name || "").toLowerCase().includes(searchText.toLowerCase()) &&
-        (user.address?.name || "").toLowerCase().includes(searchAddress.toLowerCase())
-    );
 
     return (
         <View style={Styles.container}>
-            <Text style={Styles.title}>Danh Sách Người Dùng & Căn Hộ</Text>
-
-            {/* Ô tìm kiếm theo tài khoản */}
-            <TextInput
-                style={Styles.input}
-                placeholder="Tìm theo tên tài khoản"
-                value={searchText}
-                onChangeText={setSearchText}
-            />
-
-            {/* Ô tìm kiếm theo căn hộ */}
-            <TextInput
-                style={Styles.input}
-                placeholder="Tìm theo căn hộ"
-                value={searchAddress}
-                onChangeText={setSearchAddress}
-            />
+            <Text style={Styles.subtitle}>Danh sách phản hồi</Text>
 
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <FlatList style={{borderColor: "#ccc", borderWidth: 1, borderRadius: 8,}}
-                    data={filteredUsers}
-                    keyExtractor={(item) => item.user.toString()}
-                    renderItem={({ item }) => (
-                        <View style={Styles.input}>
-                            <TouchableOpacity style={Styles.row} onPress={() => confirmDisableUser(item.user)}>
-                                <Text style={[Styles.txt,{width:"25%"}]}>{item.address?.name || "Chưa có địa chỉ"}</Text>
-                                <Text style={[Styles.txt,{width:"75%"}]}>
-                                    {item.userdetail?.first_name + " " + item.userdetail?.last_name || "Không có"}
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                <ScrollView style={{ borderColor: "#ccc", borderWidth: 1, borderRadius: 8, marginTop: 10, padding: 10 }}>
+                    {feedbackList.length > 0 ? (
+                        feedbackList.map((feedback) => {
+                            const resident = feedback.resident_details;
+                            const fullName = `${resident.userdetail.first_name} ${resident.userdetail.last_name}`;
+                            const apartment = resident.address.name;
+                            return (
+                                <View key={feedback.id} style={{ marginBottom: 10, padding: 10, backgroundColor: "#f0f0f0", borderRadius: 5 }}>
+                                    <Text style={Styles.textBold}>Tên dân cư: {fullName} - Địa chỉ: {apartment}</Text>
+                                    <Text>Nội dung phản ánh: {feedback.content}</Text>
+                                </View>
+                            );
+                        })
+                    ) : (
+                        <Text>Không có phản hồi nào.</Text>
                     )}
-                />
+                </ScrollView>
             )}
         </View>
     );
 };
 
-export default Delete_Resident;
+export default CheckFeedback;
