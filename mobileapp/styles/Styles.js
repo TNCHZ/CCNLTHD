@@ -121,4 +121,12 @@ export default StyleSheet.create({
         borderRadius: 50,
         margin: 10,
     },
+    scrollView: {
+        borderColor: "#ccc", 
+        borderWidth: 1, 
+        borderRadius: 8, 
+        marginTop: 10, 
+        padding: 10, 
+        backgroundColor: "#f9f9f9",
+    },
 });

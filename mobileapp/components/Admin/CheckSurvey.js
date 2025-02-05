@@ -88,7 +88,7 @@ const CheckSurvey = () => {
             </Picker>
 
             {/* Hiển thị phản hồi của cư dân */}
-            <ScrollView style={{ borderColor: "#ccc", borderWidth: 1, borderRadius: 8, marginTop: 10, padding: 10, backgroundColor: "#f9f9f9", }}>
+            <ScrollView style={Styles.scrollView}>
                 {loadingResponses ? (
                     <Text style={{ textAlign: "center", fontStyle: "italic", color: "gray" }}>Đang tải phản hồi...</Text>
                 ) : responses.length > 0 ? (

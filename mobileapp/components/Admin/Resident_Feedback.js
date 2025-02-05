@@ -29,12 +29,12 @@ const CheckFeedback = () => {
 
     return (
         <View style={Styles.container}>
-            <Text style={Styles.subtitle}>Danh sách phản hồi</Text>
+            <Text style={Styles.title}>Danh sách phản hồi</Text>
 
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <ScrollView style={{ borderColor: "#ccc", borderWidth: 1, borderRadius: 8, marginTop: 10, padding: 10 }}>
+                <ScrollView style={Styles.scrollView}>
                     {feedbackList.length > 0 ? (
                         feedbackList.map((feedback) => {
                             const resident = feedback.resident_details;
@@ -42,8 +42,8 @@ const CheckFeedback = () => {
                             const apartment = resident.address.name;
                             return (
                                 <View key={feedback.id} style={{ marginBottom: 10, padding: 10, backgroundColor: "#f0f0f0", borderRadius: 5 }}>
-                                    <Text style={Styles.textBold}>Tên dân cư: {fullName} - Địa chỉ: {apartment}</Text>
-                                    <Text>Nội dung phản ánh: {feedback.content}</Text>
+                                    <Text style={{ fontWeight: "600" }}>{apartment} - {fullName}</Text>
+                                    <Text style={{ color: "#333", marginTop: 2 }}>Nội dung: {feedback.content}</Text>
                                 </View>
                             );
                         })

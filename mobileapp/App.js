@@ -94,7 +94,7 @@ const App =() => {
                 </>) : (<>
                   {/* Hiện để tương tác của RESIDENT */}
                   <Drawer.Screen name="fee" component={Fee} options={{ title: "Các Khoản Chi Phí" }} />
-                  <Drawer.Screen name="momo" component={Momo} options={{ title: "Thanh toán" }} />
+                  <Drawer.Screen name="momo" component={Momo} options={{ title: "Thanh toán" , drawerItemStyle: {display: 'none'} }} />
                   <Drawer.Screen name="locker" component={Locker} options={{ title: "Tủ Đồ Cá Nhân" }} />
                   <Drawer.Screen name="registerParking" component={RegisterParking} options={{ title: "Đăng Ký Đậu Xe" }} />
                   <Drawer.Screen name="survey" component={Surveys} options={{ title: "Khảo sát" }} />
