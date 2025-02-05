@@ -5,7 +5,7 @@ import { MyAccountContext } from "../../configs/MyContext";
 import APIs, { endpoints } from "../../configs/APIs";
 
 const RelativeList = () => {
-    const accountState = useContext(MyAccountContext);
+    const [accountState] = useContext(MyAccountContext);
     const [loading, setLoading] = useState(false);
     const [relatives, setRelatives] = useState([]);
     const [filteredRelatives, setFilteredRelatives] = useState([]);

@@ -148,7 +148,7 @@ const Fee = ({ navigation }) => {
             <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh} />}
                 data={getFeeData()}
                 keyExtractor={(item) => `${item.id}-${item.name}`}
-                renderItem={({item}) => <Items item={item} routeName={'momo'} params={{ 'FeeID': item.id, 'FeeName': item.name, 'FeeValue': item.fee_value, 'FeeStatus': item.status,}} />}
+                renderItem={({item}) => <Items item={item} routeName={'momo'} params={{ 'FeeID': item.id, 'FeeName': item.name, 'FeeValue': item.fee_value, 'FeeStatus': item.status}} />}
             />
         </View>
     );

@@ -12,6 +12,7 @@ const Items = ({ item, routeName, params }) => {
             title={() => (
                 <View>
                     <Text style={{ fontWeight: "bold", fontSize: 16 }}>{item.name}</Text>
+                    <Text>Tháng: {item.month_details.name}</Text>
                     {item.fee_value && (
                         <Text style={{ fontSize: 14, color: "gray", marginTop: 4 }}>
                             Giá trị: {`Value: ${item.fee_value}`} VND
@@ -20,7 +21,6 @@ const Items = ({ item, routeName, params }) => {
                     <Text>Trạng thái: {item.status ? "Đã thanh toán" : "Chưa thanh toán"}</Text>
                 </View>
             )}
-            description={item.created_date ? moment(item.created_date).fromNow() : "Không có ngày"}
             left={(props) => (
                 <Image
                     {...props}

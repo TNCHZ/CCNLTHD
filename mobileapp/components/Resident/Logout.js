@@ -12,22 +12,10 @@ const Logout = ({navigation}) => {
         })
         console.info("Đăng xuất");
     }
-
-    const confirmLogout = () => {
-        Alert.alert(
-            "Xác nhận Đăng xuất",
-            "Bạn có chắc muốn ĐĂNG XUẤT?",
-            [
-                { text: "Hủy", style: "cancel" },
-                { text: "Đăng xuất", onPress:logout },
-            ]
-        );
-    };
-    
     return(
         <View style={[Styles.container,{justifyContent: "center"}]}>
             <Text style={[Styles.title, {fontSize: 20}]}> Bạn có chắc muốn ĐĂNG XUẤT ?</Text>
-            <Button title="Đăng xuất" color="#d32f2f" onPress={confirmLogout}/> 
+            <Button title="Đăng xuất" color="#d32f2f" onPress={logout}/> 
         </View>
     )
 }

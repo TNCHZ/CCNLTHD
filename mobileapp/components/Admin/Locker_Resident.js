@@ -103,14 +103,9 @@ const CheckLocker = () => {
 
     return (
         <View style={Styles.container}>
-            <Text style={Styles.subtitle}>Danh sách tủ</Text>
-
+            <Text style={Styles.title}>Danh sách tủ</Text>
             {/* Picker để chọn tủ */}
-            <Picker
-                selectedValue={selectedLocker}
-                style={Styles.input}
-                onValueChange={handleLockerChange}
-            >
+            <Picker style={Styles.input} selectedValue={selectedLocker} onValueChange={handleLockerChange}>
                 <Picker.Item label="Chọn tủ" value={null} />
                 {loadingLocker ? (
                     <Picker.Item label="Đang tải..." value="loading" />
@@ -120,51 +115,39 @@ const CheckLocker = () => {
                     ))
                 )}
             </Picker>
-
+            
             {/* Hiển thị danh sách item trong tủ */}
-            <ScrollView style={{ borderColor: "#ccc", borderWidth: 1, borderRadius: 8, marginTop: 10, padding: 10 }}>
+            <ScrollView style={Styles.scrollView}>
+                <View style={[Styles.containerNoCenter,{padding:5}]}>
                 {items.length > 0 ? (
                     items.map((item, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            style={{
-                                padding: 10,
-                                marginBottom: 10,
+                        <TouchableOpacity key={index} onPress={() => handleItemPress(item)} disabled={item.status}
+                            style={{ padding: 10, marginBottom: 10, borderRadius: 5, borderColor: "#ccc", borderWidth: 1,
                                 backgroundColor: item.status ? "#d3d3d3" : "#e6f7ff",
-                                borderRadius: 5,
-                            }}
-                            onPress={() => handleItemPress(item)}
-                            disabled={item.status}
-                        >
-                            <Text style={Styles.textBold}>Tên vật phẩm: {item.name}</Text>
-                            <Text>Trạng thái: {item.status ? "Đã lấy" : "Chưa lấy"}</Text>
-                            <Text>Ngày gửi: {new Date(item.created_date).toLocaleDateString()}</Text>
+                        }}>
+                            <Text style={[Styles.text,{color:"#000"}]}>Tên vật phẩm: {item.name}</Text>
+                            <Text style={[Styles.text,{color:"#000"}]}>Trạng thái: {item.status ? "Đã lấy" : "Chưa lấy"}</Text>
+                            <Text style={[Styles.text,{color:"#000"}]}>Ngày gửi: {new Date(item.created_date).toLocaleDateString()}</Text>
                         </TouchableOpacity>
                     ))
                 ) : (
                     <Text>Không có vật phẩm nào trong tủ.</Text>
                 )}
+                </View>
             </ScrollView>
 
             {/* Form nhập vật phẩm mới */}
             {addingItem && (
                 <View style={{ marginTop: 10 }}>
-                    <TextInput
-                        style={Styles.input}
-                        placeholder="Nhập tên vật phẩm"
-                        value={newItemName}
-                        onChangeText={setNewItemName}
+                    <TextInput style={Styles.input} placeholder="Nhập tên vật phẩm"
+                        value={newItemName} onChangeText={setNewItemName}
                     />
-                    <TouchableOpacity
-                        style={Styles.button}
-                        onPress={handleAddItem}
-                        disabled={loadingAdd}
-                    >
+                    <TouchableOpacity style={Styles.button}disabled={loadingAdd} onPress={handleAddItem}>
                         <Text style={Styles.buttonText}>{loadingAdd ? "Đang lưu..." : "Lưu vật phẩm"}</Text>
                     </TouchableOpacity>
                 </View>
             )}
-
+           
             {/* Nút thêm vật phẩm */}
             {!addingItem && selectedLocker && (
                 <TouchableOpacity

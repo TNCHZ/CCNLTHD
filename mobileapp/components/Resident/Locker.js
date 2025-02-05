@@ -39,22 +39,24 @@ const Locker = () => {
                     </Text>
 
                     {/* Danh sách vật phẩm */}
-                    <ScrollView style={{ marginTop: 10, borderColor: "#ccc", borderWidth: 1, borderRadius: 8, padding: 10 }}>
+                    <ScrollView style={Styles.scrollView}>
+                        <View style={[Styles.containerNoCenter,{padding:5}]}>
                         {locker.items_in_locker.length > 0 ? (
                             locker.items_in_locker.map((item) => (
                                 <View key={item.id} style={{ marginBottom: 10, padding: 10, backgroundColor: "#f0f0f0", borderRadius: 5 }}>
-                                    <Text style={Styles.textBold}>{item.name}</Text>
-                                    <Text>Trạng thái: {item.status ? "Đã lấy" : "Chưa lấy"}</Text>
-                                    <Text>Ngày thêm: {new Date(item.created_date).toLocaleDateString()}</Text>
+                                    <Text style={[Styles.text,{color:"#000"}]}>{item.name}</Text>
+                                    <Text style={[Styles.text,{color:"#000"}]}>Trạng thái: {item.status ? "Đã lấy" : "Chưa lấy"}</Text>
+                                    <Text style={[Styles.text,{color:"#000"}]}>Ngày thêm: {new Date(item.created_date).toLocaleDateString()}</Text>
                                 </View>
                             ))
                         ) : (
                             <Text>Không có vật phẩm nào trong tủ.</Text>
                         )}
+                        </View>
                     </ScrollView>
                 </View>
             ) : (
-                <Text>Không có dữ liệu tủ đồ.</Text>
+                <Text style={Styles.subtitle}>Không có dữ liệu tủ đồ.</Text>
             )}
         </View>
     );
