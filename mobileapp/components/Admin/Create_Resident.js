@@ -153,7 +153,7 @@ const Create_Resident = () => {
             </Picker>
 
             <TextInput style={Styles.input} placeholder="Số điện thoại"
-                keyboardType="numeric" value={json.phone} onChangeText={(value) => update('phone', value)} />
+                keyboardType="numeric" value={json.phone} maxLength={10} onChangeText={(value) => update('phone', value)} />
 
             <TextInput style={Styles.input} placeholder="CCCD/CMND"
                 value={json.citizenId} onChangeText={(value) => update('citizenId', value)} />

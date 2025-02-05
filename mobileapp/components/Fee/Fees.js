@@ -109,7 +109,7 @@ const Fee = ({ navigation }) => {
             case 'serviceFees':
                 return serviceFees;
             default:
-                return [...managingFees, ...parkingFees, ...serviceFees]; // Tất cả dữ liệu
+                return [...managingFees, ...parkingFees, ...serviceFees].filter(fee => fee.status === false); // Tất cả dữ liệu
         }
     };
 
@@ -137,7 +137,7 @@ const Fee = ({ navigation }) => {
                     <Chip style={Styles.chip} icon="clipboard-text">Phí Dịch Vụ</Chip>
                 </TouchableOpacity>
                 <TouchableOpacity style={Styles.touchable} onPress={() => setFeeType('')}>
-                    <Chip style={Styles.chip} icon="label-outline">Tất cả chi phí</Chip>
+                    <Chip style={Styles.chip} icon="label-outline">Các Phí Chưa Thanh Toán</Chip>
                 </TouchableOpacity>
             </View>
 
@@ -147,8 +147,8 @@ const Fee = ({ navigation }) => {
             <Text style={Styles.text}>Danh sách chi phí</Text>
             <FlatList refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh} />}
                 data={getFeeData()}
-                keyExtractor={(item) => (item.id.toString())}
-                renderItem={({item}) => <Items item={item} routeName={'momo'} params={{ 'FeeID': item.id, 'FeeName': item.name, }} />}
+                keyExtractor={(item) => `${item.id}-${item.name}`}
+                renderItem={({item}) => <Items item={item} routeName={'momo'} params={{ 'FeeID': item.id, 'FeeName': item.name, 'FeeValue': item.fee_value, 'FeeStatus': item.status,}} />}
             />
         </View>
     );

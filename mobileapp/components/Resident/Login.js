@@ -104,7 +104,7 @@ const Login = ({ navigation }) => {
     return (
         <View style={Styles.container}>
             <Text style={Styles.title}>Đăng nhập</Text>
-            <TextInput style={Styles.input} value={account.username} onChangeText={(t) => updateAccount(t, "username")} placeholder="Tên đăng nhập" />
+            <TextInput style={Styles.input} value={account.username} autoFocus={true} maxLength={10} onChangeText={(t) => updateAccount(t, "username")} placeholder="Tên đăng nhập" />
             <TextInput style={Styles.input} value={account.password} secureTextEntry={true} onChangeText={(p) => updateAccount(p, "password")} placeholder="Nhập mật khẩu" />
             <TouchableOpacity onPress={login} style={Styles.button} disabled={loading}>
                 {loading ? (

@@ -33,7 +33,7 @@ const Items = ({ item, routeName, params }) => {
                     <TouchableOpacity style={{backgroundColor: "#007bff", justifyContent: "center",
                         alignItems: "center", borderRadius: 20, paddingVertical: 6, paddingHorizontal: 12,}}
                         onPress={() => {
-                            console.log("Navigating with:", { FeeID: item.id, FeeName: item.name });
+                            console.log("Navigating with:", params);
                             nav.navigate(routeName, params);
                         }}>
                         <Text style={{ color: "white", fontWeight: "bold" }}>Thanh Toán</Text>
