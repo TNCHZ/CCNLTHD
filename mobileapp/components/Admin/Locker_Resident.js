@@ -117,7 +117,7 @@ const CheckLocker = () => {
             </Picker>
             
             {/* Hiển thị danh sách item trong tủ */}
-            <ScrollView style={Styles.scrollView}>
+            <ScrollView style={[Styles.scrollView, {width: "100%"}]}>
                 <View style={[Styles.containerNoCenter,{padding:5}]}>
                 {items.length > 0 ? (
                     items.map((item, index) => (

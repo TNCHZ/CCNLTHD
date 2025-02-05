@@ -136,18 +136,16 @@ const Check_Fee = () => {
             ]
         );
     };
-
+//==============================================================================================================================    
     return (
-        <View style={styles.container}>
+        <View style={Styles.container}>
             {/* Phần chọn căn hộ */}
-            <View style={styles.row}>
-                <Text style={styles.label}>Chọn căn hộ</Text>
+            <View style={[Styles.row, {borderColor: "#ccc", borderWidth: 1,}]}>
+                <Text style={[Styles.title, {alignItems:'center', fontSize:18, width: "40%"}]}>Chọn căn hộ</Text>
                 {loading ? (
                     <ActivityIndicator size="large" color="#0000ff" />
                 ) : (
-                    <Picker
-                        selectedValue={selectedUser}
-                        style={styles.picker}
+                    <Picker style={{width: "60%", backgroundColor: "#fff",}} selectedValue={selectedUser}
                         onValueChange={(itemValue) => setSelectedUser(itemValue)}
                     >
                         {users.map((user) => (
@@ -158,14 +156,12 @@ const Check_Fee = () => {
             </View>
 
             {/* Phần chọn tháng */}
-            <View style={styles.row}>
-                <Text style={styles.label}>Chọn Tháng</Text>
+            <View style={[Styles.row, {borderColor: "#ccc", borderWidth: 1,}]}>
+                <Text style={[Styles.title, {alignItems:'center', fontSize:18, width: "40%"}]}>Chọn Tháng</Text>
                 {loading ? (
                     <ActivityIndicator size="large" color="#0000ff" />
                 ) : (
-                    <Picker
-                        selectedValue={selectedMonth}
-                        style={styles.picker}
+                    <Picker style={{width: "60%", backgroundColor: "#fff",}} selectedValue={selectedMonth}
                         onValueChange={(itemValue) => setSelectedMonth(itemValue)}
                     >
                         {months.map((month) => (
@@ -176,40 +172,40 @@ const Check_Fee = () => {
             </View>
 
             {/* Nút lọc */}
-            <TouchableOpacity onPress={filterResults} style={styles.button}>
-                <Text style={styles.buttonText}>Lọc</Text>
+            <TouchableOpacity onPress={filterResults} style={Styles.button}>
+                <Text style={Styles.buttonText}>Lọc</Text>
             </TouchableOpacity>
-
+            
+            
+            <Text style={Styles.title}>Kết quả tìm kiếm</Text>
             {/* Phần kết quả tìm kiếm có thể cuộn */}
-            <ScrollView contentContainerStyle={styles.scrollContainer} style={styles.feeContainer}>
-                <Text style={styles.header}>Kết quả tìm kiếm:</Text>
-
+            <ScrollView style={[Styles.scrollView, {width:"100%"}]}>
                 {/* Phí Quản Lí */}
                 {fees && fees.managing_fees?.length > 0 && (
-                    <View style={styles.feeItem}>
-                        <Text style={styles.feeTitle}>Phí Quản Lí</Text>
-                        <Text style={styles.feeText}>Giá: {fees.managing_fees[0].fee_value} VND</Text>
-                        <Text style={styles.feeText}>
-                            Tháng: {fees.managing_fees[0].month_details.name} {fees.managing_fees[0].month_details.year}
+                    <View style={{borderColor: "#000", borderWidth: 1, marginBottom: 5, padding: 5}}>
+                        <Text style={[Styles.title, {fontSize:18}]}>Phí Quản Lí</Text>
+                        <Text style={Styles.txt}>Giá: {fees.managing_fees[0].fee_value} VND</Text>
+                        <Text style={Styles.txt}>
+                            Tháng: {fees.managing_fees[0].month_details.name} - Năm: {fees.managing_fees[0].month_details.year}
                         </Text>
-                        {fees.managing_fees[0].fee_image ? (
-                            <Image
-                                source={{ uri: extractImageUrl(fees.managing_fees[0].fee_image) }}
-                                style={Styles.imageLogo}
-                            />
-                        ) : (
-                            <Text style={styles.feeText}>Không có hình ảnh</Text>
-                        )}
-                        <Text style={styles.feeText}>
+                        <View style={{alignItems:"center"}}>
+                            {fees.managing_fees[0].fee_image ? (
+                                <Image style={{width: 50, height: 50, margin: 5,}}
+                                    source={{ uri: extractImageUrl(fees.managing_fees[0].fee_image) }}
+                                />
+                            ) : (
+                                <Text style={[Styles.text, {fontSize:14}]}>Không có hình ảnh</Text>
+                            )}
+                        </View>
+                        <Text style={Styles.txt}>
                             Trạng thái: {fees.managing_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
                         </Text>
                         {!fees.managing_fees[0].status && (
-                            <TouchableOpacity
-                                style={styles.paymentButton}
-                                onPress={() => handleFeePress("managing_fees", fees.managing_fees[0].id)}
-                            >
-                                <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
-                            </TouchableOpacity>
+                            <View style={{alignItems:"center"}}>
+                                <TouchableOpacity style={[Styles.button, {height: 20}]} onPress={() => handleFeePress("managing_fees", fees.managing_fees[0].id)}>
+                                    <Text style={[Styles.buttonText, {fontSize: 12}]}>Xác nhận thanh toán</Text>
+                                </TouchableOpacity>
+                            </View>
                         )}
                     </View>
                 )}
@@ -217,54 +213,60 @@ const Check_Fee = () => {
 
                 {/* Phí Đỗ Xe */}
                 {fees && fees.parking_fees?.length > 0 && (
-                    <View style={styles.feeItem}>
-                        <Text style={styles.feeTitle}>Phí Đỗ Xe</Text>
-                        <Text style={styles.feeText}>Giá: {fees.parking_fees[0].fee_value} VND</Text>
-                        <Text style={styles.feeText}>
-                            Tháng: {fees.parking_fees[0].month_details.name} {fees.parking_fees[0].month_details.year}
+                    <View style={{borderColor: "#000", borderWidth: 1, marginBottom: 5, padding: 5}}>
+                        <Text style={[Styles.title, {fontSize:18}]}>Phí Đỗ Xe</Text>
+                        <Text style={Styles.txt}>Giá: {fees.parking_fees[0].fee_value} VND</Text>
+                        <Text style={Styles.txt}>
+                            Tháng: {fees.parking_fees[0].month_details.name} - Năm: {fees.parking_fees[0].month_details.year}
                         </Text>
-                        {fees.parking_fees[0].fee_image ? (
-                            <Image
-                                source={{ uri: extractImageUrl(fees.parking_fees[0].fee_image) }}
-                                style={styles.feeImage}
-                            />
-                        ) : (
-                            <Text style={styles.feeText}>Không có hình ảnh</Text>
-                        )}
+                        <View style={{alignItems:"center"}}>
+                            {fees.parking_fees[0].fee_image ? (
+                                <Image style={{width: 50, height: 50, margin: 5,}}
+                                    source={{ uri: extractImageUrl(fees.parking_fees[0].fee_image) }}
+                                />
+                            ) : (
+                                <Text style={[Styles.text, {fontSize:14}]}>Không có hình ảnh</Text>
+                            )}
+                        </View>
+                        <Text style={Styles.txt}>
+                            Trạng thái: {fees.parking_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Text>
                         {!fees.parking_fees[0].status && (
-                            <TouchableOpacity
-                                style={styles.paymentButton}
-                                onPress={() => handleFeePress("create-parking-fee", fees.parking_fees[0].id)}
-                            >
-                                <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
-                            </TouchableOpacity>
+                            <View style={{alignItems:"center"}}>
+                                <TouchableOpacity style={[Styles.button, {height: 20}]} onPress={() => handleFeePress("create-parking-fee", fees.parking_fees[0].id)}>
+                                    <Text style={[Styles.buttonText, {fontSize: 12}]}>Xác nhận thanh toán</Text>
+                                </TouchableOpacity>
+                            </View>
                         )}
                     </View>
                 )}
 
                 {/* Phí Dịch Vụ */}
                 {fees && fees.service_fees?.length > 0 && (
-                    <View style={styles.feeItem}>
-                        <Text style={styles.feeTitle}>Phí Dịch Vụ</Text>
-                        <Text style={styles.feeText}>Giá: {fees.service_fees[0].fee_value} VND</Text>
-                        <Text style={styles.feeText}>
-                            Tháng: {fees.service_fees[0].month_details.name} {fees.service_fees[0].month_details.year}
+                    <View style={{borderColor: "#000", borderWidth: 1, marginBottom: 5, padding: 5}}>
+                        <Text style={[Styles.title, {fontSize:18}]}>Phí Dịch Vụ</Text>
+                        <Text style={Styles.txt}>Giá: {fees.service_fees[0].fee_value} VND</Text>
+                        <Text style={Styles.txt}>
+                            Tháng: {fees.service_fees[0].month_details.name} - Năm: {fees.service_fees[0].month_details.year}
                         </Text>
-                        {fees.service_fees[0].fee_image ? (
-                            <Image
-                                source={{ uri: extractImageUrl(fees.service_fees[0].fee_image) }}
-                                style={styles.feeImage}
-                            />
-                        ) : (
-                            <Text style={styles.feeText}>Không có hình ảnh</Text>
-                        )}
+                        <View style={{alignItems:"center"}}>
+                            {fees.service_fees[0].fee_image ? (
+                                <Image style={{width: 50, height: 50, margin: 5,}}
+                                    source={{ uri: extractImageUrl(fees.service_fees[0].fee_image) }}
+                                />
+                            ) : (
+                                <Text style={[Styles.text, {fontSize:14}]}>Không có hình ảnh</Text>
+                            )}
+                        </View>
+                        <Text style={Styles.txt}>
+                            Trạng thái: {fees.service_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Text>
                         {!fees.service_fees[0].status && (
-                            <TouchableOpacity
-                                style={styles.paymentButton}
-                                onPress={() => handleFeePress("create-service-fee", fees.service_fees[0].id)}
-                            >
-                                <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
-                            </TouchableOpacity>
+                            <View style={{alignItems:"center"}}>
+                                <TouchableOpacity style={[Styles.button, {height: 20}]} onPress={() => handleFeePress("create-service-fee", fees.service_fees[0].id)}>
+                                    <Text style={[Styles.buttonText, {fontSize: 12}]}>Xác nhận thanh toán</Text>
+                                </TouchableOpacity>
+                            </View>
                         )}
                     </View>
                 )}
@@ -274,49 +276,49 @@ const Check_Fee = () => {
 
 };
 
-const styles = StyleSheet.create({
-    container: {
-        padding: 20,
-    },
-    row: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 20,
-    },
-    label: {
-        width: "30%",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    picker: {
-        width: "70%",
-    },
-    button: {
-        backgroundColor: "#4CAF50",
-        padding: 10,
-        alignItems: "center",
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-    },
-    feeContainer: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: "#f0f0f0",
-        borderRadius: 8,
-    },
-    header: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    feeText: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-});
+// const styles = StyleSheet.create({
+//     container: {
+//         padding: 20,
+//     },
+//     row: {
+//         flexDirection: "row",
+//         alignItems: "center",
+//         marginBottom: 20,
+//     },
+//     label: {
+//         width: "30%",
+//         fontSize: 16,
+//         fontWeight: "bold",
+//     },
+//     picker: {
+//         width: "70%",
+//     },
+//     button: {
+//         backgroundColor: "#4CAF50",
+//         padding: 10,
+//         alignItems: "center",
+//         borderRadius: 5,
+//         marginTop: 20,
+//     },
+//     buttonText: {
+//         color: "#fff",
+//         fontSize: 16,
+//     },
+//     feeContainer: {
+//         marginTop: 20,
+//         padding: 10,
+//         backgroundColor: "#f0f0f0",
+//         borderRadius: 8,
+//     },
+//     header: {
+//         fontSize: 18,
+//         fontWeight: "bold",
+//         marginBottom: 10,
+//     },
+//     feeText: {
+//         fontSize: 16,
+//         marginBottom: 5,
+//     },
+// });
 
 export default Check_Fee;

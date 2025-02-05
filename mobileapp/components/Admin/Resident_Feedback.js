@@ -34,7 +34,7 @@ const CheckFeedback = () => {
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
-                <ScrollView style={Styles.scrollView}>
+                <ScrollView style={[Styles.scrollView, {width: "100%"}]}>
                     {feedbackList.length > 0 ? (
                         feedbackList.map((feedback) => {
                             const resident = feedback.resident_details;
