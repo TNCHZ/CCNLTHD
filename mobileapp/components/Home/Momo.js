@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import APIs, { endpoints, authApis } from "../../configs/APIs";
 
 
-const Momo = ({ route }) => {
+const Momo = ({ route, navigation }) => {
     const id = route.params.FeeID;
     const name = route.params.FeeName;
     const money = route.params.FeeValue;
@@ -92,7 +92,7 @@ const Momo = ({ route }) => {
                 headers: { 'Content-Type': 'application/json' }
             });
 
-            Alert.alert("Thành công!", "Ảnh đại diện đã được cập nhật.");
+            Alert.alert("Thành công!", "Thanh toán thành công.");
             navigation.navigate("home");
         } catch (error) {
             console.error("Lỗi thanh toán MoMo: ", error);

@@ -161,6 +161,39 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         survey_serializer = serializers.ResidentSurveyResponseSerializer(survey, many=True)
         return Response(survey_serializer.data)
 
+    @action(methods=['get'], url_path='get_fees_in_month', detail=True)
+    def get_fees_in_month(self, request, pk=None):
+        try:
+            resident = Resident.objects.get(pk=pk)
+        except Resident.DoesNotExist:
+            return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Lấy tham số tháng từ query params
+        month = request.query_params.get('month', None)
+
+        # Lọc phí theo tháng nếu có
+        managing_fees = ManagingFees.objects.filter(resident=resident)
+        parking_fees = ParkingFees.objects.filter(resident=resident)
+        service_fees = ServiceFees.objects.filter(resident=resident)
+
+        if month:
+            managing_fees = managing_fees.filter(month=month)
+            parking_fees = parking_fees.filter(month=month)
+            service_fees = service_fees.filter(month=month)
+
+        managing_fees_serializer = serializers.ManagingFeeSerializer(managing_fees, many=True)
+        parking_fees_serializer = serializers.ParkingFeeSerializer(parking_fees, many=True)
+        service_fees_serializer = serializers.ServiceFeeSerializer(service_fees, many=True)
+
+        # Gộp tất cả các dữ liệu lại thành một mảng
+        all_fees = {
+            "managing_fees": managing_fees_serializer.data,
+            "parking_fees": parking_fees_serializer.data,
+            "service_fees": service_fees_serializer.data
+        }
+
+        return Response(all_fees)
+
 
 class ManagingFeeViewSet(viewsets.ModelViewSet):
     queryset = ManagingFees.objects.all().order_by("id")

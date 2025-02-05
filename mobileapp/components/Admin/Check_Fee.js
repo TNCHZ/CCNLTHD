@@ -1,26 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TextInput, TouchableOpacity, Image, ScrollView, StyleSheet } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, StyleSheet, Image, Alert } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApis, endpoints } from "../../configs/APIs";
 import { Picker } from "@react-native-picker/picker";
+import Styles from "../../styles/Styles";
 
 const Check_Fee = () => {
     const [users, setUsers] = useState([]);
     const [months, setMonths] = useState([]);
-    const [selectedUser, setSelectedUser] = useState("");
-    const [selectedMonth, setSelectedMonth] = useState("");
-    const [feeName, setFeeName] = useState("");
-    const [apartment, setApartment] = useState("");
-    const [image, setImage] = useState(null); // Placeholder for the image
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [fees, setFees] = useState(null);
+
+    const extractImageUrl = (avatarUrl) => {
+        if (!avatarUrl) return null;
+
+        // Kiểm tra nếu avatarUrl đã là URL hợp lệ
+        if (avatarUrl.startsWith("https://")) return avatarUrl;
+
+        // Nếu avatarUrl chứa "image/upload/", loại bỏ phần này
+        const prefix = "image/upload/";
+        const index = avatarUrl.indexOf(prefix);
+        return index !== -1 ? avatarUrl.substring(index + prefix.length) : avatarUrl;
+    };
 
     // Fetching users
     const fetchUsers = async () => {
         setLoading(true);
         let allUsers = [];
         let nextUrl = endpoints["list-user"];
-        
+
         try {
             while (nextUrl) {
                 const token = await AsyncStorage.getItem("token");
@@ -62,21 +73,76 @@ const Check_Fee = () => {
         fetchMonths();
     }, []);
 
-    // Filter function (for demo purposes, can be customized as per your needs)
-    const filterResults = () => {
-        console.log("Filtering with the following parameters:");
-        console.log("User: ", selectedUser);
-        console.log("Month: ", selectedMonth);
-        console.log("Fee Name: ", feeName);
-        console.log("Apartment: ", apartment);
-        console.log("Image: ", image);
-        // Here, you would call your backend API to filter the data based on these parameters.
+    useEffect(() => {
+        if (users.length > 0 && !selectedUser) {
+            setSelectedUser(users[0].user); // Set the first user as the selected user
+        }
+        if (months.length > 0 && !selectedMonth) {
+            setSelectedMonth(months[0].id); // Set the first month as the selected month
+        }
+    }, [users, months, selectedUser, selectedMonth]);
+
+    const filterResults = async () => {
+        setLoading(true);
+        try {
+            const token = await AsyncStorage.getItem("token");
+
+            const response = await authApis(token).get(
+                `/${"resident-information"}/${selectedUser}/${"get_fees_in_month"}/?month=${selectedMonth}`
+            );
+            console.log(extractImageUrl(response.data.managing_fees?.[0]?.fee_image));
+            setFees(response.data);
+        } catch (error) {
+            console.error("Error fetching fees:", error.response?.data || error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updatePaymentStatus = async (feeType, feeId) => {
+        setLoading(true);
+
+        try {
+            const token = await AsyncStorage.getItem("token");
+            const response = await authApis(token).patch(`/fees/${feeType}/${feeId}/`, {
+                status: true, // Cập nhật trạng thái thanh toán
+            });
+
+            if (response.status === 200) {
+                Alert.alert("Thông báo", "Thanh toán thành công!");
+            } else {
+                Alert.alert("Thông báo", "Có lỗi xảy ra trong quá trình thanh toán!");
+            }
+        } catch (error) {
+            console.error("Error updating payment status:", error);
+            Alert.alert("Thông báo", "Có lỗi xảy ra trong quá trình thanh toán!");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleFeePress = (feeType, feeId) => {
+        Alert.alert(
+            "Xác nhận thanh toán",
+            "Bạn có chắc chắn muốn thanh toán cho khoản phí này?",
+            [
+                {
+                    text: "Hủy",
+                    style: "cancel",
+                },
+                {
+                    text: "Xác nhận",
+                    onPress: () => updatePaymentStatus(feeType, feeId),
+                },
+            ]
+        );
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
+            {/* Phần chọn căn hộ */}
             <View style={styles.row}>
-                <Text style={styles.label}>Chọn Người Dùng</Text>
+                <Text style={styles.label}>Chọn căn hộ</Text>
                 {loading ? (
                     <ActivityIndicator size="large" color="#0000ff" />
                 ) : (
@@ -86,12 +152,13 @@ const Check_Fee = () => {
                         onValueChange={(itemValue) => setSelectedUser(itemValue)}
                     >
                         {users.map((user) => (
-                            <Picker.Item key={user.id} label={user.name} value={user.id} />
+                            <Picker.Item key={user.id} label={user.address.name} value={user.user} />
                         ))}
                     </Picker>
                 )}
             </View>
-
+    
+            {/* Phần chọn tháng */}
             <View style={styles.row}>
                 <Text style={styles.label}>Chọn Tháng</Text>
                 {loading ? (
@@ -108,40 +175,103 @@ const Check_Fee = () => {
                     </Picker>
                 )}
             </View>
-
-            <View style={styles.row}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nhập tên phí"
-                    value={feeName}
-                    onChangeText={(text) => setFeeName(text)}
-                />
-            </View>
-
-            <View style={styles.row}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nhập căn hộ"
-                    value={apartment}
-                    onChangeText={(text) => setApartment(text)}
-                />
-            </View>
-
-            <View style={styles.row}>
-                <TouchableOpacity style={styles.imagePicker} onPress={() => alert("Pick an image")}>
-                    {image ? (
-                        <Image source={{ uri: image }} style={styles.imagePreview} />
-                    ) : (
-                        <Text>Chọn hình ảnh</Text>
-                    )}
-                </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity style={styles.button} onPress={filterResults}>
-                <Text style={styles.buttonText}>Lọc Kết Quả</Text>
+    
+            {/* Nút lọc */}
+            <TouchableOpacity onPress={filterResults} style={styles.button}>
+                <Text style={styles.buttonText}>Lọc</Text>
             </TouchableOpacity>
-        </ScrollView>
+    
+            {/* Phần kết quả tìm kiếm có thể cuộn */}
+            <ScrollView contentContainerStyle={styles.scrollContainer} style={styles.feeContainer}>
+                <Text style={styles.header}>Kết quả tìm kiếm:</Text>
+    
+                {/* Phí Quản Lí */}
+                {fees.managing_fees?.length > 0 && (
+                    <View style={styles.feeItem}>
+                        <Text style={styles.feeTitle}>Phí Quản Lí</Text>
+                        <Text style={styles.feeText}>Giá: {fees.managing_fees[0].fee_value} VND</Text>
+                        <Text style={styles.feeText}>
+                            Tháng: {fees.managing_fees[0].month_details.name} {fees.managing_fees[0].month_details.year}
+                        </Text>
+                        {fees.managing_fees[0].fee_image ? (
+                            <Image
+                                source={{ uri: extractImageUrl(fees.managing_fees[0].fee_image) }}
+                                style={Styles.imageLogo}
+                            />
+                        ) : (
+                            <Text style={styles.feeText}>Không có hình ảnh</Text>
+                        )}
+                        <Text style={styles.feeText}>
+                            Trạng thái: {fees.managing_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Text>
+                        {!fees.managing_fees[0].status && (
+                            <TouchableOpacity
+                                style={styles.paymentButton}
+                                onPress={() => handleFeePress("managing_fees", fees.managing_fees[0].id)}
+                            >
+                                <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
+    
+                {/* Phí Đỗ Xe */}
+                {fees.parking_fees?.length > 0 && (
+                    <View style={styles.feeItem}>
+                        <Text style={styles.feeTitle}>Phí Đỗ Xe</Text>
+                        <Text style={styles.feeText}>Giá: {fees.parking_fees[0].fee_value} VND</Text>
+                        <Text style={styles.feeText}>
+                            Tháng: {fees.parking_fees[0].month_details.name} {fees.parking_fees[0].month_details.year}
+                        </Text>
+                        {fees.parking_fees[0].fee_image ? (
+                            <Image
+                                source={{ uri: extractImageUrl(fees.parking_fees[0].fee_image) }}
+                                style={styles.feeImage}
+                            />
+                        ) : (
+                            <Text style={styles.feeText}>Không có hình ảnh</Text>
+                        )}
+                        {!fees.parking_fees[0].status && (
+                            <TouchableOpacity
+                                style={styles.paymentButton}
+                                onPress={() => handleFeePress("parking_fees", fees.parking_fees[0].id)}
+                            >
+                                <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
+    
+                {/* Phí Dịch Vụ */}
+                {fees.service_fees?.length > 0 && (
+                    <View style={styles.feeItem}>
+                        <Text style={styles.feeTitle}>Phí Dịch Vụ</Text>
+                        <Text style={styles.feeText}>Giá: {fees.service_fees[0].fee_value} VND</Text>
+                        <Text style={styles.feeText}>
+                            Tháng: {fees.service_fees[0].month_details.name} {fees.service_fees[0].month_details.year}
+                        </Text>
+                        {fees.service_fees[0].fee_image ? (
+                            <Image
+                                source={{ uri: extractImageUrl(fees.service_fees[0].fee_image) }}
+                                style={styles.feeImage}
+                            />
+                        ) : (
+                            <Text style={styles.feeText}>Không có hình ảnh</Text>
+                        )}
+                        {!fees.service_fees[0].status && (
+                            <TouchableOpacity
+                                style={styles.paymentButton}
+                                onPress={() => handleFeePress("service_fees", fees.service_fees[0].id)}
+                            >
+                                <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
+            </ScrollView>
+        </View>
     );
+    
 };
 
 const styles = StyleSheet.create({
@@ -161,36 +291,31 @@ const styles = StyleSheet.create({
     picker: {
         width: "70%",
     },
-    input: {
-        height: 40,
-        borderColor: "#ccc",
-        borderWidth: 1,
-        paddingLeft: 10,
-        width: "70%",
-    },
-    imagePicker: {
-        width: "70%",
-        height: 40,
-        backgroundColor: "#f0f0f0",
-        justifyContent: "center",
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: "#ccc",
-    },
-    imagePreview: {
-        width: 50,
-        height: 50,
-        resizeMode: "contain",
-    },
     button: {
         backgroundColor: "#4CAF50",
         padding: 10,
         alignItems: "center",
         borderRadius: 5,
+        marginTop: 20,
     },
     buttonText: {
         color: "#fff",
         fontSize: 16,
+    },
+    feeContainer: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: "#f0f0f0",
+        borderRadius: 8,
+    },
+    header: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 10,
+    },
+    feeText: {
+        fontSize: 16,
+        marginBottom: 5,
     },
 });
 

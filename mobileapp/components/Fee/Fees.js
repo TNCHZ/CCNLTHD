@@ -109,8 +109,8 @@ const Fee = ({ navigation }) => {
             case 'serviceFees':
                 return serviceFees;
             default:
-                return [...managingFees, ...parkingFees, ...serviceFees].filter(fee => fee.status === false); // Tất cả dữ liệu
-        }
+                return [...managingFees, ...parkingFees, ...serviceFees].filter(fee => fee.status === false && fee.fee_image === "");
+            }
     };
 
     const search = (value, callback) => {
