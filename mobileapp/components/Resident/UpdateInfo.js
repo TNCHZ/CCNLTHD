@@ -1,10 +1,9 @@
 import { Alert, Button, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Styles from "../../styles/Styles";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { MyAccountContext } from "../../configs/MyContext";
-import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
-import APIs, { authApis, client_id, client_secret, endpoints } from "../../configs/APIs";
+import APIs, { authApis, endpoints } from "../../configs/APIs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UpdateInfo = ({ navigation }) => {
@@ -15,117 +14,112 @@ const UpdateInfo = ({ navigation }) => {
     const [avatar, setAvatar] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    // Hàm trích xuất URL hình ảnh
+    const extractImageUrl = (avatarUrl) => {
+        const prefix = "image/upload/";
+        const index = avatarUrl.indexOf(prefix);
+        return index !== -1 ? avatarUrl.substring(index + prefix.length) : avatarUrl;
+    };
 
-    //axios.patch(url, data, config) 
-    // url: Địa chỉ API endpoint.
-    // data: Dữ liệu muốn cập nhật (chỉ cần gửi các trường thay đổi).
-    // config (tùy chọn): Headers, token xác thực, v.v.
-
-    //Có biến avatar và newPassword cần xử lý, gửi lên server theo patch
     const changePassword = async () => {
         try {
             setLoading(true);
             if (!oldPassword || !newPassword || !confirm) {
-                Alert.alert("Lỗi", "Vui lòng nhập đủ thông tin");
+                Alert.alert("Lỗi", "Vui lòng nhập đủ thông tin mật khẩu");
                 return;
             }
-            if (oldPassword != accountState[0].password) {
-                Alert.alert("Mật khẩu cũ không chính xác !", "Vui lòng kiểm tra lại mật khẩu cũ !");
-                return;
-            }
-            if (newPassword != confirm) {
-                Alert.alert("Xác nhận mật khẩu mới không thành công !", "Vui lòng nhập lại đúng mật khẩu mới !!");
+            if (newPassword !== confirm) {
+                Alert.alert("Lỗi", "Xác nhận mật khẩu mới không trùng khớp!");
                 return;
             }
 
             const token = await AsyncStorage.getItem("token");
-            const url = endpoints['update-avatar-password']; // Lấy URL trực tiếp
+            const url = endpoints['update-avatar-password'];
 
-
-            const response = await authApis(token).patch(url, {
-                password: newPassword
-            }, {
-                headers: {
-                    'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
-                }
+            await authApis(token).patch(url, { password: newPassword }, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            console.log(response.data.message);
-            if (response.data) {
-                Alert.alert("Thành công !", "Mật khẩu đã được thay đổi");
-            } else {
-                Alert.alert("Thất bại !", "Có lỗi xảy ra tại response");
-            }
+            Alert.alert("Thành công!", "Mật khẩu đã được thay đổi");
             setOldPassword("");
             setNewPassword("");
             setConfirm("");
         } catch (error) {
             console.error("Lỗi:", error.response?.data || error.message);
+            Alert.alert("Lỗi", "Không thể cập nhật mật khẩu!");
         } finally {
             setLoading(false);
         }
     };
 
     const changeAvatar = async () => {
+        if (!avatar) {
+            Alert.alert("Lỗi", "Vui lòng chọn ảnh trước khi cập nhật.");
+            return;
+        }
+
         try {
-            setLoading(true)
-
-            if (!avatar) {
-                Alert.alert("Lỗi: Chưa chọn ảnh !", "Vui lòng chọn ảnh để avatar.");
-                return;
-            }
-
+            setLoading(true);
             const token = await AsyncStorage.getItem("token");
-            const url = endpoints['update-avatar-password']; // Lấy URL trực tiếp
+            const url = endpoints['update-avatar-password'];
 
-            const response = await authApis(token).patch(url, {
-                avatar: avatar
-            }, {
-                headers: {
-                    'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
-                }
+            // Trích xuất URL nếu cần thiết
+            const avatarUrl = extractImageUrl(avatar.uri);
+
+            await authApis(token).patch(url, { avatar: avatarUrl }, {
+                headers: { 'Content-Type': 'application/json' }
             });
-            console.log(response.data.message);
+
+            Alert.alert("Thành công!", "Ảnh đại diện đã được cập nhật.");
             navigation.navigate("home");
         } catch (error) {
             console.error("Lỗi:", error.response?.data || error.message);
+            Alert.alert("Lỗi", "Không thể cập nhật ảnh đại diện!");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
     const changeAll = async () => {
-        changePassword();
-        changeAvatar();
-        const token = await AsyncStorage.getItem("token");
-        const url = endpoints['update-avatar-password']; // Lấy URL trực tiếp
+        if (!avatar) {
+            Alert.alert("Lỗi", "Bạn cần chọn ảnh trước khi cập nhật.");
+            return;
+        }
+        if (!newPassword || !confirm) {
+            Alert.alert("Lỗi", "Bạn cần nhập đầy đủ mật khẩu.");
+            return;
+        }
 
-        const response = await authApis(token).patch(url, {
-            change_password_image: true
-        }, {
-            headers: {
-                'Content-Type': 'application/json' // Định dạng gửi dữ liệu là JSON
-            }
-        });
-        navigation.navigate("home");
+        await changePassword();
+        await changeAvatar();
+
+        try {
+            const token = await AsyncStorage.getItem("token");
+            const url = endpoints['update-avatar-password'];
+
+            await authApis(token).patch(url, { change_password_image: true }, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            navigation.navigate("home");
+        } catch (error) {
+            console.error("Lỗi:", error.response?.data || error.message);
+            Alert.alert("Lỗi", "Không thể cập nhật thông tin!");
+        }
     };
 
-
-    //================================================================================================
     const pickImage = async () => {
-        // Yêu cầu quyền truy cập thư viện ảnh
         let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
         if (status !== 'granted') {
             Alert.alert('Quyền bị từ chối', 'Bạn cần cấp quyền truy cập vào thư viện ảnh.');
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync();
+        if (!result.canceled) {
+            setAvatar(result.assets[0]);
         } else {
-            const result = await ImagePicker.launchImageLibraryAsync();
-            if (!result.canceled) {
-                setAvatar(result.assets[0]);
-                console.log("avatar", avatar);  // Lưu ảnh được chọn vào trạng thái
-            } else {
-                console.log('Bộ chọn hình ảnh đã bị hủy');
-            }
+            console.log('Bộ chọn hình ảnh đã bị hủy');
         }
     };
 
@@ -135,7 +129,6 @@ const UpdateInfo = ({ navigation }) => {
                 <ScrollView>
                     <TouchableOpacity style={{ alignItems: "center" }} onPress={pickImage}>
                         <Text style={Styles.title}>Chọn ảnh đại diện</Text>
-                        {/* Hiển thị ảnh đại diện nếu đã chọn */}
                         {avatar ? (
                             <Image source={{ uri: avatar.uri }} style={Styles.imageAvatar} />
                         ) : (
@@ -162,7 +155,7 @@ const UpdateInfo = ({ navigation }) => {
                     </View>
 
                     <View>
-                        <Button style={Styles.button} title="Cập nhật" onPress={changeAll} />
+                        <Button style={Styles.button} title="Cập nhật" onPress={changeAll} disabled={loading} />
                     </View>
                 </ScrollView>
             </TouchableWithoutFeedback>
