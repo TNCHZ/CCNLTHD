@@ -149,7 +149,7 @@ const Check_Fee = () => {
                         onValueChange={(itemValue) => setSelectedUser(itemValue)}
                     >
                         {users.map((user) => (
-                            <Picker.Item key={user.id} label={user.address.name} value={user.user} />
+                            <Picker.Item key={user.user} label={user.address.name} value={user.user} />
                         ))}
                     </Picker>
                 )}
