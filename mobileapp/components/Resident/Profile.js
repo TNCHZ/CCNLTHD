@@ -11,6 +11,19 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
     const [residentInfo, setResidentInfo] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const extractImageUrl = (avatarUrl) => {
+        if (!avatarUrl) return null;
+        
+        // Kiểm tra nếu avatarUrl đã là URL hợp lệ
+        if (avatarUrl.startsWith("https://")) return avatarUrl;
+        
+        // Nếu avatarUrl chứa "image/upload/", loại bỏ phần này
+        const prefix = "image/upload/";
+        const index = avatarUrl.indexOf(prefix);
+        return index !== -1 ? avatarUrl.substring(index + prefix.length) : avatarUrl;
+    };
+    
+
     const loadResidentInfo = async () => {
         if (!accountState?.id) {
             Alert.alert("Lỗi", "Không tìm thấy ID người dùng");
@@ -45,8 +58,8 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
             {residentInfo ? (
                 <>
                     <Text style={Styles.title}>Thông tin cá nhân</Text>
-                    {residentInfo.avatar ? (
-                        <Image source={{ uri: residentInfo.avatar }} style={Styles.avatar} />
+                    {residentInfo.userdetail.avatar ? (
+                        <Image source={{ uri: extractImageUrl(residentInfo.userdetail.avatar) }} style={Styles.imageAvatar} />
                     ) : (
                         <Text style={Styles.text}>Không có ảnh đại diện</Text>
                     )}

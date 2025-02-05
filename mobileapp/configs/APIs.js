@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const BASE_URL = 'http://192.168.206.3:8000/';
-const BASE_URL = 'http://192.168.1.5:8000/';
+const BASE_URL = 'http://192.168.1.7:8000/';
 // const BASE_URL = ' http://127.0.0.1:8000/';
 
 export const client_id = "MH4TCwTXdmpAOulasshJv0ofgFaHYpyRV7Q0huNe";
