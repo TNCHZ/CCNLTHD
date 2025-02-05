@@ -74,6 +74,7 @@ const Login = ({ navigation }) => {
                         role: userAccount.data.role,
                         username: userAccount.data.username,
                         password: account.password,
+                        change_password_image: userAccount.data.change_password_image,
                     },
                 });
 
@@ -94,15 +95,7 @@ const Login = ({ navigation }) => {
                 Alert.alert("Lỗi", "Đăng nhập không thành công.");
             }
         } catch (ex) {
-            console.error("Lỗi đăng nhập:", ex);
-            if (ex.response) {
-                console.error("Lỗi response:", ex.response.status, ex.response.data);
-            } else if (ex.request) {
-                console.error("Không nhận được phản hồi:", ex.request);
-            } else {
-                console.error("Thông báo lỗi:", ex.message);
-            }
-            Alert.alert("Lỗi", "Đã xảy ra lỗi trong quá trình đăng nhập.");
+            Alert.alert("Lỗi", "Sai mật khẩu !");
         } finally {
             setLoading(false);
         }

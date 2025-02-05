@@ -9,7 +9,8 @@ const MyAccountReducer = (currentState, action) => { //currentState thay bằng 
                 "last_name": action.payload.last_name,
                 "role": action.payload.role,
                 "username": action.payload.username,
-                "password": action.payload.password
+                "password": action.payload.password,
+                "change_password_image": action.payload.change_password_image,
             };
         }
         case "logout": {

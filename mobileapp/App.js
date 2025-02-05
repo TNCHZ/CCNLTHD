@@ -47,56 +47,64 @@ const App =() => {
               </View>
             </TouchableOpacity>
           ) : (
-            account.role === "Admin" ? (
-                <TouchableOpacity style={Styles.headerRight}
-                  onPress={() => {console.info(account); navigation.navigate("profile")}}>
-                  <View style={Styles.row}>
-                    <Text style={{marginHorizontal: 5, color: "#4c4c4c", fontSize: 18, fontWeight: 'bold'}}>Chào {account.last_name}!</Text>
-                  </View>
-                </TouchableOpacity>
-            ) : (<Text>JpHome</Text>)
+            account.role === "Resident" && account.change_password_image === true ? (
+              <TouchableOpacity style={Styles.headerRight}
+                onPress={() => { console.info(account); navigation.navigate("profile"); }}
+              >
+                <View style={Styles.row}>
+                  <Text style={{ marginHorizontal: 5, color: "#4c4c4c", fontSize: 18, fontWeight: "bold", }}>
+                    Chào {account.last_name}!
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <Text style={Styles.title}>JpHome</Text>
+            )
           ),
           headerTintColor: "#646464",
           headerStyle: {backgroundColor: "#64c8c8"},
         })}>
           {/* Trang Home */}
-          <Drawer.Screen name="home" component={Home} options={{title: 'Giới Thiệu'}}/>
-
-          <Drawer.Screen name='updateInfo' component={UpdateInfo} options={() => ({
-            title: 'Cập nhật thông tin',
-            drawerItemStyle: account === null ? { display: "none" } : {}
-          })} />
+          <Drawer.Screen name="home" component={Home} options={{title: "Giới Thiệu"}}/>
+          <Drawer.Screen name='updateInfo' component={UpdateInfo} 
+          options={() => account === null || account.change_password_image === true
+              ? { title: "Cập nhật dữ liệu", drawerItemStyle: { display: "none" } }
+              : { title: "Cập nhật dữ liệu" }
+          }/>
 
           {/* Trang Login khi account = null */}
-          {account === null ? <>
-            <Drawer.Screen name="login" component={Login} options={{title:"Đăng Nhập"}}/>
-          </> : <>
-            {/* Ẩn vì chỉ cần load nội dung*/}
-            <Drawer.Screen name='profile' component={Profile} options={{title:"Trang cá nhân", drawerItemStyle:{display: 'none'}}}/>
-            
-            {account.role === "Admin" ? <>
-              {/* Hiện tương tác của ADMIN */}
-              <Drawer.Screen name='createResident' component={Create_Resident} options={{title:'Cấp Tài Khoản'}}/>
-              <Drawer.Screen name='deleteResident' component={Delete_Resident} options={{title:'Xóa Tài Khoản'}}/>
-              <Drawer.Screen name='registerRelative' component={Check_RelativeResident} options={{title:'Xem đăng kí người thân'}}/>
-              <Drawer.Screen name='createFee' component={Create_Fee} options={{title: 'Tạo Chi Phí'}}/>
-              <Drawer.Screen name='LockerResident' component={Locker_Resident} options={{title: 'Quản lý tủ điện tử'}}/>
-              <Drawer.Screen name='residentFeedback' component={Resident_Feedback} options={{title: 'Xem Góp Ý'}}/>
-              <Drawer.Screen name='createSurvey'component={Create_Survey} options={{title: 'Tạo Khảo Sát'}}/>
-              <Drawer.Screen name='checkSurvey' component={CheckSurvey} options={{title: 'Xem Khảo Sát'}} />
-            </> : <>
-              {/* Hiện để tương tác của RESIDENT */}
-              <Drawer.Screen name='fee' component={Fee} options={{title: 'Các Khoản Chi Phí'}}/>
-              <Drawer.Screen name='momo' component={Momo} options={{title: "Thanh toán"}} />
-              <Drawer.Screen name='locker' component={Locker} options={{title: 'Tủ Đồ Cá Nhân'}}/>
-              <Drawer.Screen name='registerParking' component={RegisterParking} options={{title: 'Đăng Ký Đậu Xe'}}/>
-              <Drawer.Screen name='survey' component={Surveys} options={{title: 'Khảo sát'}}/>
-              <Drawer.Screen name='feedBack' component={FeedBack} options={{title: 'Góp ý'}}/>
-            </>}
-            
-            <Drawer.Screen name='logout' component={Logout} options={{title: "Đăng Xuất"}}/>
-          </>}
-          
+          {account === null ? (
+            <Drawer.Screen name="login" component={Login} options={{ title: "Đăng Nhập" }} />
+          ) : (
+            <>
+              {account.change_password_image === true && ( <>
+                {/* Ẩn vì chỉ cần load nội dung */}
+                <Drawer.Screen name="profile" component={Profile} options={{ title: "Trang cá nhân", drawerItemStyle: {display: 'none'}}}/>
+
+                {account.role === "Admin" ? (<>
+                  {/* Hiện tương tác của ADMIN */}
+                  <Drawer.Screen name="createResident" component={Create_Resident} options={{ title: "Cấp Tài Khoản" }} />
+                  <Drawer.Screen name="deleteResident" component={Delete_Resident} options={{ title: "Xóa Tài Khoản" }} />
+                  <Drawer.Screen name="registerRelative" component={Check_RelativeResident} options={{ title: "Xem đăng kí người thân" }} />
+                  <Drawer.Screen name="createFee" component={Create_Fee} options={{ title: "Tạo Chi Phí" }} />
+                  <Drawer.Screen name="LockerResident" component={Locker_Resident} options={{ title: "Quản lý tủ điện tử" }} />
+                  <Drawer.Screen name="residentFeedback" component={Resident_Feedback} options={{ title: "Xem Góp Ý" }} />
+                  <Drawer.Screen name="createSurvey" component={Create_Survey} options={{ title: "Tạo Khảo Sát" }} />
+                  <Drawer.Screen name="checkSurvey" component={CheckSurvey} options={{ title: "Xem Khảo Sát" }} />
+                </>) : (<>
+                  {/* Hiện để tương tác của RESIDENT */}
+                  <Drawer.Screen name="fee" component={Fee} options={{ title: "Các Khoản Chi Phí" }} />
+                  <Drawer.Screen name="momo" component={Momo} options={{ title: "Thanh toán" }} />
+                  <Drawer.Screen name="locker" component={Locker} options={{ title: "Tủ Đồ Cá Nhân" }} />
+                  <Drawer.Screen name="registerParking" component={RegisterParking} options={{ title: "Đăng Ký Đậu Xe" }} />
+                  <Drawer.Screen name="survey" component={Surveys} options={{ title: "Khảo sát" }} />
+                  <Drawer.Screen name="feedBack" component={FeedBack} options={{ title: "Góp ý" }} />
+                </>)}
+              </>)}
+              {/* Hiển thị nút Đăng Xuất khi đã đăng nhập */}
+              <Drawer.Screen name="logout" component={Logout} options={{ title: "Đăng Xuất" }} />
+            </>
+          )}
         </Drawer.Navigator>
       </NavigationContainer>
     </MyAccountContext.Provider>
