@@ -162,32 +162,6 @@ class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         return Response(survey_serializer.data)
 
 
-    @action(methods=['get'], url_path='all-fees', detail=True)
-    def get_all_fees(self, request, pk=None):
-        try:
-            resident = Resident.objects.get(pk=pk)
-        except Resident.DoesNotExist:
-            return Response({"detail": "Resident not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Lấy tất cả các loại phí có status=False
-        managing_fees = ManagingFees.objects.filter(resident=resident)
-        parking_fees = ParkingFees.objects.filter(resident=resident)
-        service_fees = ServiceFees.objects.filter(resident=resident)
-
-        # Tuần tự hóa dữ liệu từng loại phí
-        managing_fees_serializer = serializers.ManagingFeeSerializer(managing_fees, many=True)
-        parking_fees_serializer = serializers.ParkingFeeSerializer(parking_fees, many=True)
-        service_fees_serializer = serializers.ServiceFeeSerializer(service_fees, many=True)
-
-        # Gộp tất cả phí thành một danh sách
-        all_fees = {
-            "managing_fees": managing_fees_serializer.data,
-            "parking_fees": parking_fees_serializer.data,
-            "service_fees": service_fees_serializer.data,
-        }
-
-        return Response(all_fees)
-
 class ManagingFeeViewSet(viewsets.ModelViewSet):
     queryset = ManagingFees.objects.all().order_by("id")
     serializer_class = serializers.ManagingFeeSerializer
@@ -205,12 +179,12 @@ class ParkingFeeViewSet(viewsets.ModelViewSet):
     queryset = ParkingFees.objects.all().order_by("id")
     serializer_class = serializers.ParkingFeeSerializer
 
-    def get_permissions(self):
-        if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
-            return [permissions.IsAuthenticated(), AdminPermission()]
-        elif self.request.method == "PATCH": # PATCH: Resident only
-            return [permissions.IsAuthenticated(), ResidentPermission()]
-        return super().get_permissions()
+    # def get_permissions(self):
+    #     if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
+    #         return [permissions.IsAuthenticated(), AdminPermission()]
+    #     elif self.request.method == "PATCH": # PATCH: Resident only
+    #         return [permissions.IsAuthenticated(), ResidentPermission()]
+    #     return super().get_permissions()
 
 
 
@@ -219,12 +193,12 @@ class ServiceFeeViewSet(viewsets.ModelViewSet):
     queryset = ServiceFees.objects.all().order_by("id")
     serializer_class = serializers.ServiceFeeSerializer
 
-    def get_permissions(self):
-        if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
-            return [permissions.IsAuthenticated(), AdminPermission()]
-        elif self.request.method == "PATCH": # PATCH: Resident only
-            return [permissions.IsAuthenticated(), ResidentPermission()]
-        return super().get_permissions()
+    # def get_permissions(self):
+    #     if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
+    #         return [permissions.IsAuthenticated(), AdminPermission()]
+    #     elif self.request.method == "PATCH": # PATCH: Resident only
+    #         return [permissions.IsAuthenticated(), ResidentPermission()]
+    #     return super().get_permissions()
 
 
 

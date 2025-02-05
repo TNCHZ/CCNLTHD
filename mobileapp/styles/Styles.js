@@ -116,9 +116,8 @@ export default StyleSheet.create({
         margin: 10,
     },
     imageAvatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 150,
+        height: 150,
         margin: 10,
     },
     scrollView: {

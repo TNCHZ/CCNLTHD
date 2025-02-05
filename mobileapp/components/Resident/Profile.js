@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, Image, Button, Alert } from "react-native";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { View, Text, ActivityIndicator, Image, Button, Alert, TouchableOpacity } from "react-native";
 import { MyAccountContext } from "../../configs/MyContext";
 import APIs, { authApis, endpoints } from "../../configs/APIs";
 import Styles from "../../styles/Styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const Profile = ({ navigation }) => { // Thêm navigation vào props
@@ -46,6 +47,11 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
             setLoading(false);
         }
     }
+    useFocusEffect(
+        useCallback(() => {
+            loadResidentInfo();
+        }, [accountState])
+    );
 
     useEffect(() => {
         loadResidentInfo();
@@ -58,19 +64,28 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
             {residentInfo ? (
                 <>
                     <Text style={Styles.title}>Thông tin cá nhân</Text>
-                    {residentInfo.userdetail.avatar ? (
-                        <Image source={{ uri: extractImageUrl(residentInfo.userdetail.avatar) }} style={Styles.imageAvatar} />
-                    ) : (
-                        <Text style={Styles.text}>Không có ảnh đại diện</Text>
-                    )}
-                    <Text style={Styles.txt}>Giới tính: {residentInfo.gender ? "Nam" : "Nữ"}</Text>
-                    <Text style={Styles.txt}>Ngày sinh: {residentInfo.day_of_birth}</Text>
-                    <Text style={Styles.txt}>Số điện thoại: {residentInfo.phone}</Text>
-                    <Text style={Styles.txt}>CCCD: {residentInfo.citizen_identification}</Text>
-                    <Text style={Styles.txt}>Địa chỉ: {residentInfo.address.name}</Text>
-
+                    <View style={Styles.container}>
+                        {residentInfo.userdetail.avatar ? (
+                            <Image source={{ uri: extractImageUrl(residentInfo.userdetail.avatar) }} style={[Styles.imageAvatar, {justifyContent: "center"}]} />
+                        ) : (
+                            <Text style={Styles.text}>Không có ảnh đại diện</Text>
+                        )}
+                    </View>
+                    <View style={{borderColor: "#ccc", borderWidth: 1, padding: 10}}>
+                        <Text style={[Styles.title, {textAlign:"left"}]}>Họ và tên: {residentInfo.userdetail.first_name} {residentInfo.userdetail.last_name}</Text>
+                        <Text style={[Styles.title, {textAlign:"left"}]}>Giới tính: {residentInfo.gender ? "Nam" : "Nữ"}</Text>
+                        <Text style={[Styles.title, {textAlign:"left"}]}>Ngày sinh: {residentInfo.day_of_birth}</Text>
+                        <Text style={[Styles.title, {textAlign:"left"}]}>Số điện thoại: {residentInfo.phone}</Text>
+                        <Text style={[Styles.title, {textAlign:"left"}]}>CCCD: {residentInfo.citizen_identification}</Text>
+                        <Text style={[Styles.title, {textAlign:"left"}]}>Mã căn hộ: {residentInfo.address.name}</Text>
+                    </View>
                     {/* Nút đổi mật khẩu */}
-                    <Button title="Cập nhật mật khẩu và ảnh đại diện" onPress={() => navigation.navigate("updateInfo")} />
+                    <View style={Styles.container}>
+                        <TouchableOpacity style={[Styles.button, {width:"90%"}]} onPress={() => navigation.navigate("updateInfo")}>
+                            <Text style={Styles.buttonText}>Cập nhật mật khẩu và ảnh đại diện</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
                 </>
             ) : (
                 <Text>Không có thông tin cư dân</Text>

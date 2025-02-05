@@ -28,6 +28,7 @@ import Resident_Feedback from './components/Admin/Resident_Feedback'
 import CheckSurvey from './components/Admin/CheckSurvey';
 import Locker_Resident from './components/Admin/Locker_Resident'
 import Check_RelativeResident from './components/Admin/Check_RelativeResident'
+import Check_Fee from './components/Admin/Check_Fee'
 
 const Drawer= createDrawerNavigator(); //tạo màn hình kéo
 
@@ -66,6 +67,7 @@ const App =() => {
         })}>
           {/* Trang Home */}
           <Drawer.Screen name="home" component={Home} options={{title: "Giới Thiệu"}}/>
+          
           <Drawer.Screen name='updateInfo' component={UpdateInfo} 
           options={() => account === null || account.change_password_image === true
               ? { title: "Cập nhật dữ liệu", drawerItemStyle: { display: "none" } }
@@ -87,6 +89,7 @@ const App =() => {
                   <Drawer.Screen name="deleteResident" component={Delete_Resident} options={{ title: "Xóa Tài Khoản" }} />
                   <Drawer.Screen name="registerRelative" component={Check_RelativeResident} options={{ title: "Xem đăng kí người thân" }} />
                   <Drawer.Screen name="createFee" component={Create_Fee} options={{ title: "Tạo Chi Phí" }} />
+                  <Drawer.Screen name="checkFee" component={Check_Fee} options={{title: "Kiểm Tra Đóng Phí"}}/>
                   <Drawer.Screen name="LockerResident" component={Locker_Resident} options={{ title: "Quản lý tủ điện tử" }} />
                   <Drawer.Screen name="residentFeedback" component={Resident_Feedback} options={{ title: "Xem Góp Ý" }} />
                   <Drawer.Screen name="createSurvey" component={Create_Survey} options={{ title: "Tạo Khảo Sát" }} />
@@ -102,7 +105,7 @@ const App =() => {
                 </>)}
               </>)}
               {/* Hiển thị nút Đăng Xuất khi đã đăng nhập */}
-              <Drawer.Screen name="logout" component={Logout} options={{ title: "Đăng Xuất" }} />
+              <Drawer.Screen name="logout" component={Logout} options={{ title: "Đăng Xuất"}} />
             </>
           )}
         </Drawer.Navigator>

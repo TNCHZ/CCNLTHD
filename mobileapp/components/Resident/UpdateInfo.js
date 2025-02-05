@@ -1,18 +1,31 @@
 import { Alert, Button, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Styles from "../../styles/Styles";
 import { useContext, useState } from "react";
-import { MyAccountContext } from "../../configs/MyContext";
+import { MyAccountContext } from "../../configs/MyContext";  // Context where account state is stored
 import * as ImagePicker from 'expo-image-picker';
 import APIs, { authApis, endpoints } from "../../configs/APIs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UpdateInfo = ({ navigation }) => {
-    const [accountState] = useContext(MyAccountContext);
+    const [accountState, dispatch] = useContext(MyAccountContext);
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirm, setConfirm] = useState("");
     const [avatar, setAvatar] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const extractImageUrl = (avatarUrl) => {
+        if (!avatarUrl) return null;
+
+        // Kiểm tra nếu avatarUrl đã là URL hợp lệ
+        if (avatarUrl.startsWith("https://")) return avatarUrl;
+
+        // Nếu avatarUrl chứa "image/upload/", loại bỏ phần này
+        const prefix = "image/upload/";
+        const index = avatarUrl.indexOf(prefix);
+        return index !== -1 ? avatarUrl.substring(index + prefix.length) : avatarUrl;
+    };
+
 
     const changePassword = async () => {
         try {
@@ -52,7 +65,7 @@ const UpdateInfo = ({ navigation }) => {
             type: "image/jpeg",
             name: "avatar.jpg",
         });
-        data.append("upload_preset", "ml_default"); 
+        data.append("upload_preset", "ml_default");
         data.append("cloud_name", "dqlk15sot");
 
         try {
@@ -65,7 +78,7 @@ const UpdateInfo = ({ navigation }) => {
                 }
             });
             let result = await response.json();
-            return result.secure_url; 
+            return result.secure_url;
         } catch (error) {
             console.error("Lỗi upload ảnh lên Cloudinary:", error);
             return null;
@@ -83,8 +96,9 @@ const UpdateInfo = ({ navigation }) => {
             const token = await AsyncStorage.getItem("token");
             const url = endpoints['update-avatar-password'];
 
-            await authApis(token).patch(url, { avatar: avatar }, { 
-                headers: { 'Content-Type': 'application/json' } 
+            // Upload the new avatar to the server
+            await authApis(token).patch(url, { avatar: avatar }, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
             Alert.alert("Thành công!", "Ảnh đại diện đã được cập nhật.");
@@ -143,6 +157,13 @@ const UpdateInfo = ({ navigation }) => {
             const uploadedImageUrl = await uploadImageToCloudinary(result.assets[0].uri);
             if (uploadedImageUrl) {
                 setAvatar(uploadedImageUrl);
+                dispatch({
+                    type: "login",
+                    payload: {
+                        ...accountState,
+                        avatar: uploadedImageUrl,
+                    },
+                });
             }
         } else {
             console.log('Bộ chọn hình ảnh đã bị hủy');
@@ -157,6 +178,8 @@ const UpdateInfo = ({ navigation }) => {
                         <Text style={Styles.title}>Chọn ảnh đại diện</Text>
                         {avatar ? (
                             <Image source={{ uri: avatar }} style={Styles.imageAvatar} />
+                        ) : accountState.avatar ? (
+                            <Image source={{ uri: extractImageUrl(accountState.avatar) }} style={Styles.imageAvatar} />
                         ) : (
                             <Text style={Styles.text}>Chưa có ảnh đại diện</Text>
                         )}

@@ -101,7 +101,7 @@ class Month(models.Model):
 
 class Fee(BaseModel):
     name = models.TextField(null=False)
-    image = CloudinaryField('fee', null=True, blank = True)
+    fee_image = CloudinaryField('fee_image', null=True, blank = True)
     month = models.ForeignKey(Month, on_delete=models.CASCADE)
     fee_value = models.CharField(max_length=20, blank=True, null=False)
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE)

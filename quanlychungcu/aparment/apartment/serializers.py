@@ -103,21 +103,39 @@ class ResidentInformationSerializer(serializers.ModelSerializer):
 
 
 class ManagingFeeSerializer(serializers.ModelSerializer):
+    month = serializers.PrimaryKeyRelatedField(queryset=Month.objects.all())
+    month_details = serializers.SerializerMethodField()
+
     class Meta:
         model = ManagingFees
-        fields = ['id', 'name', 'image', 'status', 'month', 'updated_date', 'resident', 'fee_value']
+        fields = ['id', 'name', 'fee_image', 'status', 'month', 'month_details', 'updated_date', 'resident', 'fee_value']
+
+    def get_month_details(self, obj):
+        return MonthSerializer(obj.month).data
 
 
 class ParkingFeeSerializer(serializers.ModelSerializer):
+    month = serializers.PrimaryKeyRelatedField(queryset=Month.objects.all())
+    month_details = serializers.SerializerMethodField()
+
     class Meta:
         model = ParkingFees
-        fields = ['id', 'name', 'image', 'status', 'month', 'updated_date', 'resident', 'fee_value']
+        fields = ['id', 'name', 'fee_image', 'status', 'month', 'month_details', 'updated_date', 'resident', 'fee_value']
 
+
+    def get_month_details(self, obj):
+        return MonthSerializer(obj.month).data
 
 class ServiceFeeSerializer(serializers.ModelSerializer):
+    month = serializers.PrimaryKeyRelatedField(queryset=Month.objects.all())
+    month_details = serializers.SerializerMethodField()
+
     class Meta:
-        model = ParkingFees
-        fields = ['id', 'name', 'image', 'status', 'month', 'updated_date', 'resident', 'fee_value']
+        model = ServiceFees
+        fields = ['id', 'name', 'fee_image', 'status', 'month', 'month_details', 'updated_date', 'resident', 'fee_value']
+
+    def get_month_details(self, obj):
+        return MonthSerializer(obj.month).data
 
 
 

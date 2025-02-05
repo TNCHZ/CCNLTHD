@@ -28,7 +28,10 @@ export const endpoints = {
     'current-user': '/user/current-user', //cần chứng thực mới lấy được
     'resident-information': (accountState) => `/resident-information/${accountState.id}/`,
     'resident-create': '/resident-create/',
-    'list-user': '/list-user/'
+    'list-user': '/list-user/',
+    'create-managing-fee': '/managing-fee/',
+    'create-parking-fee': '/parking-fee/',
+    'create-service-fee': '/service-fee/'
 }
 
 export const authApis = (token) =>  {
