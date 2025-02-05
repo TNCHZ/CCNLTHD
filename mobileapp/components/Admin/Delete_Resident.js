@@ -120,7 +120,7 @@ const Delete_Resident = () => {
                     keyExtractor={(item) => item.user.toString()}
                     renderItem={({ item }) => (
                         <View style={Styles.input}>
-                            <TouchableOpacity style={Styles.row} onPress={() => confirmDisableUser(item.user)}>
+                            <TouchableOpacity style={Styles.row} onPress={() => confirmDisableUser(item.user, item.address.id)}>
                                 <Text style={[Styles.txt,{width:"25%"}]}>{item.address?.name || "Chưa có địa chỉ"}</Text>
                                 <Text style={[Styles.txt,{width:"75%"}]}>
                                     {item.userdetail?.first_name + " " + item.userdetail?.last_name || "Không có"}
