@@ -108,6 +108,7 @@ const Check_Fee = () => {
             });
 
             if (response.status === 200) {
+                filterResults();
                 Alert.alert("Thông báo", "Thanh toán thành công!");
             } else {
                 Alert.alert("Thông báo", "Có lỗi xảy ra trong quá trình thanh toán!");
@@ -188,22 +189,21 @@ const Check_Fee = () => {
                         <Text style={Styles.txt}>
                             Tháng: {fees.managing_fees[0].month_details.name} - Năm: {fees.managing_fees[0].month_details.year}
                         </Text>
-                        <Text style={Styles.txt}>
-                            Trạng thái: {fees.managing_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
-                        </Text>
                         <View style={{alignItems:"center"}}>
                             {fees.managing_fees[0].fee_image ? (
-                                <Image style={{width: 150, height: 150, margin: 5, borderColor: "#000", borderWidth: 1}}
+                                <Image style={{width: 50, height: 50, margin: 5,}}
                                     source={{ uri: extractImageUrl(fees.managing_fees[0].fee_image) }}
                                 />
                             ) : (
                                 <Text style={[Styles.text, {fontSize:14}]}>Không có hình ảnh</Text>
                             )}
                         </View>
-                        
+                        <Text style={Styles.txt}>
+                            Trạng thái: {fees.managing_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Text>
                         {!fees.managing_fees[0].status && (
                             <View style={{alignItems:"center"}}>
-                                <TouchableOpacity style={[Styles.button, {height: 20}]} onPress={() => handleFeePress("managing_fees", fees.managing_fees[0].id)}>
+                                <TouchableOpacity style={[Styles.button, {height: 20}]} onPress={() => handleFeePress("create-managing-fee", fees.managing_fees[0].id)}>
                                     <Text style={[Styles.buttonText, {fontSize: 12}]}>Xác nhận thanh toán</Text>
                                 </TouchableOpacity>
                             </View>
@@ -220,18 +220,18 @@ const Check_Fee = () => {
                         <Text style={Styles.txt}>
                             Tháng: {fees.parking_fees[0].month_details.name} - Năm: {fees.parking_fees[0].month_details.year}
                         </Text>
-                        <Text style={Styles.txt}>
-                            Trạng thái: {fees.parking_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
-                        </Text>
                         <View style={{alignItems:"center"}}>
                             {fees.parking_fees[0].fee_image ? (
-                                <Image style={{width: 150, height: 150, margin: 5, borderColor: "#000", borderWidth: 1}}
+                                <Image style={{width: 50, height: 50, margin: 5,}}
                                     source={{ uri: extractImageUrl(fees.parking_fees[0].fee_image) }}
                                 />
                             ) : (
                                 <Text style={[Styles.text, {fontSize:14}]}>Không có hình ảnh</Text>
                             )}
                         </View>
+                        <Text style={Styles.txt}>
+                            Trạng thái: {fees.parking_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Text>
                         {!fees.parking_fees[0].status && (
                             <View style={{alignItems:"center"}}>
                                 <TouchableOpacity style={[Styles.button, {height: 20}]} onPress={() => handleFeePress("create-parking-fee", fees.parking_fees[0].id)}>
@@ -250,19 +250,18 @@ const Check_Fee = () => {
                         <Text style={Styles.txt}>
                             Tháng: {fees.service_fees[0].month_details.name} - Năm: {fees.service_fees[0].month_details.year}
                         </Text>
-                        <Text style={Styles.txt}>
-                            Trạng thái: {fees.service_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
-                        </Text>
                         <View style={{alignItems:"center"}}>
                             {fees.service_fees[0].fee_image ? (
-                                <Image style={{width: 150, height: 150, margin: 5, borderColor: "#000", borderWidth: 1}}
+                                <Image style={{width: 50, height: 50, margin: 5,}}
                                     source={{ uri: extractImageUrl(fees.service_fees[0].fee_image) }}
                                 />
                             ) : (
                                 <Text style={[Styles.text, {fontSize:14}]}>Không có hình ảnh</Text>
                             )}
                         </View>
-                        
+                        <Text style={Styles.txt}>
+                            Trạng thái: {fees.service_fees[0].status ? "Đã thanh toán" : "Chưa thanh toán"}
+                        </Text>
                         {!fees.service_fees[0].status && (
                             <View style={{alignItems:"center"}}>
                                 <TouchableOpacity style={[Styles.button, {height: 20}]} onPress={() => handleFeePress("create-service-fee", fees.service_fees[0].id)}>
