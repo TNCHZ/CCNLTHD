@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, ScrollView, StyleSheet, Image, Alert } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApis, endpoints } from "../../configs/APIs";
@@ -275,50 +275,5 @@ const Check_Fee = () => {
     );
 
 };
-
-// const styles = StyleSheet.create({
-//     container: {
-//         padding: 20,
-//     },
-//     row: {
-//         flexDirection: "row",
-//         alignItems: "center",
-//         marginBottom: 20,
-//     },
-//     label: {
-//         width: "30%",
-//         fontSize: 16,
-//         fontWeight: "bold",
-//     },
-//     picker: {
-//         width: "70%",
-//     },
-//     button: {
-//         backgroundColor: "#4CAF50",
-//         padding: 10,
-//         alignItems: "center",
-//         borderRadius: 5,
-//         marginTop: 20,
-//     },
-//     buttonText: {
-//         color: "#fff",
-//         fontSize: 16,
-//     },
-//     feeContainer: {
-//         marginTop: 20,
-//         padding: 10,
-//         backgroundColor: "#f0f0f0",
-//         borderRadius: 8,
-//     },
-//     header: {
-//         fontSize: 18,
-//         fontWeight: "bold",
-//         marginBottom: 10,
-//     },
-//     feeText: {
-//         fontSize: 16,
-//         marginBottom: 5,
-//     },
-// });
 
 export default Check_Fee;
