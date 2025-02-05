@@ -90,7 +90,6 @@ const Check_Fee = () => {
             const response = await authApis(token).get(
                 `/${"resident-information"}/${selectedUser}/${"get_fees_in_month"}/?month=${selectedMonth}`
             );
-            console.log(extractImageUrl(response.data.managing_fees?.[0]?.fee_image));
             setFees(response.data);
         } catch (error) {
             console.error("Error fetching fees:", error.response?.data || error);
@@ -104,8 +103,8 @@ const Check_Fee = () => {
 
         try {
             const token = await AsyncStorage.getItem("token");
-            const response = await authApis(token).patch(`/fees/${feeType}/${feeId}/`, {
-                status: true, // Cập nhật trạng thái thanh toán
+            const response = await authApis(token).patch(`${endpoints[feeType]}${feeId}/`, {
+                status: true,
             });
 
             if (response.status === 200) {
@@ -157,7 +156,7 @@ const Check_Fee = () => {
                     </Picker>
                 )}
             </View>
-    
+
             {/* Phần chọn tháng */}
             <View style={styles.row}>
                 <Text style={styles.label}>Chọn Tháng</Text>
@@ -175,18 +174,18 @@ const Check_Fee = () => {
                     </Picker>
                 )}
             </View>
-    
+
             {/* Nút lọc */}
             <TouchableOpacity onPress={filterResults} style={styles.button}>
                 <Text style={styles.buttonText}>Lọc</Text>
             </TouchableOpacity>
-    
+
             {/* Phần kết quả tìm kiếm có thể cuộn */}
             <ScrollView contentContainerStyle={styles.scrollContainer} style={styles.feeContainer}>
                 <Text style={styles.header}>Kết quả tìm kiếm:</Text>
-    
+
                 {/* Phí Quản Lí */}
-                {fees.managing_fees?.length > 0 && (
+                {fees && fees.managing_fees?.length > 0 && (
                     <View style={styles.feeItem}>
                         <Text style={styles.feeTitle}>Phí Quản Lí</Text>
                         <Text style={styles.feeText}>Giá: {fees.managing_fees[0].fee_value} VND</Text>
@@ -214,9 +213,10 @@ const Check_Fee = () => {
                         )}
                     </View>
                 )}
-    
+
+
                 {/* Phí Đỗ Xe */}
-                {fees.parking_fees?.length > 0 && (
+                {fees && fees.parking_fees?.length > 0 && (
                     <View style={styles.feeItem}>
                         <Text style={styles.feeTitle}>Phí Đỗ Xe</Text>
                         <Text style={styles.feeText}>Giá: {fees.parking_fees[0].fee_value} VND</Text>
@@ -234,16 +234,16 @@ const Check_Fee = () => {
                         {!fees.parking_fees[0].status && (
                             <TouchableOpacity
                                 style={styles.paymentButton}
-                                onPress={() => handleFeePress("parking_fees", fees.parking_fees[0].id)}
+                                onPress={() => handleFeePress("create-parking-fee", fees.parking_fees[0].id)}
                             >
                                 <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
                             </TouchableOpacity>
                         )}
                     </View>
                 )}
-    
+
                 {/* Phí Dịch Vụ */}
-                {fees.service_fees?.length > 0 && (
+                {fees && fees.service_fees?.length > 0 && (
                     <View style={styles.feeItem}>
                         <Text style={styles.feeTitle}>Phí Dịch Vụ</Text>
                         <Text style={styles.feeText}>Giá: {fees.service_fees[0].fee_value} VND</Text>
@@ -261,7 +261,7 @@ const Check_Fee = () => {
                         {!fees.service_fees[0].status && (
                             <TouchableOpacity
                                 style={styles.paymentButton}
-                                onPress={() => handleFeePress("service_fees", fees.service_fees[0].id)}
+                                onPress={() => handleFeePress("create-service-fee", fees.service_fees[0].id)}
                             >
                                 <Text style={styles.paymentButtonText}>Xác nhận thanh toán</Text>
                             </TouchableOpacity>
@@ -271,7 +271,7 @@ const Check_Fee = () => {
             </ScrollView>
         </View>
     );
-    
+
 };
 
 const styles = StyleSheet.create({
