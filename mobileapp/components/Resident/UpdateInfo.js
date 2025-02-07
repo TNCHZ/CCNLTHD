@@ -131,7 +131,13 @@ const UpdateInfo = ({ navigation }) => {
             await authApis(token).patch(url, { change_password_image: true }, {
                 headers: { 'Content-Type': 'application/json' }
             });
-
+            dispatch({
+                type: "login",
+                    payload: {
+                        ...accountState,
+                        change_password_image: true,
+                    },
+            });
             navigation.navigate("home");
         } catch (error) {
             console.error("Lỗi:", error.response?.data || error.message);
