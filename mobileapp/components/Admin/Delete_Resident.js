@@ -73,7 +73,6 @@ const Delete_Resident = () => {
             console.log("Cập nhật thành công:", response.data);
 
             const responsedelete = await authApis(token).delete(urlResident);
-
             Alert.alert("Thành công", "Tài khoản đã bị vô hiệu hóa!");
             setUsers((prevUsers) => prevUsers.filter(user => user.user !== userId));
 

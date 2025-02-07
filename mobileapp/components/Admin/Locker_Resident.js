@@ -15,20 +15,25 @@ const CheckLocker = () => {
     const [addingItem, setAddingItem] = useState(false); // Trạng thái thêm vật phẩm
     const [loadingAdd, setLoadingAdd] = useState(false); // Trạng thái đang lưu
 
-    // Lấy danh sách tủ từ API
     const fetchLocker = async () => {
-        setLoadingLocker(true);
+        let allLocker = [];
+        let nextUrl = endpoints["locker"];
+
         try {
-            const token = await AsyncStorage.getItem("token");
-            const response = await authApis(token).get(endpoints["locker"]);
-            setLockerList(response.data.results);
+            while (nextUrl) {
+                const token = await AsyncStorage.getItem("token");
+                const response = await authApis(token).get(nextUrl);
+
+                allLocker = [...allLocker, ...response.data.results];
+                nextUrl = response.data.next;
+            }
+            setLockerList(allLocker);
         } catch (error) {
-            console.error("Lỗi khi tải danh sách tủ:", error.response?.data || error);
-        } finally {
-            setLoadingLocker(false);
+            console.error("Lỗi khi tải danh sách tủ điện tử:", error);
         }
     };
 
+ 
     // Khi chọn một tủ, lấy danh sách items trong tủ đó
     const handleLockerChange = (lockerId) => {
         setSelectedLocker(lockerId);
