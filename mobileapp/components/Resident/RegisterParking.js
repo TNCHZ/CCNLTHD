@@ -2,7 +2,8 @@ import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert } fro
 import Styles from "../../styles/Styles";
 import { useState, useContext } from "react";
 import { MyAccountContext } from "../../configs/MyContext";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints, authApis } from "../../configs/APIs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RegisterRelative = ({ navigation }) => {
     const [accountState] = useContext(MyAccountContext);
@@ -19,7 +20,8 @@ const RegisterRelative = ({ navigation }) => {
 
         setLoading(true);
         try {
-            let res = await APIs.post(endpoints["register-for-relative"], {
+            const token = await AsyncStorage.getItem("token");
+            let res = await authApis(token).post(endpoints["register-for-relative"], {
                 name_relative: name,
                 phone_relative: phone,
                 resident: accountState.id  // ID của cư dân đang đăng nhập

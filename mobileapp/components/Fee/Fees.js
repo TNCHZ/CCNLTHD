@@ -3,8 +3,9 @@ import Styles from "../../styles/Styles";
 import Items from "./Items";
 import { Chip, Searchbar } from "react-native-paper";
 import React, { useContext, useEffect, useState } from "react";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints, authApis } from "../../configs/APIs";
 import { MyAccountContext } from "../../configs/MyContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Fee = ({ navigation }) => {
@@ -25,8 +26,8 @@ const Fee = ({ navigation }) => {
             if (q) {
                 url = `${url}q=${q}`;
             }
-
-            let res = await APIs.get(url);
+            const token = await AsyncStorage.getItem("token");
+            let res = await authApis(token).get(url);
             setManagingFees(res.data);
 
         } catch (ex) {
@@ -44,8 +45,8 @@ const Fee = ({ navigation }) => {
             if (q) {
                 url = `${url}q=${q}`;
             }
-
-            let res = await APIs.get(url);
+            const token = await AsyncStorage.getItem("token");
+            let res = await authApis(token).get(url);
 
             setParkingFees(res.data);
 
@@ -64,8 +65,8 @@ const Fee = ({ navigation }) => {
             if (q) {
                 url = `${url}q=${q}`;
             }
-
-            let res = await APIs.get(url);
+            const token = await AsyncStorage.getItem("token");
+            let res = await authApis(token).get(url);
 
             setServiceFees(res.data);
 

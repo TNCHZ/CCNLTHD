@@ -2,7 +2,9 @@ import { View, Text, TouchableOpacity, ActivityIndicator, Alert, FlatList, TextI
 import Styles from "../../styles/Styles";
 import { useEffect, useState, useContext } from "react";
 import { MyAccountContext } from "../../configs/MyContext";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints, authApis } from "../../configs/APIs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const RelativeList = () => {
     const [accountState] = useContext(MyAccountContext);
@@ -14,11 +16,12 @@ const RelativeList = () => {
     const loadRelatives = async () => {
         let allRelatives = [];
         let nextUrl = endpoints["register-for-relative"];
-    
+
         setLoading(true);
         try {
             while (nextUrl) {
-                const response = await APIs.get(nextUrl);
+                const token = await AsyncStorage.getItem("token");
+                const response = await authApis(token).get(nextUrl);
                 allRelatives = [...allRelatives, ...response.data.results];
                 nextUrl = response.data.next; // Cập nhật URL nếu có trang tiếp theo
             }
@@ -30,7 +33,7 @@ const RelativeList = () => {
             setLoading(false);
         }
     };
-    
+
     useEffect(() => {
         loadRelatives();
     }, []);
@@ -38,7 +41,8 @@ const RelativeList = () => {
     // Hàm cập nhật trạng thái "đã đến" của người thân
     const confirmArrival = async (relativeId) => {
         try {
-            await APIs.patch(`${endpoints["register-for-relative"]}${relativeId}/`, {
+            const token = await AsyncStorage.getItem("token");
+            await authApis(token).patch(`${endpoints["register-for-relative"]}${relativeId}/`, {
                 is_come: true,
             });
 
@@ -57,8 +61,8 @@ const RelativeList = () => {
             setFilteredRelatives(relatives); // Nếu không có gì nhập vào, hiển thị toàn bộ danh sách
         } else {
             const lowercasedQuery = query.toLowerCase();
-            const filtered = relatives.filter((relative) => 
-                relative.name_relative.toLowerCase().includes(lowercasedQuery) || 
+            const filtered = relatives.filter((relative) =>
+                relative.name_relative.toLowerCase().includes(lowercasedQuery) ||
                 relative.phone_relative.includes(query)
             );
             setFilteredRelatives(filtered);

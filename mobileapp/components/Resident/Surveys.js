@@ -18,7 +18,8 @@ const Surveys = () => {
         setLoading(true);
         try {
             let url = `${endpoints['survey-response'](accountState)}`;
-            let res = await APIs.get(url);
+            const token = await AsyncStorage.getItem("token");
+            let res = await authApis(token).get(url);
             setSurveyResponses(res.data); // Lưu dữ liệu khảo sát vào state
         } catch (ex) {
             console.error("Lỗi survey", ex);
@@ -63,7 +64,6 @@ const Surveys = () => {
                 is_response: true
             };
 
-            // Lấy token từ AsyncStorage
             const token = await AsyncStorage.getItem("token");
 
             let url = `${endpoints['resident-survey-response'](accountState)}`

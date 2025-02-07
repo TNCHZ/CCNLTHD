@@ -2,7 +2,8 @@ import { View, Text, ActivityIndicator, ScrollView } from "react-native";
 import Styles from "../../styles/Styles";
 import { useContext, useEffect, useState } from "react";
 import { MyAccountContext } from "../../configs/MyContext";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { endpoints, authApis } from "../../configs/APIs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Locker = () => {
     const [accountState] = useContext(MyAccountContext);
@@ -13,7 +14,8 @@ const Locker = () => {
     const loadLocker = async () => {
         try {
             setLoading(true);
-            let res = await APIs.get(endpoints["locker-resident"](accountState));
+            const token = await AsyncStorage.getItem("token");
+            let res = await authApis(token).get(endpoints["locker-resident"](accountState));
             setLocker(res.data);
         } catch (ex) {
             console.error("Lỗi khi tải tủ đồ: ", ex);

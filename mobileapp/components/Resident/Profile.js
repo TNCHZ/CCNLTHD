@@ -35,9 +35,8 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
         try {
             setLoading(true);
             let url = `${endpoints['resident-information'](accountState)}`
-            console.log("url", url);
-            let res = await APIs.get(url);
-            console.log("res: ", res.data);
+            const token = await AsyncStorage.getItem("token");
+            let res = await authApis(token).get(url);
             setResidentInfo(res.data);
 
         } catch (error) {

@@ -41,7 +41,8 @@ const Create_Resident = () => {
 
         try {
             while (nextUrl) {
-                const response = await APIs.get(nextUrl);
+                const token = await AsyncStorage.getItem("token");
+                const response = await authApis(token).get(nextUrl);
                 const filteredAddresses = response.data.results.filter(address => address.is_free === true);
 
                 allAddresses = [...allAddresses, ...filteredAddresses];
