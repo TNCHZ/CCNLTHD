@@ -58,7 +58,7 @@ class UserViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=400)
 
 
-    @action(detail=True, methods=['delete'], url_path='delete-user')
+    @action(detail=True, methods=['delete'], url_path='delete-user', permission_classes = [AdminPermission])
     def delete_user(self, request, pk=None):
         try:
             user = User.objects.get(pk=pk)

@@ -58,32 +58,33 @@ const Delete_Resident = () => {
     const disableUser = async (userId, addressID) => {
         try {
             const token = await AsyncStorage.getItem("token");
-            const urlResident = `${endpoints['list-user']}${userId}/`;
+            if (!token) {
+                Alert.alert("Lỗi", "Không tìm thấy token, vui lòng đăng nhập lại.");
+                return;
+            }
+    
             const urlAddress = `${endpoints['address']}${addressID}/`;
-            const urlUser = `/user/${userId}/delete-user/`;
-
-            const data = {
-                is_free: true,
-            };
-
-            // Gửi PATCH request
-            const response = await authApis(token).patch(urlAddress, data, {
+            const urlUser = endpoints["delete-user"](userId); 
+    
+            const response = await authApis(token).patch(urlAddress, { is_free: true }, {
                 headers: { "Content-Type": "application/json" }
             });
-
-            console.log("Cập nhật thành công:", response.data);
-
-            const responsedelete = await authApis(token).delete(urlResident);
-            Alert.alert("Thành công", "Tài khoản đã bị vô hiệu hóa!");
-
-            const responseDeleteUser = await authApis(token).delete(urlUser);
-            setUsers((prevUsers) => prevUsers.filter(user => user.user !== userId));
-            
+    
+            const responseDeleteUser = await authApis(token).delete(urlUser, {
+                validateStatus: () => true,  
+            });
+    
+            if (responseDeleteUser.status === 204) {
+                setUsers((prevUsers) => prevUsers.filter(user => user.user !== userId));
+            } else {
+                throw new Error(`Xóa user thất bại! Mã lỗi: ${responseDeleteUser.status}`);
+            }
         } catch (error) {
             console.error("Lỗi khi dừng hoạt động tài khoản:", error);
-            Alert.alert("Lỗi", "Không thể dừng hoạt động tài khoản.");
+            Alert.alert("Lỗi", error.message || "Không thể dừng hoạt động tài khoản.");
         }
     };
+    
 
 
     // Lọc danh sách theo tài khoản hoặc căn hộ
