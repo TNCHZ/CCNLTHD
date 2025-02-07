@@ -58,6 +58,17 @@ class UserViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=400)
 
 
+    @action(detail=True, methods=['delete'], url_path='delete-user')
+    def delete_user(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+            user.delete()
+            return Response({"message": "User deleted successfully"}, status=204)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+
+
 class ResidentCreateViewSet(viewsets.ViewSet):
     queryset = Resident.objects.all()
     serializer_class = serializers.CreateResidentSerializer

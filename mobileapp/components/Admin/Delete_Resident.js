@@ -60,6 +60,7 @@ const Delete_Resident = () => {
             const token = await AsyncStorage.getItem("token");
             const urlResident = `${endpoints['list-user']}${userId}/`;
             const urlAddress = `${endpoints['address']}${addressID}/`;
+            const urlUser = `/user/${userId}/delete-user/`;
 
             const data = {
                 is_free: true,
@@ -74,10 +75,10 @@ const Delete_Resident = () => {
 
             const responsedelete = await authApis(token).delete(urlResident);
             Alert.alert("Thành công", "Tài khoản đã bị vô hiệu hóa!");
+
+            const responseDeleteUser = await authApis(token).delete(urlUser);
             setUsers((prevUsers) => prevUsers.filter(user => user.user !== userId));
-
             
-
         } catch (error) {
             console.error("Lỗi khi dừng hoạt động tài khoản:", error);
             Alert.alert("Lỗi", "Không thể dừng hoạt động tài khoản.");
