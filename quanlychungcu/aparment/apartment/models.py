@@ -149,9 +149,11 @@ class ServiceFees(Fee):
 class Locker(BaseModel):
     name = models.TextField(null = False)
     resident = models.OneToOneField(
-        Resident,  # Đảm bảo quan hệ một-một
-        on_delete=models.CASCADE,
-        related_name='locker',  # Tên truy cập ngược từ Resident
+        Resident,
+        on_delete=models.SET_NULL,
+        related_name='locker',
+        blank=True,
+        null=True
     )
 
     def __str__(self):
