@@ -11,7 +11,6 @@ router.register(r'resident-information', views.ResidentDetailViewSet, basename='
 router.register(r'managing-fee', views.ManagingFeeViewSet, basename='managing-fee')
 router.register(r'parking-fee', views.ParkingFeeViewSet, basename='parking-fee')
 router.register(r'service-fee', views.ServiceFeeViewSet, basename='service-fee')
-router.register(r'resident-locker', views.ResidentLockerViewSet, basename='resident-locker')
 router.register(r'survey', views.SurveyViewSet)
 router.register(r'resident-survey-response', views.ResidentSurveyResponseViewSet)
 router.register(r'address', views.AddressViewSet)

@@ -11,24 +11,31 @@ from rest_framework.response import Response
 class MonthViewSet(viewsets.ModelViewSet):
     queryset = Month.objects.all().order_by('year', 'name')
     serializer_class = serializers.MonthSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = serializers.FeedbackSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class LockerViewSet(viewsets.ModelViewSet):
     queryset = Locker.objects.all()
     serializer_class = serializers.ResidentLockerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class ItemInLockerViewSet(viewsets.ModelViewSet):
     queryset = ItemsInLocker.objects.all()
     serializer_class = serializers.ResidentItemsInLockerSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class UserViewSet(viewsets.ViewSet):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
-
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.action in ['get_current_user']:
@@ -72,13 +79,13 @@ class ResidentCreateViewSet(viewsets.ViewSet):
 class ResidentViewSet(viewsets.ModelViewSet):
     queryset = Resident.objects.all()
     serializer_class = serializers.ResidentInformationSerializer
-    # permission_classes = [AdminPermission]
+    permission_classes = [AdminPermission]
 
 
 class ResidentDetailViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = Resident.objects.all()
     serializer_class = serializers.ResidentInformationSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         queries = self.queryset
@@ -199,12 +206,12 @@ class ManagingFeeViewSet(viewsets.ModelViewSet):
     queryset = ManagingFees.objects.all().order_by("id")
     serializer_class = serializers.ManagingFeeSerializer
 
-    # def get_permissions(self):
-    #     if self.request.method == "POST" or self.request.method == "GET":
-    #         return [permissions.IsAuthenticated(), AdminPermission()]
-    #     elif self.request.method == "PATCH":
-    #         return [permissions.IsAuthenticated(), ResidentPermission()]
-    #     return super().get_permissions()
+    def get_permissions(self):
+        if self.request.method == "POST" or self.request.method == "GET":
+            return [permissions.IsAuthenticated(), AdminPermission()]
+        elif self.request.method == "PATCH":
+            return [permissions.IsAuthenticated(), ResidentPermission()]
+        return super().get_permissions()
 
 
 
@@ -212,12 +219,12 @@ class ParkingFeeViewSet(viewsets.ModelViewSet):
     queryset = ParkingFees.objects.all().order_by("id")
     serializer_class = serializers.ParkingFeeSerializer
 
-    # def get_permissions(self):
-    #     if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
-    #         return [permissions.IsAuthenticated(), AdminPermission()]
-    #     elif self.request.method == "PATCH": # PATCH: Resident only
-    #         return [permissions.IsAuthenticated(), ResidentPermission()]
-    #     return super().get_permissions()
+    def get_permissions(self):
+        if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
+            return [permissions.IsAuthenticated(), AdminPermission()]
+        elif self.request.method == "PATCH": # PATCH: Resident only
+            return [permissions.IsAuthenticated(), ResidentPermission()]
+        return super().get_permissions()
 
 
 
@@ -226,43 +233,24 @@ class ServiceFeeViewSet(viewsets.ModelViewSet):
     queryset = ServiceFees.objects.all().order_by("id")
     serializer_class = serializers.ServiceFeeSerializer
 
-    # def get_permissions(self):
-    #     if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
-    #         return [permissions.IsAuthenticated(), AdminPermission()]
-    #     elif self.request.method == "PATCH": # PATCH: Resident only
-    #         return [permissions.IsAuthenticated(), ResidentPermission()]
-    #     return super().get_permissions()
-
-
-
-class ResidentLockerViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Locker.objects.all()
-    serializer_class = serializers.ResidentLockerSerializer
-
-    def get_queryset(self):
-        queries = self.queryset
-
-        q = self.request.query_params.get("q")
-        if q:
-            queries = queries.filter(name__icontains = q)
-
-        return queries
-
-    @action(methods=['get'], detail=True)
-    def items_in_locker(self, request, pk):
-        items_in_locker = self.get_object().items_in_locker_set.all()
-
-        return Response(serializers.ResidentItemsInLockerSerializer(items_in_locker, many=True))
+    def get_permissions(self):
+        if self.request.method == "POST" or self.request.method == "GET":  # POST: Admin only
+            return [permissions.IsAuthenticated(), AdminPermission()]
+        elif self.request.method == "PATCH": # PATCH: Resident only
+            return [permissions.IsAuthenticated(), ResidentPermission()]
+        return super().get_permissions()
 
 
 class SurveyViewSet(viewsets.ModelViewSet):
     queryset = Survey.objects.all()
     serializer_class = serializers.SurveySerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class ResidentSurveyResponseViewSet(viewsets.ModelViewSet):
     queryset = SurveyResident.objects.select_related('survey', 'resident').all()
     serializer_class = serializers.ResidentSurveyResponseSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=False, methods=['get'], url_path='by-survey/(?P<survey_id>\d+)')
     def get_by_survey(self, request, survey_id=None):
@@ -273,10 +261,14 @@ class ResidentSurveyResponseViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(survey_responses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = serializers.AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 class ResidentRelativeRegisterViewSet(viewsets.ModelViewSet):
     queryset = ParkingForRelatives.objects.filter(is_come=False)
     serializer_class = serializers.ResidentRelativeRegisterSerializer
+    permission_classes = [permissions.IsAuthenticated]

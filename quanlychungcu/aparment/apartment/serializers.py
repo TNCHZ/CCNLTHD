@@ -29,7 +29,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'avatar', 'username', 'password', 'role', 'change_password_image', 'is_active']
+        fields = ['id', 'username', 'first_name', 'last_name', 'avatar', 'username', 'password', 'role', 'change_password_image']
         extra_kwargs = {
             'password': {
                 'write_only': True
