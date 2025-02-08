@@ -20,3 +20,14 @@ class ResidentPermission(permissions.BasePermission):
         if not request.user or not request.user.is_authenticated:
             return False
         return request.user.role == Role.RESIDENT.value
+
+
+class ResidentPatchFeePermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if AdminPermission().has_permission(request, view):
+            return True
+
+        if ResidentPermission().has_permission(request, view) and request.method == "PATCH":
+            return True
+
+        return False

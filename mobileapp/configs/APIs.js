@@ -14,6 +14,7 @@ export const endpoints = {
     'feedback': (accountState) => `/resident-information/${accountState.id}/feedback/`,
     'locker-resident': (accountState) => `/resident-information/${accountState.id}/locker/`,
     'survey-response': (accountState) => `/resident-information/${accountState.id}/survey/`,
+    'delete-user': (id) => `/user/${id}/delete-user/`,
     'address': '/address/',
     'login': '/o/token/',
     'survey': '/survey/',
@@ -25,7 +26,7 @@ export const endpoints = {
     'get-resident-response-survey': '/resident-survey-response/by-survey/',
     'month-fee': '/month-fee/',
     'update-avatar-password': `/user/update-avatar-password/`,
-    'current-user': '/user/current-user', //cần chứng thực mới lấy được
+    'current-user': '/user/current-user', 
     'resident-information': (accountState) => `/resident-information/${accountState.id}/`,
     'resident-create': '/resident-create/',
     'list-user': '/list-user/',
@@ -33,6 +34,7 @@ export const endpoints = {
     'create-parking-fee': '/parking-fee/',
     'create-service-fee': '/service-fee/'
 }
+
 
 export const authApis = (token) =>  {
     return axios.create({

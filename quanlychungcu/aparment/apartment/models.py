@@ -41,12 +41,12 @@ class User(AbstractUser):
     )
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='apartment_user_groups',  # Tên tùy chỉnh
+        related_name='apartment_user_groups',
         blank=True,
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='apartment_user_permissions',  # Tên tùy chỉnh
+        related_name='apartment_user_permissions',
         blank=True,
     )
 
@@ -58,7 +58,7 @@ class Admin(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     class Meta:
-        ordering = ["user"]  # Sắp xếp theo khóa chính (user)
+        ordering = ["user"]
 
     def __str__(self, user=None):
         return self.user.username
@@ -82,7 +82,7 @@ class Resident(BaseModel):
     citizen_identification = models.CharField(max_length=12, null=False, unique=True)
 
     class Meta:
-        ordering = ["user"]  # Sắp xếp theo khóa chính (user)
+        ordering = ["user"]
 
     def __str__(self, user=None):
         return self.user.first_name + " " + self.user.last_name
@@ -113,8 +113,7 @@ class Fee(BaseModel):
 
     class Meta:
         abstract = True
-        unique_together = ['resident', 'month']  # Ràng buộc duy nhất giữa cư dân và tháng
-
+        unique_together = ['resident', 'month']
 
     def __str__(self):
         return self.name

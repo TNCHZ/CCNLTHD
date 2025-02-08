@@ -17,10 +17,8 @@ const UpdateInfo = ({ navigation }) => {
     const extractImageUrl = (avatarUrl) => {
         if (!avatarUrl) return null;
 
-        // Kiểm tra nếu avatarUrl đã là URL hợp lệ
         if (avatarUrl.startsWith("https://")) return avatarUrl;
 
-        // Nếu avatarUrl chứa "image/upload/", loại bỏ phần này
         const prefix = "image/upload/";
         const index = avatarUrl.indexOf(prefix);
         return index !== -1 ? avatarUrl.substring(index + prefix.length) : avatarUrl;
@@ -96,7 +94,6 @@ const UpdateInfo = ({ navigation }) => {
             const token = await AsyncStorage.getItem("token");
             const url = endpoints['update-avatar-password'];
 
-            // Upload the new avatar to the server
             await authApis(token).patch(url, { avatar: avatar }, {
                 headers: { 'Content-Type': 'application/json' }
             });

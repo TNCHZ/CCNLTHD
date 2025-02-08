@@ -6,10 +6,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 
 const Delete_Resident = () => {
-    const [users, setUsers] = useState([]);  // Lưu danh sách user
+    const [users, setUsers] = useState([]); 
     const [loading, setLoading] = useState(true);
-    const [searchText, setSearchText] = useState(""); // Lọc theo tài khoản
-    const [searchAddress, setSearchAddress] = useState(""); // Lọc theo căn hộ
+    const [searchText, setSearchText] = useState(""); 
+    const [searchAddress, setSearchAddress] = useState(""); 
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -35,7 +35,6 @@ const Delete_Resident = () => {
         fetchUsers();
     }, []);
 
-    // Hàm để hiển thị hộp thoại xác nhận
     const confirmDisableUser = (userId, addressID) => {
         Alert.alert(
             "Dừng hoạt động tài khoản",
@@ -69,10 +68,10 @@ const Delete_Resident = () => {
             const response = await authApis(token).patch(urlAddress, { is_free: true }, {
                 headers: { "Content-Type": "application/json" }
             });
+
+
     
-            const responseDeleteUser = await authApis(token).delete(urlUser, {
-                validateStatus: () => true,  
-            });
+            const responseDeleteUser = await authApis(token).delete(urlUser);
     
             if (responseDeleteUser.status === 204) {
                 setUsers((prevUsers) => prevUsers.filter(user => user.user !== userId));
@@ -87,7 +86,6 @@ const Delete_Resident = () => {
     
 
 
-    // Lọc danh sách theo tài khoản hoặc căn hộ
     const filteredUsers = users.filter(user =>
         (user.userdetail?.first_name + " " + user.userdetail?.last_name || "").toLowerCase().includes(searchText.toLowerCase()) &&
         (user.address?.name || "").toLowerCase().includes(searchAddress.toLowerCase())
@@ -97,7 +95,6 @@ const Delete_Resident = () => {
         <View style={Styles.container}>
             <Text style={Styles.title}>Danh Sách Người Dùng & Căn Hộ</Text>
 
-            {/* Ô tìm kiếm theo tài khoản */}
             <TextInput
                 style={Styles.input}
                 placeholder="Tìm theo tên tài khoản"
@@ -105,7 +102,6 @@ const Delete_Resident = () => {
                 onChangeText={setSearchText}
             />
 
-            {/* Ô tìm kiếm theo căn hộ */}
             <TextInput
                 style={Styles.input}
                 placeholder="Tìm theo căn hộ"
