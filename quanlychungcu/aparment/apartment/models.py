@@ -37,7 +37,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=20,
         choices=Role.choices(),
-        default=Role.ADMIN.value
+        default=Role.RESIDENT.value
     )
     groups = models.ManyToManyField(
         'auth.Group',
