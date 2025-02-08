@@ -10,7 +10,6 @@ const Locker = () => {
     const [loading, setLoading] = useState(false);
     const [locker, setLocker] = useState(null);
 
-    // Hàm lấy dữ liệu tủ đồ
     const loadLocker = async () => {
         try {
             setLoading(true);
@@ -35,12 +34,10 @@ const Locker = () => {
             
             {locker ? (
                 <View>
-                    {/* Hiển thị mã tủ */}
                     <Text style={[Styles.subtitle, { textAlign: "left" }]}>
                         Tủ đồ: {locker.name}
                     </Text>
 
-                    {/* Danh sách vật phẩm */}
                     <ScrollView style={Styles.scrollView}>
                         <View style={[Styles.containerNoCenter,{padding:5}]}>
                         {locker.items_in_locker.length > 0 ? (

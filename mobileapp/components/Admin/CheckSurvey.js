@@ -13,7 +13,6 @@ const CheckSurvey = () => {
     const [surveyList, setSurveyList] = useState([]);
     const [responses, setResponses] = useState([]);
 
-    // Lấy danh sách khảo sát
     const fetchSurvey = async () => {
         setLoadingSurvey(true);
         let allSurvey = [];
@@ -34,7 +33,6 @@ const CheckSurvey = () => {
         }
     };
 
-    // Lấy danh sách phản hồi của cư dân theo survey_id
     const fetchResidentResponses = async (surveyId) => {
         if (!surveyId) return;
         setLoadingResponses(true);
@@ -42,7 +40,6 @@ const CheckSurvey = () => {
             const token = await AsyncStorage.getItem("token");
             const response = await authApis(token).get(`${endpoints["get-resident-response-survey"]}${surveyId}/`);
             
-            // Xử lý tách câu hỏi và câu trả lời
             const processedResponses = response.data.map((item) => {
                 const questions = item.survey_details.content.split("#").map(q => q.trim());
                 const answers = item.response_content.split("#").map(a => a.trim());
@@ -70,11 +67,10 @@ const CheckSurvey = () => {
         <View style={Styles.containerNoCenter}>
             <Text style={Styles.title}>Khảo sát của dân cư</Text>
             
-            {/* Picker để chọn khảo sát */}
             <Picker selectedValue={selectedSurvey} style={Styles.input}
                 onValueChange={(value) => {
                     setSelectedSurvey(value);
-                    fetchResidentResponses(value); // Gọi API khi chọn khảo sát
+                    fetchResidentResponses(value); 
                 }}
             >
                 <Picker.Item label="Chọn khảo sát" value={null} />
@@ -87,7 +83,6 @@ const CheckSurvey = () => {
                 )}
             </Picker>
 
-            {/* Hiển thị phản hồi của cư dân */}
             <ScrollView style={Styles.scrollView}>
                 {loadingResponses ? (
                     <Text style={{ textAlign: "center", fontStyle: "italic", color: "gray" }}>Đang tải phản hồi...</Text>

@@ -9,7 +9,6 @@ const CheckFeedback = () => {
     const [loading, setLoading] = useState(false);
     const [feedbackList, setFeedbackList] = useState([]);
 
-    // Hàm lấy dữ liệu từ API
     const fetchFeedback = async () => {
         setLoading(true);
         try {

@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import { List } from "react-native-paper";
-import moment from "moment";
 import { Image, TouchableOpacity, View, Text } from "react-native";
 import Styles from "../../styles/Styles";
 
@@ -19,12 +18,14 @@ const Items = ({ item, routeName, params }) => {
                         </Text>
                     )}
                     <Text>
-                        {item.fee_image !== ""
-                            ? "Đang xác minh"
-                            : `Trạng thái: ${item.status ? "Đã thanh toán" : "Chưa thanh toán"}`}
+                        {item.fee_image === null
+                            ? `Trạng thái: Chưa thanh toán`
+                            : `Trạng thái: ${item.status ? "Đã thanh toán" : "Đang xác minh"}`
+                            }
                     </Text>
                 </View>
             )}
+
             left={(props) => (
                 <Image
                     {...props}
@@ -33,7 +34,7 @@ const Items = ({ item, routeName, params }) => {
                 />
             )}
             right={(props) =>
-                !item.status && item.fee_image === "" ? ( // Ẩn nếu có ảnh
+                !item.status && item.fee_image === null ? ( 
                     <TouchableOpacity
                         style={{
                             backgroundColor: "#007bff",
@@ -51,7 +52,7 @@ const Items = ({ item, routeName, params }) => {
                     </TouchableOpacity>
                 ) : null
             }
-            
+
         />
     );
 };

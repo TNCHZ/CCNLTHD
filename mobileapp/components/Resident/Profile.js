@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 
 
-const Profile = ({ navigation }) => { // Thêm navigation vào props
+const Profile = ({ navigation }) => { 
     const [accountState] = useContext(MyAccountContext);
     const [residentInfo, setResidentInfo] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -15,10 +15,8 @@ const Profile = ({ navigation }) => { // Thêm navigation vào props
     const extractImageUrl = (avatarUrl) => {
         if (!avatarUrl) return null;
         
-        // Kiểm tra nếu avatarUrl đã là URL hợp lệ
         if (avatarUrl.startsWith("https://")) return avatarUrl;
         
-        // Nếu avatarUrl chứa "image/upload/", loại bỏ phần này
         const prefix = "image/upload/";
         const index = avatarUrl.indexOf(prefix);
         return index !== -1 ? avatarUrl.substring(index + prefix.length) : avatarUrl;

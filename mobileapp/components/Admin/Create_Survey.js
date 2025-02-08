@@ -5,12 +5,12 @@ import APIs, { authApis, endpoints } from "../../configs/APIs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Create_Survey = () => {
-    const [surveyTitle, setSurveyTitle] = useState(""); // Lưu tên khảo sát
-    const [questions, setQuestions] = useState([""]); // Lưu danh sách câu hỏi
+    const [surveyTitle, setSurveyTitle] = useState(""); 
+    const [questions, setQuestions] = useState([""]); 
     const [residents, setResidents] = useState([]);
-    const [loading, setLoading] = useState(false); // Trạng thái tải dữ liệu
+    const [loading, setLoading] = useState(false); 
 
-    // Thêm một ô nhập câu hỏi mới
+
     const addQuestion = () => {
         setQuestions([...questions, ""]);
     };
@@ -39,17 +39,17 @@ const Create_Survey = () => {
         fetchResidents();
     }, []);
 
-    // Cập nhật nội dung câu hỏi tại một index cụ thể
+
     const updateQuestion = (text, index) => {
         const newQuestions = [...questions];
         newQuestions[index] = text;
         setQuestions(newQuestions);
     };
 
-    // Xóa một câu hỏi khỏi danh sách
+
     const deleteQuestion = (index) => {
         const newQuestions = questions.filter((_, i) => i !== index);
-        setQuestions(newQuestions.length > 0 ? newQuestions : [""]); // Luôn có ít nhất một ô nhập
+        setQuestions(newQuestions.length > 0 ? newQuestions : [""]); 
     };
 
 
@@ -66,8 +66,8 @@ const Create_Survey = () => {
         const content = questions.join(" # ");
     
         const payload = {
-            name: surveyTitle,  // Tên khảo sát
-            content: content    // Nội dung câu hỏi dạng chuỗi
+            name: surveyTitle,  
+            content: content    
         };
     
         try {
@@ -96,7 +96,6 @@ const Create_Survey = () => {
                 
                 Alert.alert("Thành công", "Khảo sát đã được tạo và gửi tới cư dân!", [{ text: "OK" }]);
     
-                // Reset form sau khi tạo khảo sát
                 setSurveyTitle("");
                 setQuestions([]);
             } else {
@@ -111,7 +110,6 @@ const Create_Survey = () => {
     return (
         <View style={{ flex: 1, padding: 20 }}>
             <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-                {/* Ô nhập tên khảo sát */}
                 <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>Tên khảo sát:</Text>
                 <TextInput
                     style={{
@@ -125,7 +123,6 @@ const Create_Survey = () => {
                     onChangeText={setSurveyTitle}
                 />
 
-                {/* Danh sách câu hỏi */}
                 <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>Câu hỏi:</Text>
                 {questions.map((question, index) => (
                     <View key={index} style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>

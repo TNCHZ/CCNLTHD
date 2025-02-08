@@ -17,16 +17,13 @@ const Check_Fee = () => {
     const extractImageUrl = (avatarUrl) => {
         if (!avatarUrl) return null;
 
-        // Kiểm tra nếu avatarUrl đã là URL hợp lệ
         if (avatarUrl.startsWith("https://")) return avatarUrl;
 
-        // Nếu avatarUrl chứa "image/upload/", loại bỏ phần này
         const prefix = "image/upload/";
         const index = avatarUrl.indexOf(prefix);
         return index !== -1 ? avatarUrl.substring(index + prefix.length) : avatarUrl;
     };
 
-    // Fetching users
     const fetchUsers = async () => {
         setLoading(true);
         let allUsers = [];
@@ -47,7 +44,6 @@ const Check_Fee = () => {
         }
     };
 
-    // Fetching months
     const fetchMonths = async () => {
         setLoading(true);
         let allMonths = [];
@@ -75,10 +71,10 @@ const Check_Fee = () => {
 
     useEffect(() => {
         if (users.length > 0 && !selectedUser) {
-            setSelectedUser(users[0].user); // Set the first user as the selected user
+            setSelectedUser(users[0].user); 
         }
         if (months.length > 0 && !selectedMonth) {
-            setSelectedMonth(months[0].id); // Set the first month as the selected month
+            setSelectedMonth(months[0].id); 
         }
     }, [users, months, selectedUser, selectedMonth]);
 
@@ -140,7 +136,6 @@ const Check_Fee = () => {
 //==============================================================================================================================    
     return (
         <View style={Styles.container}>
-            {/* Phần chọn căn hộ */}
             <View style={[Styles.row, {borderColor: "#ccc", borderWidth: 1,}]}>
                 <Text style={[Styles.title, {alignItems:'center', fontSize:18, width: "40%"}]}>Chọn căn hộ</Text>
                 {loading ? (
@@ -156,7 +151,6 @@ const Check_Fee = () => {
                 )}
             </View>
 
-            {/* Phần chọn tháng */}
             <View style={[Styles.row, {borderColor: "#ccc", borderWidth: 1,}]}>
                 <Text style={[Styles.title, {alignItems:'center', fontSize:18, width: "40%"}]}>Chọn Tháng</Text>
                 {loading ? (
@@ -172,16 +166,13 @@ const Check_Fee = () => {
                 )}
             </View>
 
-            {/* Nút lọc */}
             <TouchableOpacity onPress={filterResults} style={Styles.button}>
                 <Text style={Styles.buttonText}>Lọc</Text>
             </TouchableOpacity>
             
             
             <Text style={Styles.title}>Kết quả tìm kiếm</Text>
-            {/* Phần kết quả tìm kiếm có thể cuộn */}
             <ScrollView style={[Styles.scrollView, {width:"100%"}]}>
-                {/* Phí Quản Lí */}
                 {fees && fees.managing_fees?.length > 0 && (
                     <View style={{borderColor: "#000", borderWidth: 1, marginBottom: 5, padding: 5}}>
                         <Text style={[Styles.title, {fontSize:18}]}>Phí Quản Lí</Text>
@@ -212,7 +203,6 @@ const Check_Fee = () => {
                 )}
 
 
-                {/* Phí Đỗ Xe */}
                 {fees && fees.parking_fees?.length > 0 && (
                     <View style={{borderColor: "#000", borderWidth: 1, marginBottom: 5, padding: 5}}>
                         <Text style={[Styles.title, {fontSize:18}]}>Phí Đỗ Xe</Text>
@@ -242,7 +232,6 @@ const Check_Fee = () => {
                     </View>
                 )}
 
-                {/* Phí Dịch Vụ */}
                 {fees && fees.service_fees?.length > 0 && (
                     <View style={{borderColor: "#000", borderWidth: 1, marginBottom: 5, padding: 5}}>
                         <Text style={[Styles.title, {fontSize:18}]}>Phí Dịch Vụ</Text>

@@ -18,7 +18,7 @@ const Create_Fee = () => {
     const [user, setUser] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [time, setTime] = useState([]);
-    const [selectedTime, setSelectedTime] = useState("");  // To hold the selected month
+    const [selectedTime, setSelectedTime] = useState("");  
     const [number, setNumber] = useState("");
     const [feeName, setFeeName] = useState("");
     const [loading, setLoading] = useState(false);
@@ -37,9 +37,8 @@ const Create_Fee = () => {
             }
             setTime(allTime);
 
-            // Set the default selectedTime to the first available month (if any)
             if (allTime.length > 0) {
-                setSelectedTime(allTime[0].id);  // Default to the first month in the list
+                setSelectedTime(allTime[0].id);  
             }
         } catch (error) {
             console.error("Lỗi khi tải danh sách tháng:", error.response?.data || error);
@@ -62,9 +61,8 @@ const Create_Fee = () => {
             }
             setUser(allUsers);
 
-            // Set the default selectedUsers to all users if "Tất cả dân cư" is selected
             if (selectedOption === "all") {
-                const allUserIds = allUsers.map((u) => u.user);  // Assuming 'user' is the user ID
+                const allUserIds = allUsers.map((u) => u.user); 
                 setSelectedUsers(allUserIds);
             }
         } catch (error) {
@@ -77,14 +75,14 @@ const Create_Fee = () => {
     useEffect(() => {
         fetchUsers();
         fetchTime();
-    }, []);  // Initial fetch on mount
+    }, []); 
 
     const handleChange = (value) => {
         const num = parseInt(value.replace(/[^0-9]/g, ''), 10);
         if (!isNaN(num)) {
             setNumber(value);
         } else {
-            setNumber(''); // Reset if the value is not a valid number
+            setNumber('');
         }
     };
 
@@ -108,7 +106,7 @@ const Create_Fee = () => {
             
 
             const data = {
-                name: `${feeName} `, // Use month name and year
+                name: `${feeName} `,
                 month: selectedTime,
                 fee_value: number,
             };
@@ -171,10 +169,10 @@ const Create_Fee = () => {
                     onValueChange={(value) => {
                         setSelectedOption(value);
                         if (value === "all") {
-                            const allUserIds = user.map((u) => u.user); // Assuming 'user' is the user ID
+                            const allUserIds = user.map((u) => u.user); 
                             setSelectedUsers(allUserIds);
                         } else {
-                            setSelectedUsers([]); // Deselect all users if "Từng dân cư"
+                            setSelectedUsers([]); 
                         }
                     }}
                 >

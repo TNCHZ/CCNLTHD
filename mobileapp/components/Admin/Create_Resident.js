@@ -130,7 +130,7 @@ const Create_Resident = () => {
             console.log(response.data)
     
             if (response.status === 201) {
-                const residentId = response.data.resident_id; // Lấy ID của cư dân vừa tạo
+                const residentId = response.data.resident_id;
     
                 if (selectedLocker) {
                     try {
@@ -161,7 +161,7 @@ const Create_Resident = () => {
                     password: "1",
                 });
                 setDate(new Date());
-                setSelectedLocker(""); // Reset tủ điện tử
+                setSelectedLocker(""); 
             } else {
                 Alert.alert("Lỗi", response.data.message || "Đăng ký thất bại!");
             }

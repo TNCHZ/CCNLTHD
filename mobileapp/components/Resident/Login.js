@@ -14,7 +14,6 @@ const Login = ({ navigation }) => {
 
     const [accountState, dispatch] = useContext(MyAccountContext);
 
-    // Cập nhật lại state account với giá trị mới
     const updateAccount = (value, field) => {
         setAccount({ ...account, [field]: value });
     }
@@ -29,7 +28,6 @@ const Login = ({ navigation }) => {
                 return;
             }
 
-            // Gửi yêu cầu đăng nhập
             const res = await APIs.post(endpoints['login'], {
                 client_id: client_id,
                 client_secret: client_secret,
@@ -46,7 +44,6 @@ const Login = ({ navigation }) => {
                 console.info("Token:", res.data.access_token);
                 await AsyncStorage.setItem('token', res.data.access_token);
 
-                // Lấy thông tin người dùng sau khi đăng nhập thành công
                 const token = await AsyncStorage.getItem("token");
 
                 if (!token) {
@@ -57,13 +54,11 @@ const Login = ({ navigation }) => {
                 const userAccount = await authApis(token).get(endpoints["current-user"]);
                 console.log("Thông tin người dùng:", userAccount.data);
 
-                // Cập nhật lại state account
                 setAccount({
                     username: userAccount.data.username,
                     password: account.password,
                 });
 
-                // Gửi hành động đăng nhập với Redux/Context API
                 dispatch({
                     type: "login",
                     payload: {
@@ -83,10 +78,8 @@ const Login = ({ navigation }) => {
                 }
                 else {
                     if (userAccount.data.change_password_image) {
-                        // Nếu có avatar, điều hướng đến màn hình "home"
                         navigation.navigate("home");
                     } else {
-                        // Nếu không có avatar, điều hướng đến màn hình "upload"
                         navigation.navigate("updateInfo");
                     }
                 }

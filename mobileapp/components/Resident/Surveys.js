@@ -7,20 +7,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Surveys = () => {
     const [accountState] = useContext(MyAccountContext);
-    const [surveyResponses, setSurveyResponses] = useState([]);  // Dữ liệu các khảo sát
+    const [surveyResponses, setSurveyResponses] = useState([]);  
     const [loading, setLoading] = useState(false);
-    const [selectedSurvey, setSelectedSurvey] = useState(null); // Khảo sát được chọn
-    const [answers, setAnswers] = useState({}); // Lưu các câu trả lời
-    const [surveyQuestions, setSurveyQuestions] = useState([]); // Các câu hỏi của khảo sát
+    const [selectedSurvey, setSelectedSurvey] = useState(null); 
+    const [answers, setAnswers] = useState({}); 
+    const [surveyQuestions, setSurveyQuestions] = useState([]);
 
-    // Load các khảo sát
     const loadSurveyResponses = async () => {
         setLoading(true);
         try {
             let url = `${endpoints['survey-response'](accountState)}`;
             const token = await AsyncStorage.getItem("token");
             let res = await authApis(token).get(url);
-            setSurveyResponses(res.data); // Lưu dữ liệu khảo sát vào state
+            setSurveyResponses(res.data); 
         } catch (ex) {
             console.error("Lỗi survey", ex);
         } finally {
@@ -28,18 +27,15 @@ const Surveys = () => {
         }
     };
 
-    // Khi người dùng chọn khảo sát
     const handleSurveySelect = (surveyId) => {
         setSelectedSurvey(surveyId);
         const selectedSurveyResponse = surveyResponses.find(survey => survey.id === surveyId);
         if (selectedSurveyResponse) {
-            // Tách câu hỏi từ `content` dựa trên dấu #
             const questions = selectedSurveyResponse.survey_details.content.split("#");
             setSurveyQuestions(questions.map(question => question.trim()));
         }
     };
 
-    // Handle input change for each question
     const handleAnswerChange = (questionIndex, text) => {
         setAnswers((prevAnswers) => ({
             ...prevAnswers,
@@ -53,10 +49,10 @@ const Surveys = () => {
 
 
     const handleSubmit = async () => {
-        const responseContent = Object.values(answers).join(' # ');  // Kết hợp câu trả lời
+        const responseContent = Object.values(answers).join(' # ');  
 
         try {
-            const surveyId = selectedSurvey;  // Đảm bảo bạn đã chọn khảo sát
+            const surveyId = selectedSurvey;  
             console.log("Selected Survey ID: ", selectedSurvey);
 
             const data = {
@@ -66,8 +62,8 @@ const Surveys = () => {
 
             const token = await AsyncStorage.getItem("token");
 
-            let url = `${endpoints['resident-survey-response'](accountState)}`
-
+            let url = `${endpoints['resident-survey-response']}${selectedSurvey}/`;
+            console.log(url)
 
             const response = await authApis(token).patch(url, data, {
                 headers: {
@@ -75,15 +71,12 @@ const Surveys = () => {
                 }
             });
 
-            console.log("Cập nhật câu trả lời thành công:", response.data);
 
-            // Reset giao diện: 
-            setAnswers({});  // Xóa các câu trả lời đã nhập
-            setSelectedSurvey(null);  // Đặt lại khảo sát đã chọn về null
-            setSurveyQuestions([]);  // Đặt lại câu hỏi khảo sát về mảng rỗng
+            setAnswers({}); 
+            setSelectedSurvey(null);  
+            setSurveyQuestions([]);  
 
-            // Tải lại danh sách khảo sát (refresh giao diện)
-            loadSurveyResponses();  // Gọi lại hàm để lấy lại danh sách khảo sát từ API
+            loadSurveyResponses();  
 
         } catch (error) {
             console.error("Lỗi khi cập nhật câu trả lời:", error);
@@ -115,7 +108,6 @@ const Surveys = () => {
                         ))}
                     </Picker>
 
-                    {/* Khi đã chọn khảo sát, hiển thị câu hỏi */}
                     {selectedSurvey && surveyQuestions.length > 0 && (
                         <View>
                             <Text style={{ fontWeight: "bold" }}>
@@ -130,7 +122,7 @@ const Surveys = () => {
                                             padding: 5,
                                             marginBottom: 10,
                                         }}
-                                        placeholder="Your answer"
+                                        placeholder="Câu trả lời của bạn"
                                         value={answers[index] || ""}
                                         onChangeText={(text) => handleAnswerChange(index, text)}
                                     />

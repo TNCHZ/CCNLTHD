@@ -2,10 +2,11 @@ import { View, Text, TouchableOpacity, FlatList, RefreshControl, ActivityIndicat
 import Styles from "../../styles/Styles";
 import Items from "./Items";
 import { Chip, Searchbar } from "react-native-paper";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import APIs, { endpoints, authApis } from "../../configs/APIs";
 import { MyAccountContext } from "../../configs/MyContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const Fee = ({ navigation }) => {
@@ -110,7 +111,7 @@ const Fee = ({ navigation }) => {
             case 'serviceFees':
                 return serviceFees;
             default:
-                return [...managingFees, ...parkingFees, ...serviceFees].filter(fee => fee.status === false && fee.fee_image === "");
+                return [...managingFees, ...parkingFees, ...serviceFees].filter(fee => fee.status === false);
             }
     };
 
@@ -118,6 +119,14 @@ const Fee = ({ navigation }) => {
         callback(value);
     }
 
+    useFocusEffect(
+        useCallback(() => {
+            loadManagingFees();
+            loadParkingFees();
+            loadServiceFees(); 
+        }, [])
+    );
+    
     const refresh = () => {
         loadManagingFees();
         loadParkingFees();

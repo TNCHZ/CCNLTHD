@@ -11,9 +11,9 @@ const CheckLocker = () => {
     const [loadingLocker, setLoadingLocker] = useState(false);
     const [lockerList, setLockerList] = useState([]);
     const [items, setItems] = useState([]);
-    const [newItemName, setNewItemName] = useState(""); // Tên vật phẩm mới
-    const [addingItem, setAddingItem] = useState(false); // Trạng thái thêm vật phẩm
-    const [loadingAdd, setLoadingAdd] = useState(false); // Trạng thái đang lưu
+    const [newItemName, setNewItemName] = useState(""); 
+    const [addingItem, setAddingItem] = useState(false); 
+    const [loadingAdd, setLoadingAdd] = useState(false); 
 
     const fetchLocker = async () => {
         let allLocker = [];
@@ -23,8 +23,9 @@ const CheckLocker = () => {
             while (nextUrl) {
                 const token = await AsyncStorage.getItem("token");
                 const response = await authApis(token).get(nextUrl);
+                const responseLocker = response.data.results.filter(locker => locker.resident != null)
 
-                allLocker = [...allLocker, ...response.data.results];
+                allLocker = [...allLocker, ...responseLocker];
                 nextUrl = response.data.next;
             }
             setLockerList(allLocker);
@@ -34,14 +35,12 @@ const CheckLocker = () => {
     };
 
  
-    // Khi chọn một tủ, lấy danh sách items trong tủ đó
     const handleLockerChange = (lockerId) => {
         setSelectedLocker(lockerId);
         const selected = lockerList.find((locker) => locker.id === lockerId);
         setItems(selected ? selected.items_in_locker : []);
     };
 
-    // Gửi vật phẩm mới lên API
     const handleAddItem = async () => {
         if (!newItemName.trim()) {
             alert("Vui lòng nhập tên vật phẩm!");
@@ -53,13 +52,12 @@ const CheckLocker = () => {
             const token = await AsyncStorage.getItem("token");
             const response = await authApis(token).post(endpoints["item-in-locker"], {
                 name: newItemName,
-                locker: selectedLocker, // ID của tủ đã chọn
+                locker: selectedLocker, 
             });
 
-            // Cập nhật danh sách vật phẩm sau khi thêm
             setItems([...items, response.data]);
-            setNewItemName(""); // Reset input
-            setAddingItem(false); // Ẩn input sau khi thêm thành công
+            setNewItemName(""); 
+            setAddingItem(false); 
         } catch (error) {
             console.error("Lỗi khi thêm vật phẩm:", error.response?.data || error);
             alert("Thêm vật phẩm thất bại!");
@@ -68,9 +66,8 @@ const CheckLocker = () => {
         }
     };
 
-    // Xử lý khi nhấn vào vật phẩm
     const handleItemPress = (item) => {
-        if (item.status) return; // Nếu đã lấy thì không cho nhấn
+        if (item.status) return; 
 
         Alert.alert(
             "Xác nhận",
@@ -86,7 +83,6 @@ const CheckLocker = () => {
         );
     };
 
-    // Cập nhật trạng thái vật phẩm (status = true)
     const updateItemStatus = async (itemId) => {
         try {
             const token = await AsyncStorage.getItem("token");
@@ -94,7 +90,6 @@ const CheckLocker = () => {
                 status: true,
             });
 
-            // Cập nhật danh sách vật phẩm sau khi cập nhật thành công
             setItems(items.map((item) => (item.id === itemId ? { ...item, status: true } : item)));
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái vật phẩm:", error.response?.data || error);
@@ -109,7 +104,6 @@ const CheckLocker = () => {
     return (
         <View style={Styles.container}>
             <Text style={Styles.title}>Danh sách tủ</Text>
-            {/* Picker để chọn tủ */}
             <Picker style={Styles.input} selectedValue={selectedLocker} onValueChange={handleLockerChange}>
                 <Picker.Item label="Chọn tủ" value={null} />
                 {loadingLocker ? (
@@ -121,7 +115,6 @@ const CheckLocker = () => {
                 )}
             </Picker>
             
-            {/* Hiển thị danh sách item trong tủ */}
             <ScrollView style={[Styles.scrollView, {width: "100%"}]}>
                 <View style={[Styles.containerNoCenter,{padding:5}]}>
                 {items.length > 0 ? (
@@ -141,7 +134,6 @@ const CheckLocker = () => {
                 </View>
             </ScrollView>
 
-            {/* Form nhập vật phẩm mới */}
             {addingItem && (
                 <View style={{ marginTop: 10 }}>
                     <TextInput style={Styles.input} placeholder="Nhập tên vật phẩm"
@@ -153,7 +145,6 @@ const CheckLocker = () => {
                 </View>
             )}
            
-            {/* Nút thêm vật phẩm */}
             {!addingItem && selectedLocker && (
                 <TouchableOpacity
                     style={Styles.button}

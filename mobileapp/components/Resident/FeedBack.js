@@ -25,17 +25,15 @@ const FeedBack = ({navigation}) => {
                 },
             });
     
-            // Kiểm tra phản hồi từ server
             if (response.status === 200 || response.status === 201) {
                 Alert.alert("FeedBack", "Cảm ơn bạn đã đóng góp ý kiến để cải thiện chất lượng của JpHome!");
-                setFeedback("");  // Reset lại nội dung feedback
+                setFeedback("");  
                 console.info("Gửi FeedBack thành công");
             } else {
                 Alert.alert("FeedBack", "Đã có lỗi xảy ra khi gửi ý kiến của bạn. Vui lòng thử lại.");
                 console.error("Gửi FeedBack thất bại");
             }
         } catch (error) {
-            // Xử lý lỗi nếu có
             Alert.alert("FeedBack", "Có lỗi khi gửi phản hồi. Vui lòng thử lại.");
             console.error("Gửi FeedBack thất bại", error);
         }
@@ -46,8 +44,8 @@ const FeedBack = ({navigation}) => {
             <Text style={FeedBackStyle.subtitle}>Gửi đến Ban Quản Lý Chung Cư JpHome</Text>
             <TextInput style={FeedBackStyle.input} placeholder="Hãy ghi các đóng góp ý kiến của bạn ở đây !"
                 placeholderTextColor="#888"
-                multiline={true} // Đảm bảo text không bị tràn màn hình mà xuống dòng
-                textAlignVertical="top" // Đảm bảo text bắt đầu từ trên cùng
+                multiline={true} 
+                textAlignVertical="top" 
                 value={feedback}
                 onChangeText={(text) => setFeedback(text)}
             />

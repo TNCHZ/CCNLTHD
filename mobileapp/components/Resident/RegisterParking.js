@@ -11,7 +11,7 @@ const RegisterRelative = ({ navigation }) => {
     const [phone, setPhone] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Hàm xử lý đăng ký người thân
+
     const handleRegister = async () => {
         if (!name || !phone) {
             Alert.alert("Lỗi", "Vui lòng nhập đầy đủ thông tin!");
@@ -24,13 +24,13 @@ const RegisterRelative = ({ navigation }) => {
             let res = await authApis(token).post(endpoints["register-for-relative"], {
                 name_relative: name,
                 phone_relative: phone,
-                resident: accountState.id  // ID của cư dân đang đăng nhập
+                resident: accountState.id 
             });
 
             Alert.alert("Thành công", "Đăng ký người thân thành công!");
             setName("");
             setPhone("");
-            navigation.goBack(); // Quay về màn hình trước đó
+            navigation.goBack(); 
         } catch (ex) {
             console.error("Lỗi khi đăng ký người thân:", ex);
             Alert.alert("Lỗi", "Không thể đăng ký người thân!");

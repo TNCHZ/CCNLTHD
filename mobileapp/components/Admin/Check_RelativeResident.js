@@ -23,10 +23,10 @@ const RelativeList = () => {
                 const token = await AsyncStorage.getItem("token");
                 const response = await authApis(token).get(nextUrl);
                 allRelatives = [...allRelatives, ...response.data.results];
-                nextUrl = response.data.next; // Cập nhật URL nếu có trang tiếp theo
+                nextUrl = response.data.next; 
             }
             setRelatives(allRelatives);
-            setFilteredRelatives(allRelatives); // Lưu dữ liệu gốc vào filteredRelatives
+            setFilteredRelatives(allRelatives); 
         } catch (ex) {
             console.error("Lỗi khi tải danh sách người thân:", ex);
         } finally {
@@ -38,7 +38,6 @@ const RelativeList = () => {
         loadRelatives();
     }, []);
 
-    // Hàm cập nhật trạng thái "đã đến" của người thân
     const confirmArrival = async (relativeId) => {
         try {
             const token = await AsyncStorage.getItem("token");
@@ -47,18 +46,17 @@ const RelativeList = () => {
             });
 
             Alert.alert("Thành công", "Xác nhận người thân đã đến!");
-            loadRelatives(); // Tải lại danh sách sau khi cập nhật
+            loadRelatives(); 
         } catch (ex) {
             console.error("Lỗi khi cập nhật trạng thái:", ex);
             Alert.alert("Lỗi", "Không thể xác nhận người thân!");
         }
     };
 
-    // Hàm lọc danh sách người thân theo tên hoặc số điện thoại
     const handleSearch = (query) => {
         setSearchQuery(query);
         if (query === '') {
-            setFilteredRelatives(relatives); // Nếu không có gì nhập vào, hiển thị toàn bộ danh sách
+            setFilteredRelatives(relatives); 
         } else {
             const lowercasedQuery = query.toLowerCase();
             const filtered = relatives.filter((relative) =>
@@ -77,14 +75,14 @@ const RelativeList = () => {
                 style={Styles.input}
                 placeholder="Tìm theo tên hoặc số điện thoại"
                 value={searchQuery}
-                onChangeText={handleSearch} // Cập nhật query khi người dùng nhập
+                onChangeText={handleSearch} 
             />
 
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
                 <FlatList
-                    data={filteredRelatives} // Sử dụng filteredRelatives thay vì relatives
+                    data={filteredRelatives} 
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
                         <View style={Styles.card}>
